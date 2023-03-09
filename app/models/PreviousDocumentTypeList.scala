@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package models
 
-case class DocumentsDomain() extends JourneyDomainModel
+import models.reference.PreviousDocumentType
 
-object DocumentsDomain {
+case class PreviousDocumentTypeList(previousDocumentTypes: Seq[PreviousDocumentType]) {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  def getPreviousReferencesDocumentType(code: String): Option[PreviousDocumentType] =
+    previousDocumentTypes.find(_.code == code)
 }

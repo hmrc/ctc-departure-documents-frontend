@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.sections
 
-case class DocumentsDomain() extends JourneyDomainModel
+import play.api.libs.json.{JsArray, JsPath}
 
-object DocumentsDomain {
+case object DocumentsSection extends Section[JsArray] {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "documents"
 }

@@ -16,8 +16,7 @@
 
 package generators
 
-import models.domain.UserAnswersReader
-import models.journeyDomain.DocumentsDomain
+import models.journeyDomain.{DocumentsDomain, UserAnswersReader}
 import models.journeyDomain.OpsError.ReaderError
 import models.{EoriNumber, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary

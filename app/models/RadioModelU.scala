@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package models
 
-case class DocumentsDomain() extends JourneyDomainModel
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-object DocumentsDomain {
+trait RadioModelU[T] extends RadioModel[T] {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  def valuesU(userAnswers: UserAnswers): Seq[T]
+
+  def radioItemsU(userAnswers: UserAnswers)(
+    formKey: String = "value",
+    checkedValue: Option[T] = None
+  )(implicit messages: Messages): Seq[RadioItem] =
+    radioItems(valuesU(userAnswers), formKey, checkedValue)
 }

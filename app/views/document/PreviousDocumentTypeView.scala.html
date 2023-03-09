@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.$package$.routes
+@import controllers.document.routes
 @import models.LocalReferenceNumber
-@import models.reference.$referenceClass$
+@import models.reference.PreviousDocumentType
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -31,26 +31,27 @@
     button: Button
 )
 
-@(form: Form[$referenceClass$], lrn: LocalReferenceNumber, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[PreviousDocumentType], lrn: LocalReferenceNumber, previousDocumentTypes: Seq[PreviousDocumentType], mode: Mode, declarationType: DeclarationType, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("$package$.$className;format="decap"$.title"),
+    title = messages("document.previousDocumentType.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.$className;format="cap"$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PreviousDocumentTypeController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
-                heading = messages("$package$.$className;format="decap"$.heading")
+            selectType = SelectWithAdditionalHtml(
+                heading = messages("document.previousDocumentType.heading"),
+                caption = Some(messages("document.caption")),
+                additionalHtml = messages("document.previousDocumentType.paragraph", declarationType).toParagraph
             ),
-            hint = Some(messages("$package$.$className;format="decap"$.hint")),
-            selectItems = $referenceClassPlural;format="decap"$.toSelectItems(form.value),
-            placeholder = messages("$package$.$className;format="decap"$.placeholder")
+            selectItems = previousDocumentTypes.toSelectItems(form.value),
+            placeholder = messages("document.previousDocumentType.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

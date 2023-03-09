@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.external
 
-case class DocumentsDomain() extends JourneyDomainModel
+import models.DeclarationType
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
-object DocumentsDomain {
+case object TransitOperationDeclarationTypePage extends ReadOnlyPage[DeclarationType] {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  override def path: JsPath = preTaskListPath \ toString
+
+  override def toString: String = "declarationType"
 }

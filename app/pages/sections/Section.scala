@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.sections
 
-case class DocumentsDomain() extends JourneyDomainModel
+import pages.QuestionPage
+import play.api.libs.json.JsValue
 
-object DocumentsDomain {
-
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
-}
+trait Section[T <: JsValue] extends QuestionPage[T]

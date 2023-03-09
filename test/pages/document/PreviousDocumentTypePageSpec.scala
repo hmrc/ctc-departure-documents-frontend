@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.document
 
-case class DocumentsDomain() extends JourneyDomainModel
+import models.reference.PreviousDocumentType
+import pages.behaviours.PageBehaviours
 
-object DocumentsDomain {
+class PreviousDocumentTypePageSpec extends PageBehaviours {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  "PreviousDocumentTypePage" - {
+
+    beRetrievable[PreviousDocumentType](PreviousDocumentTypePage(documentIndex))
+
+    beSettable[PreviousDocumentType](PreviousDocumentTypePage(documentIndex))
+
+    beRemovable[PreviousDocumentType](PreviousDocumentTypePage(documentIndex))
+  }
 }

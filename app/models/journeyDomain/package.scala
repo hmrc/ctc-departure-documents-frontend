@@ -22,7 +22,7 @@ import models.journeyDomain.OpsError.ReaderError
 import play.api.libs.json.{JsArray, Reads}
 import queries.Gettable
 
-package object domain {
+package object journeyDomain {
 
   type EitherType[A]        = Either[ReaderError, A]
   type UserAnswersReader[A] = ReaderT[EitherType, UserAnswers, A]

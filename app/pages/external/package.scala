@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages
 
-case class DocumentsDomain() extends JourneyDomainModel
+import play.api.libs.json.{__, JsPath}
 
-object DocumentsDomain {
+package object external {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
 }

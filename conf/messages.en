@@ -1,0 +1,26 @@
+site.edit = Change
+site.delete = Remove
+site.change = Change
+site.delete.hidden = Remove {0}
+site.edit.hidden = Change {0}
+site.no = No
+site.yes = Yes
+site.continue = Continue
+site.saveAndContinue = Save and continue
+site.confirm = Confirm and continue
+site.send = Confirm and send
+site.service_name = Manage your transit movements
+site.section = This section is
+
+error.title.prefix = Error:
+error.summary.title = There is a problem
+
+document.caption = Documents
+
+document.previousDocumentType.title = What previous document do you want to add?
+document.previousDocumentType.heading = What previous document do you want to add?
+document.previousDocumentType.paragraph = You need to provide this as you’re creating a {0} declaration departing from Great Britain.
+document.previousDocumentType.placeholder = Select a previous document type
+document.previousDocumentType.change.hidden = What previous document do you want to add?
+document.previousDocumentType.checkYourAnswersLabel = What previous document do you want to add?
+document.previousDocumentType.error.required = Select the previous document you want to add

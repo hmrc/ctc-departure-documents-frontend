@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package models
 
-case class DocumentsDomain() extends JourneyDomainModel
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-object DocumentsDomain {
+trait Selectable {
+  def toSelectItem(selected: Boolean = false): SelectItem
+}
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+object Selectable {
+
+  implicit class Selectables(selectables: Seq[Selectable]) {
+
+    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+      x => x.toSelectItem(selectedValue.contains(x))
+    )
+  }
 }

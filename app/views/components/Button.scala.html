@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.journeyDomain
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-case class DocumentsDomain() extends JourneyDomainModel
+@this(govukButton: GovukButton)
 
-object DocumentsDomain {
+@(
+    messageKey: String = "site.saveAndContinue",
+    isStartButton: Boolean = false,
+    preventDoubleClick: Boolean = false,
+    attributes: Map[String, String] = Map.empty,
+    href: Option[String] = None
+)(implicit messages: Messages)
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
-}
+@govukButton(Button(
+    isStartButton = isStartButton,
+    preventDoubleClick = Some(preventDoubleClick),
+    content = Text(messages(messageKey)),
+    attributes = attributes,
+    href = href
+))

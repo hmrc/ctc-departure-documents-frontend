@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package models
 
-case class DocumentsDomain() extends JourneyDomainModel
+trait EnumerableType[T] extends Enumerable.Implicits {
 
-object DocumentsDomain {
+  val values: Seq[T]
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  implicit def enumerable: Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
 }
