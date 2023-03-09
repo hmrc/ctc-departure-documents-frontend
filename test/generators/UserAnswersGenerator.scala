@@ -16,9 +16,9 @@
 
 package generators
 
-import models.journeyDomain.{DocumentsDomain, UserAnswersReader}
+import models.journeyDomain.{DocumentDomain, DocumentsDomain, UserAnswersReader}
 import models.journeyDomain.OpsError.ReaderError
-import models.{EoriNumber, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -55,4 +55,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
     rec(initialUserAnswers)
   }
+
+  def arbitraryDocumentsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+    buildUserAnswers[DocumentsDomain](userAnswers)
+
+  def arbitraryDocumentAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
+    buildUserAnswers[DocumentDomain](userAnswers)(DocumentDomain.userAnswersReader(index))
 }

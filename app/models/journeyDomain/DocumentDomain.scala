@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package models.journeyDomain
 
+import models.Index
 import models.reference.PreviousDocumentType
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
-import play.api.libs.json._
-import queries.Gettable
+import pages.document.PreviousDocumentTypePage
 
-trait UserAnswersEntryGenerators {
-  self: Generators =>
+case class DocumentDomain(
+  previousDocumentType: PreviousDocumentType
+) extends JourneyDomainModel
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
-    generateDocumentsAnswer
+object DocumentDomain {
 
-  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.document._
-    {
-      case PreviousDocumentTypePage(_) => arbitrary[PreviousDocumentType].map(Json.toJson(_))
-    }
-  }
+  implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
+    PreviousDocumentTypePage(documentIndex).reader.map(DocumentDomain.apply)
 }
