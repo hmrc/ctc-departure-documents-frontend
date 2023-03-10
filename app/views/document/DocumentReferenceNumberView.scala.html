@@ -42,8 +42,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("document.documentReferenceNumber.heading")
+                heading = messages("document.documentReferenceNumber.heading"),
+                caption = Some(messages("document.caption"))
             ),
+            hint = Some(messages("document.documentReferenceNumber.hint")),
             inputClass = InputSize.Width20
         )
 

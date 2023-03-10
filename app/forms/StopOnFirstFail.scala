@@ -16,23 +16,20 @@
 
 package forms
 
-import forms.Constants.maxDocumentRefNumberLength
-import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
-import javax.inject.Inject
-import play.api.data.Form
+object StopOnFirstFail {
 
-class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
+  def apply[T](constraints: Constraint[T]*): Constraint[T] = Constraint {
+    field: T =>
+      constraints.toList dropWhile (_(field) == Valid) match {
+        case Nil             => Valid
+        case constraint :: _ => constraint(field)
+      }
+  }
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxDocumentRefNumberLength, s"$prefix.error.length"),
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters")
-          )
-        )
+  def constraint[T](message: String, validator: T => Boolean): Constraint[T] =
+    Constraint(
+      (data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message)))
     )
 }

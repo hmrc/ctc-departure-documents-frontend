@@ -16,23 +16,6 @@
 
 package forms
 
-import forms.Constants.maxDocumentRefNumberLength
-import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
-
-import javax.inject.Inject
-import play.api.data.Form
-
-class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
-
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(
-          StopOnFirstFail[String](
-            maxLength(maxDocumentRefNumberLength, s"$prefix.error.length"),
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters")
-          )
-        )
-    )
+object Constants {
+  lazy val maxDocumentRefNumberLength: Int = 70
 }

@@ -27,6 +27,9 @@ document.previousDocumentType.error.required = Select the previous document you 
 
 document.documentReferenceNumber.title = What is the document’s reference number?
 document.documentReferenceNumber.heading = What is the document’s reference number?
-document.documentReferenceNumber.checkYourAnswersLabel = What is the document’s reference number?
-document.documentReferenceNumber.error.required = Enter What is the document’s reference number?
-document.documentReferenceNumber.error.length = What is the document’s reference number? must be 70 characters or less
+document.documentReferenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+document.documentReferenceNumber.checkYourAnswersLabel = Document reference number?
+document.documentReferenceNumber.change.hidden = Document reference number?
+document.documentReferenceNumber.error.required = Enter the document’s reference number
+document.documentReferenceNumber.error.length = The reference number must be 70 characters or less
+document.documentReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9

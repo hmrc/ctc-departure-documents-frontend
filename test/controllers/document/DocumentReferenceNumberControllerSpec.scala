@@ -36,6 +36,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   private val formProvider                      = new DocumentReferenceNumberFormProvider()
   private val form                              = formProvider("document.documentReferenceNumber")
   private val mode                              = NormalMode
+  private val validAnswer                       = "testString123"
   private lazy val documentReferenceNumberRoute = routes.DocumentReferenceNumberController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -63,14 +64,14 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), "test string")
+      val userAnswers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, documentReferenceNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[DocumentReferenceNumberView]
 
@@ -87,7 +88,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, documentReferenceNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -133,7 +134,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, documentReferenceNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

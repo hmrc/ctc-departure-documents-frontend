@@ -40,9 +40,11 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

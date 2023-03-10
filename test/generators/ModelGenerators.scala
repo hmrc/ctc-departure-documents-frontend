@@ -68,4 +68,10 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(DeclarationType.values)
     }
+
+  implicit lazy val arbitraryPreviousDocumentTypeList: Arbitrary[PreviousDocumentTypeList] = Arbitrary {
+    for {
+      previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
+    } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
+  }
 }
