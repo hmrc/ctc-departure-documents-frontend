@@ -24,3 +24,12 @@ document.previousDocumentType.placeholder = Select a previous document type
 document.previousDocumentType.change.hidden = What previous document do you want to add?
 document.previousDocumentType.checkYourAnswersLabel = What previous document do you want to add?
 document.previousDocumentType.error.required = Select the previous document you want to add
+
+document.type.title = What tpe of document do you want to add
+document.type.heading = What tpe of document do you want to add
+document.type.hint = What tpe of document do you want to add hint
+document.type.label = What tpe of document do you want to add label
+document.type.placeholder = Select a documentType
+document.type.change.hidden = What tpe of document do you want to add
+document.type.checkYourAnswersLabel = What tpe of document do you want to add
+document.type.error.required = Select the documentType
