@@ -41,11 +41,13 @@ class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect()
 
-  behave like pageWithHint("What tpe of document do you want to add hint")
+  behave like pageWithHint("Enter the document name or code.")
 
   behave like pageWithSubmitButton("Save and continue")
 }
