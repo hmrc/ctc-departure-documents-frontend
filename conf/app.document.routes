@@ -8,3 +8,8 @@ GET        /:documentIndex/type/:lrn                                      contro
 POST       /:documentIndex/type/:lrn                                      controllers.document.TypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/change-type/:lrn                               controllers.document.TypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/change-type/:lrn                               controllers.document.TypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/reference-number/:lrn                          controllers.document.DocumentReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/reference-number/:lrn                          controllers.document.DocumentReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/change-reference-number/:lrn                   controllers.document.DocumentReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/change-reference-number/:lrn                   controllers.document.DocumentReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)

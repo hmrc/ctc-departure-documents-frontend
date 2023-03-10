@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package models.domain
 
-import play.twirl.api.Html
+import scala.util.matching.Regex
 
-sealed trait InputSelectViewModel
+object StringFieldRegex {
 
-object InputSelectViewModel {
-
-  case class OrdinarySelect(
-    heading: String,
-    caption: Option[String] = None
-  ) extends InputSelectViewModel
-
-  case class SelectWithAdditionalHtml(
-    heading: String,
-    caption: Option[String] = None,
-    additionalHtml: Html
-  ) extends InputSelectViewModel
-      with AdditionalHtmlViewModel
+  val alphaNumericRegex: Regex = "^[a-zA-Z0-9]*$".r
 }

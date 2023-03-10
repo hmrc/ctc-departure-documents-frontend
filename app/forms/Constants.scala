@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package forms
 
-import play.twirl.api.Html
-
-sealed trait InputSelectViewModel
-
-object InputSelectViewModel {
-
-  case class OrdinarySelect(
-    heading: String,
-    caption: Option[String] = None
-  ) extends InputSelectViewModel
-
-  case class SelectWithAdditionalHtml(
-    heading: String,
-    caption: Option[String] = None,
-    additionalHtml: Html
-  ) extends InputSelectViewModel
-      with AdditionalHtmlViewModel
+object Constants {
+  lazy val maxDocumentRefNumberLength: Int = 70
 }

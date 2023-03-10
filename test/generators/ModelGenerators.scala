@@ -73,4 +73,10 @@ trait ModelGenerators {
         doc  <- arbitrary[Boolean]
       } yield DocumentType(code, desc, doc)
     }
+
+  implicit lazy val arbitraryPreviousDocumentTypeList: Arbitrary[PreviousDocumentTypeList] = Arbitrary {
+    for {
+      previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
+    } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
+  }
 }

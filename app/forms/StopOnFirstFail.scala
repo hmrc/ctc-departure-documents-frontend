@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package forms
 
-import play.twirl.api.Html
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
-sealed trait InputSelectViewModel
+object StopOnFirstFail {
 
-object InputSelectViewModel {
+  def apply[T](constraints: Constraint[T]*): Constraint[T] = Constraint {
+    field: T =>
+      constraints.toList dropWhile (_(field) == Valid) match {
+        case Nil             => Valid
+        case constraint :: _ => constraint(field)
+      }
+  }
 
-  case class OrdinarySelect(
-    heading: String,
-    caption: Option[String] = None
-  ) extends InputSelectViewModel
-
-  case class SelectWithAdditionalHtml(
-    heading: String,
-    caption: Option[String] = None,
-    additionalHtml: Html
-  ) extends InputSelectViewModel
-      with AdditionalHtmlViewModel
+  def constraint[T](message: String, validator: T => Boolean): Constraint[T] =
+    Constraint(
+      (data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message)))
+    )
 }

@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package pages.document
 
-import play.twirl.api.Html
+import pages.behaviours.PageBehaviours
 
-sealed trait InputSelectViewModel
+class DocumentReferenceNumberPageSpec extends PageBehaviours {
 
-object InputSelectViewModel {
+  "DocumentReferenceNumberPage" - {
 
-  case class OrdinarySelect(
-    heading: String,
-    caption: Option[String] = None
-  ) extends InputSelectViewModel
+    beRetrievable[String](DocumentReferenceNumberPage(documentIndex))
 
-  case class SelectWithAdditionalHtml(
-    heading: String,
-    caption: Option[String] = None,
-    additionalHtml: Html
-  ) extends InputSelectViewModel
-      with AdditionalHtmlViewModel
+    beSettable[String](DocumentReferenceNumberPage(documentIndex))
+
+    beRemovable[String](DocumentReferenceNumberPage(documentIndex))
+  }
 }
