@@ -4,7 +4,7 @@ POST       /:documentIndex/type-previous/:lrn                             contro
 GET        /:documentIndex/change-type-previous/:lrn                      controllers.document.PreviousDocumentTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/change-type-previous/:lrn                      controllers.document.PreviousDocumentTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 
-GET        /:lrn/document/what-tpe-of-document-do-you-want-to-add                        controllers.document.TypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/document/what-tpe-of-document-do-you-want-to-add                        controllers.document.TypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/document/change-what-tpe-of-document-do-you-want-to-add                 controllers.document.TypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/document/change-what-tpe-of-document-do-you-want-to-add                 controllers.document.TypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:documentIndex/type/:lrn                                      controllers.document.TypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/type/:lrn                                      controllers.document.TypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/change-type/:lrn                               controllers.document.TypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/change-type/:lrn                               controllers.document.TypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)

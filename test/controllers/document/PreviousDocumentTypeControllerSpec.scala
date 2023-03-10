@@ -61,7 +61,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, previousDocumentTypeRoute)
@@ -78,7 +78,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       val userAnswers = emptyUserAnswers
         .setValue(TransitOperationDeclarationTypePage, declarationType)
         .setValue(PreviousDocumentTypePage(documentIndex), previousDocumentType1)
@@ -102,7 +102,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(userAnswers)
@@ -121,7 +121,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any(), any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, previousDocumentTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))

@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages.document
+package models.reference
 
-import models.reference.DocumentType
-import pages.behaviours.PageBehaviours
+import models.Selectable
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class TypePageSpec extends PageBehaviours {
+case class DocumentType(code: String, description: String, transportDocument: Boolean) extends Selectable {
+  override def toString: String = s"($code) $description"
 
-  "TypePage" - {
+  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
+}
 
-    beRetrievable[DocumentType](TypePage(documentIndex))
-
-    beSettable[DocumentType](TypePage(documentIndex))
-
-    beRemovable[DocumentType](TypePage(documentIndex))
-  }
+object DocumentType {
+  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
 }

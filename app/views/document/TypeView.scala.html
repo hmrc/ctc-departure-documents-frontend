@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[DocumentType], lrn: LocalReferenceNumber, documentTypes: Seq[DocumentType], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[DocumentType], lrn: LocalReferenceNumber, documentTypes: Seq[DocumentType], mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.type.title"),
@@ -39,7 +39,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.TypeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TypeController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

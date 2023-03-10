@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package pages.document
+package models
 
 import models.reference.DocumentType
-import pages.behaviours.PageBehaviours
 
-class TypePageSpec extends PageBehaviours {
+case class DocumentTypeList(documentTypes: Seq[DocumentType]) {
 
-  "TypePage" - {
+  def getDocumentType(code: String): Option[DocumentType] =
+    documentTypes.find(_.code == code)
 
-    beRetrievable[DocumentType](TypePage(documentIndex))
-
-    beSettable[DocumentType](TypePage(documentIndex))
-
-    beRemovable[DocumentType](TypePage(documentIndex))
-  }
 }
