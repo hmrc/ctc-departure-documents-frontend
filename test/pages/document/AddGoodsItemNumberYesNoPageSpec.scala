@@ -27,5 +27,7 @@ class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddGoodsItemNumberYesNoPage(documentIndex))
 
     beRemovable[Boolean](AddGoodsItemNumberYesNoPage(documentIndex))
+
+    // TODO Add test for clean up logic
   }
 }

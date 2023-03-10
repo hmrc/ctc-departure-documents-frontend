@@ -31,4 +31,6 @@ case class AddGoodsItemNumberYesNoPage(documentIndex: Index) extends QuestionPag
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddGoodsItemNumberYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+
+  // TODO: Add cleanup logic
 }
