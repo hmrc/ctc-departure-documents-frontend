@@ -63,9 +63,4 @@ trait ModelGenerators {
         desc <- Gen.option(nonEmptyString)
       } yield PreviousDocumentType(code, desc)
     }
-
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
-    Arbitrary {
-      Gen.oneOf(DeclarationType.values)
-    }
 }

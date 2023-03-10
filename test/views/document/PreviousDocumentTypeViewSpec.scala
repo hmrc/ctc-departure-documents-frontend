@@ -18,17 +18,16 @@ package views.document
 
 import forms.PreviousDocumentTypeFormProvider
 import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
+import models.{DeclarationType, NormalMode, PreviousDocumentTypeList}
 import models.reference.PreviousDocumentType
-import models.PreviousDocumentTypeList
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.html.document.PreviousDocumentTypeView
 
 class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[PreviousDocumentType] {
 
-  private val declarationType = arbitraryDeclarationType.arbitrary.sample.get
+  private val declarationType = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F).sample.get
 
   override def form: Form[PreviousDocumentType] = new PreviousDocumentTypeFormProvider()(prefix, PreviousDocumentTypeList(values))
 

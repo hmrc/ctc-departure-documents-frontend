@@ -18,11 +18,12 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PreviousDocumentTypeFormProvider
-import models.{NormalMode, PreviousDocumentTypeList}
+import models.{DeclarationType, NormalMode, PreviousDocumentTypeList}
 import generators.Generators
 import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Gen
 import pages.document.PreviousDocumentTypePage
 import pages.external.TransitOperationDeclarationTypePage
 import play.api.inject.bind
@@ -36,7 +37,7 @@ import scala.concurrent.Future
 
 class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val declarationType          = arbitraryDeclarationType.arbitrary.sample.get
+  private val declarationType          = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F).sample.get
   private val previousDocumentType1    = arbitraryPreviousDocumentType.arbitrary.sample.get
   private val previousDocumentType2    = arbitraryPreviousDocumentType.arbitrary.sample.get
   private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(previousDocumentType1, previousDocumentType2))
