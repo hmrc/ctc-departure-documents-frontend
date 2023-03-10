@@ -17,10 +17,9 @@
 package navigation
 
 import config.FrontendAppConfig
-import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
-import models.journeyDomain.{JourneyDomainModel, Stage}
+import models.journeyDomain.{JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Mode, UserAnswers}
 import play.api.Logging
 import play.api.mvc.Call

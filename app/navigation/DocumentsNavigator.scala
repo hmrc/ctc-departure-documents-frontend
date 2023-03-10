@@ -18,8 +18,7 @@ package navigation
 
 import config.FrontendAppConfig
 import models._
-import models.domain.UserAnswersReader
-import models.journeyDomain.DocumentsDomain
+import models.journeyDomain.{DocumentsDomain, UserAnswersReader}
 
 import javax.inject.{Inject, Singleton}
 

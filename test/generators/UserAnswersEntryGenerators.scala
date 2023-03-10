@@ -16,6 +16,8 @@
 
 package generators
 
+import models.reference.PreviousDocumentType
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
 import queries.Gettable
@@ -23,5 +25,13 @@ import queries.Gettable
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = ???
+  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
+    generateDocumentsAnswer
+
+  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.document._
+    {
+      case PreviousDocumentTypePage(_) => arbitrary[PreviousDocumentType].map(Json.toJson(_))
+    }
+  }
 }

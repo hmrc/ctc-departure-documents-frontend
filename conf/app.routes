@@ -1,6 +1,8 @@
 # microservice specific routes
 
-->         /hmrc-frontend                                           hmrcfrontend.Routes
-GET        /assets/*file                                            controllers.Assets.versioned(path="/public", file: Asset)
+->         /                                            app.document.Routes
 
-GET        /:lrn                                                    controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
+->         /hmrc-frontend                               hmrcfrontend.Routes
+GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+
+GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)

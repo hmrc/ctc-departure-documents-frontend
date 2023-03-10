@@ -16,12 +16,27 @@
 
 package models.journeyDomain
 
-import models.domain.UserAnswersReader
+import models.{Index, RichJsArray}
+import pages.sections.DocumentsSection
 
-case class DocumentsDomain() extends JourneyDomainModel
+case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainModel
 
 object DocumentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] =
-    UserAnswersReader.apply(DocumentsDomain())
+  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] = {
+    val documentReader: UserAnswersReader[Seq[DocumentDomain]] =
+      DocumentsSection.arrayReader.flatMap {
+        case x if x.isEmpty =>
+          UserAnswersReader[DocumentDomain](
+            DocumentDomain.userAnswersReader(Index(0))
+          ).map(Seq(_))
+
+        case x =>
+          x.traverse[DocumentDomain](
+            DocumentDomain.userAnswersReader
+          ).map(_.toSeq)
+      }
+
+    UserAnswersReader[Seq[DocumentDomain]](documentReader).map(DocumentsDomain(_))
+  }
 }
