@@ -24,3 +24,9 @@ document.previousDocumentType.placeholder = Select a previous document type
 document.previousDocumentType.change.hidden = What previous document do you want to add?
 document.previousDocumentType.checkYourAnswersLabel = What previous document do you want to add?
 document.previousDocumentType.error.required = Select the previous document you want to add
+
+document.documentReferenceNumber.title = What is the document’s reference number?
+document.documentReferenceNumber.heading = What is the document’s reference number?
+document.documentReferenceNumber.checkYourAnswersLabel = What is the document’s reference number?
+document.documentReferenceNumber.error.required = Enter What is the document’s reference number?
+document.documentReferenceNumber.error.length = What is the document’s reference number? must be 70 characters or less
