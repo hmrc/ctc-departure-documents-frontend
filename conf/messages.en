@@ -21,6 +21,13 @@ document.previousDocumentType.title = What previous document do you want to add?
 document.previousDocumentType.heading = What previous document do you want to add?
 document.previousDocumentType.paragraph = You need to provide this as you’re creating a {0} declaration departing from Great Britain.
 document.previousDocumentType.placeholder = Select a previous document type
-document.previousDocumentType.change.hidden = What previous document do you want to add?
-document.previousDocumentType.checkYourAnswersLabel = What previous document do you want to add?
+document.previousDocumentType.change.hidden = document type
+document.previousDocumentType.checkYourAnswersLabel = Document type
 document.previousDocumentType.error.required = Select the previous document you want to add
+
+document.type.title = What type of document do you want to add?
+document.type.heading = What type of document do you want to add?
+document.type.hint = Enter the document name or code.
+document.type.change.hidden = document type
+document.type.checkYourAnswersLabel = Document type
+document.type.error.required = Select the type of document you want to add

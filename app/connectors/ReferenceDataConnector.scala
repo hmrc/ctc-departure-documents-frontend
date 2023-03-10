@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.reference.PreviousDocumentType
+import models.reference.{DocumentType, PreviousDocumentType}
 import sttp.model.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -30,6 +30,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getPreviousReferencesDocumentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PreviousDocumentType]] = {
     val serviceUrl = s"${config.referenceDataUrl}/previous-document-types"
     http.GET[Seq[PreviousDocumentType]](serviceUrl, headers = version2Header)
+  }
+
+  def getDocumentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DocumentType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/document-types"
+    http.GET[Seq[DocumentType]](serviceUrl, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
