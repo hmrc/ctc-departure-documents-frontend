@@ -18,7 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import models.reference.PreviousDocumentType
+import models.reference.{DocumentType, PreviousDocumentType}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -52,6 +52,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val documentJson: String =
+    """
+      |[
+      | {
+      |    "code": "18",
+      |    "transportDocument": false,
+      |    "description": "Movement certificate A.TR.1"
+      |  },
+      |  {
+      |    "code": "2",
+      |    "transportDocument": false,
+      |    "description": "Certificate of conformity"
+      |  }
+      |]
+      |""".stripMargin
+
   "getPreviousDocumentType" - {
 
     "must return list of previous document types when successful" in {
@@ -71,6 +87,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "must return an exception when an error response is returned" in {
 
       checkErrorResponse(s"/$baseUrl/previous-document-types", connector.getPreviousReferencesDocumentTypes())
+    }
+
+  }
+
+  "getDocumentType" - {
+
+    "must return list of document types when successful" in {
+      server.stubFor(
+        get(urlEqualTo(s"/$baseUrl/document-types"))
+          .willReturn(okJson(documentJson))
+      )
+
+      val expectResult = Seq(
+        DocumentType("18", "Movement certificate A.TR.1", transportDocument = false),
+        DocumentType("2", "Certificate of conformity", transportDocument = false)
+      )
+
+      connector.getDocumentTypes().futureValue mustEqual expectResult
+    }
+
+    "must return an exception when an error response is returned" in {
+
+      checkErrorResponse(s"/$baseUrl/document-type", connector.getDocumentTypes())
     }
 
   }

@@ -19,15 +19,15 @@ package forms
 import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.reference.PreviousDocumentType
-import models.PreviousDocumentTypeList
+import models.reference.DocumentType
+import models.DocumentTypeList
 
-class PreviousDocumentTypeFormProvider @Inject() extends Mappings {
+class DocumentTypeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, previousDocumentTypeList: PreviousDocumentTypeList): Form[PreviousDocumentType] =
+  def apply(prefix: String, documentTypeList: DocumentTypeList): Form[DocumentType] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => previousDocumentTypeList.previousDocumentTypes.exists(_.code == value))
-        .transform[PreviousDocumentType](value => previousDocumentTypeList.getPreviousReferencesDocumentType(value).get, _.code)
+        .verifying(s"$prefix.error.required", value => documentTypeList.documentTypes.exists(_.code == value))
+        .transform[DocumentType](value => documentTypeList.getDocumentType(value).get, _.code)
     )
 }

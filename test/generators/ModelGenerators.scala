@@ -16,11 +16,12 @@
 
 package generators
 
-import models.{DeclarationType, _}
-import models.reference.PreviousDocumentType
+import models._
+import models.reference.{DocumentType, PreviousDocumentType}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
+import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
   self: Generators =>
@@ -64,9 +65,13 @@ trait ModelGenerators {
       } yield PreviousDocumentType(code, desc)
     }
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values)
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+        doc  <- arbitrary[Boolean]
+      } yield DocumentType(code, desc, doc)
     }
 
   implicit lazy val arbitraryPreviousDocumentTypeList: Arbitrary[PreviousDocumentTypeList] = Arbitrary {
