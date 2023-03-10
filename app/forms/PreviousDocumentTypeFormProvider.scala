@@ -24,10 +24,10 @@ import models.PreviousDocumentTypeList
 
 class PreviousDocumentTypeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, previousDocumentTypes: PreviousDocumentTypeList): Form[PreviousDocumentType] =
+  def apply(prefix: String, previousDocumentTypeList: PreviousDocumentTypeList): Form[PreviousDocumentType] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => previousDocumentTypes.previousDocumentTypes.exists(_.code == value))
-        .transform[PreviousDocumentType](value => previousDocumentTypes.getPreviousReferencesDocumentType(value).get, _.code)
+        .verifying(s"$prefix.error.required", value => previousDocumentTypeList.previousDocumentTypes.exists(_.code == value))
+        .transform[PreviousDocumentType](value => previousDocumentTypeList.getPreviousReferencesDocumentType(value).get, _.code)
     )
 }

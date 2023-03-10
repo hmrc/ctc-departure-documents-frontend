@@ -24,10 +24,10 @@ import models.DocumentTypeList
 
 class DocumentTypeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, documentTypes: DocumentTypeList): Form[DocumentType] =
+  def apply(prefix: String, documentTypeList: DocumentTypeList): Form[DocumentType] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => documentTypes.documentTypes.exists(_.code == value))
-        .transform[DocumentType](value => documentTypes.getDocumentType(value).get, _.code)
+        .verifying(s"$prefix.error.required", value => documentTypeList.documentTypes.exists(_.code == value))
+        .transform[DocumentType](value => documentTypeList.getDocumentType(value).get, _.code)
     )
 }
