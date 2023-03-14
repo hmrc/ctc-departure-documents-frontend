@@ -40,3 +40,8 @@ document.documentReferenceNumber.change.hidden = Document reference number?
 document.documentReferenceNumber.error.required = Enter the document’s reference number
 document.documentReferenceNumber.error.length = The reference number must be 70 characters or less
 document.documentReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
+
+document.addGoodsItemNumberYesNo.title = Do you want to add a goods item number ?
+document.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number ?
+document.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number ?
+document.addGoodsItemNumberYesNo.error.required = Select yes if Do you want to add a goods item number

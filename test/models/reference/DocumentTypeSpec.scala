@@ -25,7 +25,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class DocumentTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  "CurrencyCode" - {
+  "DocumentType" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
@@ -44,14 +44,16 @@ class DocumentTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
     "must deserialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
         (code, description, transportDocument) =>
-          val json = Json.parse(s"""
+          val documentType = DocumentType(code, description, transportDocument)
+          Json
+            .parse(s"""
               |{
               |  "code": "$code",
               |  "description": "$description",
               |  "transportDocument": $transportDocument
               |}
               |""".stripMargin)
-          json.as[DocumentType] mustBe DocumentType(code, description, transportDocument)
+            .as[DocumentType] mustBe documentType
       }
     }
 

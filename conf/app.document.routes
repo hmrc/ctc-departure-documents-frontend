@@ -13,3 +13,8 @@ GET        /:documentIndex/reference-number/:lrn                          contro
 POST       /:documentIndex/reference-number/:lrn                          controllers.document.DocumentReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/change-reference-number/:lrn                   controllers.document.DocumentReferenceNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/change-reference-number/:lrn                   controllers.document.DocumentReferenceNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/previous/goods-item-number/add/:lrn            controllers.document.AddGoodsItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/goods-item-number/add/:lrn            controllers.document.AddGoodsItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/goods-item-number/change-add/:lrn     controllers.document.AddGoodsItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/goods-item-number/change-add/:lrn     controllers.document.AddGoodsItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
