@@ -18,7 +18,6 @@ package models.reference
 
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 case class PreviousDocumentType(code: String, description: Option[String]) extends Selectable {
 
@@ -27,7 +26,7 @@ case class PreviousDocumentType(code: String, description: Option[String]) exten
     case _                                  => code
   }
 
-  override def toSelectItem(selected: Boolean): SelectItem = SelectItem(Some(code), this.toString, selected)
+  override val value: String = code
 }
 
 object PreviousDocumentType {
