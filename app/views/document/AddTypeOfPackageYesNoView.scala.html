@@ -30,19 +30,21 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.addTypeOfPackagesYesNo.title"),
+    title = messages("document.addTypeOfPackageYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddTypeOfPackagesYesNoController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddTypeOfPackageYesNoController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("document.addTypeOfPackagesYesNo.heading")
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("document.addTypeOfPackageYesNo.heading"),
+                caption = Some(messages("document.caption")),
+                additionalHtml = messages("document.addTypeOfPackageYesNo.paragraph").toParagraph
             )
         )
 

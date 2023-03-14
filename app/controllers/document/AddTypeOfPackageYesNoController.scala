@@ -21,24 +21,24 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
-import pages.document.AddTypeOfPackagesYesNoPage
+import pages.document.AddTypeOfPackageYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.document.AddTypeOfPackagesYesNoView
+import views.html.document.AddTypeOfPackageYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddTypeOfPackagesYesNoController @Inject() (
+class AddTypeOfPackageYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddTypeOfPackagesYesNoView
+  view: AddTypeOfPackageYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -47,7 +47,7 @@ class AddTypeOfPackagesYesNoController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddTypeOfPackagesYesNoPage(documentIndex)) match {
+      val preparedForm = request.userAnswers.get(AddTypeOfPackageYesNoPage(documentIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +63,7 @@ class AddTypeOfPackagesYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddTypeOfPackagesYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddTypeOfPackageYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

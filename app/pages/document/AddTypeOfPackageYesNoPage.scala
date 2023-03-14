@@ -16,16 +16,21 @@
 
 package pages.document
 
-import pages.behaviours.PageBehaviours
+import controllers.document.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.DocumentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class AddTypeOfPackagesYesNoPageSpec extends PageBehaviours {
+case class AddTypeOfPackageYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
-  "AddTypeOfPackageYesNoPage" - {
+  override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
-    beRetrievable[Boolean](AddTypeOfPackagesYesNoPage(documentIndex))
+  override def toString: String = "addTypeOfPackageYesNo"
 
-    beSettable[Boolean](AddTypeOfPackagesYesNoPage(documentIndex))
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddTypeOfPackageYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 
-    beRemovable[Boolean](AddTypeOfPackagesYesNoPage(documentIndex))
-  }
+  // TODO: Add cleanup logic
 }

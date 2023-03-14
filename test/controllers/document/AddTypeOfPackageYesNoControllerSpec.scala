@@ -23,21 +23,21 @@ import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.AddTypeOfPackagesYesNoPage
+import pages.document.AddTypeOfPackageYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.document.AddTypeOfPackagesYesNoView
+import views.html.document.AddTypeOfPackageYesNoView
 
 import scala.concurrent.Future
 
 class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                     = new YesNoFormProvider()
-  private val form                             = formProvider("document.addTypeOfPackageYesNo")
-  private val mode                             = NormalMode
-  private lazy val addTypeOfPackagesYesNoRoute = routes.AddTypeOfPackagesYesNoController.onPageLoad(lrn, mode, documentIndex).url
+  private val formProvider                    = new YesNoFormProvider()
+  private val form                            = formProvider("document.addTypeOfPackageYesNo")
+  private val mode                            = NormalMode
+  private lazy val addTypeOfPackageYesNoRoute = routes.AddTypeOfPackageYesNoController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -50,10 +50,10 @@ class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addTypeOfPackagesYesNoRoute)
+      val request = FakeRequest(GET, addTypeOfPackageYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddTypeOfPackagesYesNoView]
+      val view = injector.instanceOf[AddTypeOfPackageYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,16 +63,16 @@ class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddTypeOfPackagesYesNoPage(documentIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addTypeOfPackagesYesNoRoute)
+      val request = FakeRequest(GET, addTypeOfPackageYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddTypeOfPackagesYesNoView]
+      val view = injector.instanceOf[AddTypeOfPackageYesNoView]
 
       status(result) mustEqual OK
 
@@ -86,7 +86,7 @@ class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addTypeOfPackagesYesNoRoute)
+      val request = FakeRequest(POST, addTypeOfPackageYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -100,14 +100,14 @@ class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addTypeOfPackagesYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addTypeOfPackageYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddTypeOfPackagesYesNoView]
+      val view = injector.instanceOf[AddTypeOfPackageYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode, documentIndex)(request, messages).toString
@@ -117,7 +117,7 @@ class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addTypeOfPackagesYesNoRoute)
+      val request = FakeRequest(GET, addTypeOfPackageYesNoRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +130,7 @@ class AddTypeOfPackageYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addTypeOfPackagesYesNoRoute)
+      val request = FakeRequest(POST, addTypeOfPackageYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

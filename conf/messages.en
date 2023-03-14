@@ -48,5 +48,6 @@ document.addGoodsItemNumberYesNo.error.required = Select yes if Do you want to a
 
 document.addTypeOfPackageYesNo.title = Do you want to declare the package the goods arrived in?
 document.addTypeOfPackageYesNo.heading = Do you want to declare the package the goods arrived in?
+document.addTypeOfPackageYesNo.paragraph = This means the packaging used to ship this document’s goods into the UK.
 document.addTypeOfPackageYesNo.checkYourAnswersLabel = Do you want to declare the package the goods arrived in?
-document.addTypeOfPackageYesNo.error.required = Select yes if Do you want to declare the package the goods arrived in?
+document.addTypeOfPackageYesNo.error.required = Select yes if you want to declare the package the goods arrived in
