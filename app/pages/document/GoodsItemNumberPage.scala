@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages.document
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int = 70
-  lazy val goodsItemNumberLength: Int      = 5
+import controllers.document.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.DocumentSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
+case class GoodsItemNumberPage(documentIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = DocumentSection(documentIndex).path \ toString
+
+  override def toString: String = "goodsItemNumber"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.GoodsItemNumberController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }

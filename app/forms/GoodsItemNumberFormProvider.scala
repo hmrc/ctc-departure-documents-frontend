@@ -16,7 +16,23 @@
 
 package forms
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int = 70
-  lazy val goodsItemNumberLength: Int      = 5
+import forms.Constants.goodsItemNumberLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.numericRegex
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class GoodsItemNumberFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(goodsItemNumberLength, s"$prefix.error.length"),
+            regexp(numericRegex, s"$prefix.error.invalidCharacters")
+          )
+        )
+    )
 }
