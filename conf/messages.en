@@ -51,3 +51,9 @@ document.addTypeOfPackageYesNo.heading = Do you want to declare the package the 
 document.addTypeOfPackageYesNo.paragraph = This means the packaging used to ship this document’s goods into the UK.
 document.addTypeOfPackageYesNo.checkYourAnswersLabel = Do you want to declare the package the goods arrived in?
 document.addTypeOfPackageYesNo.error.required = Select yes if you want to declare the package the goods arrived in
+
+document.goodsItemNumber.title = What is the goods item number
+document.goodsItemNumber.heading = What is the goods item number
+document.goodsItemNumber.checkYourAnswersLabel = What is the goods item number
+document.goodsItemNumber.error.required = Enter What is the goods item number
+document.goodsItemNumber.error.length = What is the goods item number must be 5 characters or less

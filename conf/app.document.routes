@@ -23,3 +23,8 @@ GET        /:documentIndex/previous/add-package/:lrn                      contro
 POST       /:documentIndex/previous/add-package/:lrn                      controllers.document.AddTypeOfPackageYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-add-package/:lrn               controllers.document.AddTypeOfPackageYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-add-package/:lrn               controllers.document.AddTypeOfPackageYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /document/what-is-the-goods-item-number/:lrn                        controllers.document.GoodsItemNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /document/what-is-the-goods-item-number/:lrn                        controllers.document.GoodsItemNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /document/change-what-is-the-goods-item-number/:lrn                 controllers.document.GoodsItemNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /document/change-what-is-the-goods-item-number/:lrn                 controllers.document.GoodsItemNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
