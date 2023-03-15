@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.reference.{DocumentType, PreviousDocumentType}
+import models.reference.{DocumentType, PackageType, PreviousDocumentType}
 import sttp.model.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -35,6 +35,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getDocumentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DocumentType]] = {
     val serviceUrl = s"${config.referenceDataUrl}/document-types"
     http.GET[Seq[DocumentType]](serviceUrl, headers = version2Header)
+  }
+
+  def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/kinds-of-package"
+    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
