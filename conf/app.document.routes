@@ -18,3 +18,8 @@ GET        /:documentIndex/previous/goods-item-number/add/:lrn            contro
 POST       /:documentIndex/previous/goods-item-number/add/:lrn            controllers.document.AddGoodsItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/goods-item-number/change-add/:lrn     controllers.document.AddGoodsItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/goods-item-number/change-add/:lrn     controllers.document.AddGoodsItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/previous/add-package/:lrn                      controllers.document.AddTypeOfPackageYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/add-package/:lrn                      controllers.document.AddTypeOfPackageYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/change-add-package/:lrn               controllers.document.AddTypeOfPackageYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/change-add-package/:lrn               controllers.document.AddTypeOfPackageYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
