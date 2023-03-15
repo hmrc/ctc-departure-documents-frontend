@@ -17,10 +17,10 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.DocumentTypeList
-import play.api.data.FormError
 import generators.Generators
+import models.PackageTypeList
 import org.scalacheck.Gen
+import play.api.data.FormError
 
 class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators {
 
@@ -28,11 +28,11 @@ class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators 
   private val requiredKey = s"$prefix.error.required"
   private val maxLength   = 8
 
-  private val documentType1    = arbitraryDocumentType.arbitrary.sample.get
-  private val documentType2    = arbitraryDocumentType.arbitrary.sample.get
-  private val documentTypeList = DocumentTypeList(Seq(documentType1, documentType2))
+  private val packageType1    = arbitraryPackageType.arbitrary.sample.get
+  private val packageType2    = arbitraryPackageType.arbitrary.sample.get
+  private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
-  private val form = new PackageTypeFormProvider()(prefix, documentTypeList)
+  private val form = new PackageTypeFormProvider()(prefix, packageTypeList)
 
   ".value" - {
 
@@ -50,14 +50,14 @@ class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators 
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if customs office id does not exist in the documentTypeList" in {
+    "not bind if packageType code does not exist in the packageTypeList" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a documentType id which is in the list" in {
-      val boundForm = form.bind(Map("value" -> documentType1.id))
+    "bind a packageType code which is in the list" in {
+      val boundForm = form.bind(Map("value" -> packageType1.code))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

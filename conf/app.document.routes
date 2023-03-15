@@ -23,3 +23,8 @@ GET        /:documentIndex/previous/add-package/:lrn                      contro
 POST       /:documentIndex/previous/add-package/:lrn                      controllers.document.AddTypeOfPackageYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-add-package/:lrn               controllers.document.AddTypeOfPackageYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-add-package/:lrn               controllers.document.AddTypeOfPackageYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/previous/package/:lrn                          controllers.document.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/package/:lrn                          controllers.document.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/change-package/:lrn                   controllers.document.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/change-package/:lrn                   controllers.document.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)

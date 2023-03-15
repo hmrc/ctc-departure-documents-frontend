@@ -17,23 +17,22 @@
 package views.document
 
 import forms.PackageTypeFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
-import models.reference.DocumentType
-import models.DocumentTypeList
+import models.reference.PackageType
+import models.{NormalMode, PackageTypeList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputSelectViewBehaviours
 import views.html.document.PackageTypeView
 
-class PackageTypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
+class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
-  override def form: Form[DocumentType] = new PackageTypeFormProvider()(prefix, DocumentTypeList(values))
+  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values))
 
-  override def applyView(form: Form[DocumentType]): HtmlFormat.Appendable =
-    injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
+    injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, documentIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[DocumentType] = arbitraryDocumentType
+  implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 
   override val prefix: String = "document.packageType"
 
@@ -41,13 +40,11 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect()
-
-  behave like pageWithHint("What type of package did the goods arrive in? hint")
-
-  behave like pageWithContent("label", "What type of package did the goods arrive in? label")
 
   behave like pageWithSubmitButton("Save and continue")
 }

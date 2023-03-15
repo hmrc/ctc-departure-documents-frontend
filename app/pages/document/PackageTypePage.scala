@@ -17,19 +17,19 @@
 package pages.document
 
 import controllers.document.routes
-import models.reference.DocumentType
+import models.reference.PackageType
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.DocumentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class PackageTypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
+case class PackageTypePage(documentIndex: Index) extends QuestionPage[PackageType] {
 
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
   override def toString: String = "packageType"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }

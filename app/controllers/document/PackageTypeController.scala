@@ -19,13 +19,13 @@ package controllers.document
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.PackageTypeFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.document.PackageTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{DocumentTypesService, PreviousDocumentTypesService}
+import services.PreviousDocumentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.PackageTypeView
 
@@ -38,7 +38,7 @@ class PackageTypeController @Inject() (
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   formProvider: PackageTypeFormProvider,
-  service: PreviousDocumentTypesService,
+  service: PreviousDocumentService,
   val controllerComponents: MessagesControllerComponents,
   view: PackageTypeView
 )(implicit ec: ExecutionContext)
@@ -47,32 +47,32 @@ class PackageTypeController @Inject() (
 
   private val prefix: String = "document.packageType"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocumentTypes.map {
-        documentTypeList =>
-          val form = formProvider(prefix, documentTypeList)
-          val preparedForm = request.userAnswers.get(PackageTypePage) match {
+      service.getPackageTypes().map {
+        packageTypeList =>
+          val form = formProvider(prefix, packageTypeList)
+          val preparedForm = request.userAnswers.get(PackageTypePage(documentIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, documentTypeList.documentTypes, mode))
+          Ok(view(preparedForm, lrn, packageTypeList.packageTypes, mode, documentIndex))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocumentTypes.flatMap {
-        documentTypeList =>
-          val form = formProvider(prefix, documentTypeList)
+      service.getPackageTypes().flatMap {
+        packageTypeList =>
+          val form = formProvider(prefix, packageTypeList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentTypeList.documentTypes, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packageTypes, mode, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                PackageTypePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                PackageTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )
       }

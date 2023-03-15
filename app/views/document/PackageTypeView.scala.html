@@ -16,7 +16,7 @@
 
 @import controllers.document.routes
 @import models.LocalReferenceNumber
-@import models.reference.DocumentType
+@import models.reference.PackageType
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[DocumentType], lrn: LocalReferenceNumber, documentTypes: Seq[DocumentType], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.packageType.title"),
@@ -39,7 +39,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.PackageTypeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PackageTypeController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -49,7 +49,7 @@
                 heading = messages("document.packageType.heading")
             ),
             hint = Some(messages("document.packageType.hint")),
-            selectItems = documentTypes.toSelectItems(form.value),
+            selectItems = packageTypes.toSelectItems(form.value),
             placeholder = messages("document.packageType.placeholder")
         )
 

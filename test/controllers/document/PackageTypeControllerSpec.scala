@@ -18,8 +18,9 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PackageTypeFormProvider
-import models.{DocumentTypeList, NormalMode}
 import generators.Generators
+import models.{NormalMode, PackageTypeList}
+import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.document.PackageTypePage
@@ -27,35 +28,35 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.DocumentTypesService
+import services.PreviousDocumentService
 import views.html.document.PackageTypeView
 
 import scala.concurrent.Future
 
 class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val documentType1    = arbitraryDocumentType.arbitrary.sample.get
-  private val documentType2    = arbitraryDocumentType.arbitrary.sample.get
-  private val documentTypeList = DocumentTypeList(Seq(documentType1, documentType2))
+  private val packageType1    = arbitraryPackageType.arbitrary.sample.get
+  private val packageType2    = arbitraryPackageType.arbitrary.sample.get
+  private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
   private val formProvider = new PackageTypeFormProvider()
-  private val form         = formProvider("document.packageType", documentTypeList)
+  private val form         = formProvider("document.packageType", packageTypeList)
   private val mode         = NormalMode
 
-  private val mockDocumentTypesService: DocumentTypesService = mock[DocumentTypesService]
-  private lazy val packageTypeRoute                          = routes.PackageTypeController.onPageLoad(lrn, mode).url
+  private val mockPreviousDocumentService: PreviousDocumentService = mock[PreviousDocumentService]
+  private lazy val packageTypeRoute                                = routes.PackageTypeController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
-      .overrides(bind(classOf[DocumentTypesService]).toInstance(mockDocumentTypesService))
+      .overrides(bind(classOf[PreviousDocumentService]).toInstance(mockPreviousDocumentService))
 
   "PackageType Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockDocumentTypesService.getDocumentTypes(any())).thenReturn(Future.successful(documentTypeList))
+      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
@@ -67,38 +68,38 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, documentTypeList.documentTypes, mode)(request, messages).toString
+        view(form, lrn, packageTypeList.packageTypes, mode, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockDocumentTypesService.getDocumentTypes(any())).thenReturn(Future.successful(documentTypeList))
-      val userAnswers = emptyUserAnswers.setValue(PackageTypePage, documentType1)
+      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> documentType1.id))
+      val filledForm = form.bind(Map("value" -> packageType1.code))
 
       val view = injector.instanceOf[PackageTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, documentTypeList.documentTypes, mode)(request, messages).toString
+        view(filledForm, lrn, packageTypeList.packageTypes, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockDocumentTypesService.getDocumentTypes(any())).thenReturn(Future.successful(documentTypeList))
+      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", documentType1.id))
+        .withFormUrlEncodedBody(("value", packageType1.code))
 
       val result = route(app, request).value
 
@@ -109,7 +110,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockDocumentTypesService.getDocumentTypes(any())).thenReturn(Future.successful(documentTypeList))
+      when(mockPreviousDocumentService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -122,7 +123,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, documentTypeList.documentTypes, mode)(request, messages).toString
+        view(boundForm, lrn, packageTypeList.packageTypes, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -142,7 +143,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", documentType1.id))
+        .withFormUrlEncodedBody(("value", packageType1.code))
 
       val result = route(app, request).value
 

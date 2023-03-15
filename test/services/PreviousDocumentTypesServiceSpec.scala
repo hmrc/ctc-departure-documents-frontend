@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class PreviousDocumentTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val service                                      = new PreviousDocumentTypesService(mockRefDataConnector)
+  private val service                                      = new PreviousDocumentService(mockRefDataConnector)
 
   private val documentType1 = PreviousDocumentType("1", Some("Certificate of quality"))
   private val documentType2 = PreviousDocumentType("2", Some("Bill of lading"))

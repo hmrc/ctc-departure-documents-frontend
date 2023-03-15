@@ -50,7 +50,7 @@ class PreviousDocumentTypeFormProviderSpec extends FormSpec with StringFieldBeha
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if customs office id does not exist in the previousDocumentTypeList" in {
+    "not bind if previousDocumentType code does not exist in the previousDocumentTypeList" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
