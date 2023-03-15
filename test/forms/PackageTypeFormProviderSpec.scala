@@ -26,7 +26,6 @@ class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators 
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
-  private val maxLength   = 8
 
   private val packageType1    = arbitraryPackageType.arbitrary.sample.get
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
@@ -41,7 +40,7 @@ class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      nonEmptyString
     )
 
     behave like mandatoryField(

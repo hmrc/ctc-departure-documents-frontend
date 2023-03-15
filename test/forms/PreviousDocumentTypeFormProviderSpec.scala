@@ -26,7 +26,6 @@ class PreviousDocumentTypeFormProviderSpec extends FormSpec with StringFieldBeha
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
-  private val maxLength   = 8
 
   private val previousDocumentType1    = arbitraryPreviousDocumentType.arbitrary.sample.get
   private val previousDocumentType2    = arbitraryPreviousDocumentType.arbitrary.sample.get
@@ -41,7 +40,7 @@ class PreviousDocumentTypeFormProviderSpec extends FormSpec with StringFieldBeha
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      nonEmptyString
     )
 
     behave like mandatoryField(

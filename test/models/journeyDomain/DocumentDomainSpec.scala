@@ -42,7 +42,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     }
 
     "can not be read from user answers" - {
-      "when item description page is unanswered" in {
+      "when previous document type page is unanswered" in {
         val result: EitherType[DocumentDomain] =
           UserAnswersReader[DocumentDomain](DocumentDomain.userAnswersReader(documentIndex)).run(emptyUserAnswers)
 

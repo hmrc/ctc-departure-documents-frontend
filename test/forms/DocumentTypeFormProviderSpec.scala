@@ -26,7 +26,6 @@ class DocumentTypeFormProviderSpec extends StringFieldBehaviours with Generators
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
-  private val maxLength   = 8
 
   private val documentType1    = arbitraryDocumentType.arbitrary.sample.get
   private val documentType2    = arbitraryDocumentType.arbitrary.sample.get
@@ -41,7 +40,7 @@ class DocumentTypeFormProviderSpec extends StringFieldBehaviours with Generators
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      nonEmptyString
     )
 
     behave like mandatoryField(

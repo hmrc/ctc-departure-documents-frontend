@@ -46,9 +46,9 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("document.packageType.heading")
+                heading = messages("document.packageType.heading"),
+                caption = Some(messages("document.caption"))
             ),
-            hint = Some(messages("document.packageType.hint")),
             selectItems = packageTypes.toSelectItems(form.value),
             placeholder = messages("document.packageType.placeholder")
         )
