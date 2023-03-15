@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.document
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int = 70
-  lazy val goodsItemNumberLength: Int      = 5
+import pages.behaviours.PageBehaviours
+
+class GoodsItemNumberPageSpec extends PageBehaviours {
+
+  "GoodsItemNumberPage" - {
+
+    beRetrievable[String](GoodsItemNumberPage(documentIndex))
+
+    beSettable[String](GoodsItemNumberPage(documentIndex))
+
+    beRemovable[String](GoodsItemNumberPage(documentIndex))
+  }
 }
