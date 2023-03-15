@@ -18,14 +18,14 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentTypeFormProvider
+import forms.DocumentFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.DocumentTypesService
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.TypeView
 
@@ -37,8 +37,8 @@ class TypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
-  formProvider: DocumentTypeFormProvider,
-  service: DocumentTypesService,
+  formProvider: DocumentFormProvider,
+  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView
 )(implicit ec: ExecutionContext)

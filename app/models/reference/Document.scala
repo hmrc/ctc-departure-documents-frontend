@@ -19,7 +19,8 @@ package models.reference
 import models.Foo._
 import models.{Foo, Selectable}
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, Format, Json, Reads}
+import play.api.libs.json._
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 case class Document(`type`: Foo, code: String, description: Option[String]) extends Selectable {
 
@@ -32,6 +33,14 @@ case class Document(`type`: Foo, code: String, description: Option[String]) exte
 }
 
 object Document {
+
+  val httpReads: HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) =>
+    response.json match {
+      case JsArray(values) =>
+        values.flatMap(_.validate[Document](referenceDataReads).asOpt).toSeq
+      case _ =>
+        Nil
+    }
 
   val referenceDataReads: Reads[Document] = (
     (__ \ "code").read[String] and

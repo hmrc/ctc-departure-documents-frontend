@@ -17,7 +17,7 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.DocumentTypeFormProvider
+import forms.DocumentFormProvider
 import generators.Generators
 import models.{DeclarationType, DocumentList, NormalMode}
 import navigation.DocumentsNavigatorProvider
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.DocumentTypesService
+import services.DocumentsService
 import views.html.document.PreviousDocumentTypeView
 
 import scala.concurrent.Future
@@ -42,11 +42,11 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   private val previousDocumentType2    = arbitraryPreviousDocument.arbitrary.sample.get
   private val previousDocumentTypeList = DocumentList(Seq(previousDocumentType1, previousDocumentType2))
 
-  private val formProvider = new DocumentTypeFormProvider()
+  private val formProvider = new DocumentFormProvider()
   private val form         = formProvider("document.previousDocumentType", previousDocumentTypeList)
   private val mode         = NormalMode
 
-  private val mockDocumentService: DocumentTypesService = mock[DocumentTypesService]
+  private val mockDocumentService: DocumentsService = mock[DocumentsService]
 
   private lazy val previousDocumentTypeRoute = routes.PreviousDocumentTypeController.onPageLoad(lrn, mode, documentIndex).url
 
@@ -54,7 +54,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
-      .overrides(bind(classOf[DocumentTypesService]).toInstance(mockDocumentService))
+      .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentService))
 
   "PreviousDocumentType Controller" - {
 

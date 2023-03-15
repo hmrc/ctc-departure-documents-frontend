@@ -45,7 +45,7 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       "when description undefined" in {
         forAll(Gen.alphaNumStr) {
           code =>
-            val packageType = PreviousDocumentType(code, None)
+            val packageType = PackageType(code, None)
             Json.toJson(packageType) mustBe Json.parse(s"""
               |{
               |  "code": "$code"

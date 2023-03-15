@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import models.reference.DocumentType
+import forms.mappings.Mappings
+import models.DocumentList
+import models.reference.Document
+import play.api.data.Form
 
-case class DocumentTypeList(documentTypes: Seq[DocumentType]) {
+import javax.inject.Inject
 
-  def getDocumentType(code: String): Option[DocumentType] =
-    documentTypes.find(_.code == code)
+class DocumentFormProvider @Inject() extends Mappings {
 
+  def apply(prefix: String, documentList: DocumentList): Form[Document] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(s"$prefix.error.required", value => documentList.documents.exists(_.code == value))
+        .transform[Document](value => documentList.getDocument(value).get, _.code)
+    )
 }

@@ -18,8 +18,8 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.{PackageTypeList, PreviousDocumentTypeList}
-import models.reference.{PackageType, PreviousDocumentType}
+import models.PackageTypeList
+import models.reference.PackageType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -27,15 +27,10 @@ import org.scalatest.BeforeAndAfterEach
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PreviousDocumentServiceSpec extends SpecBase with BeforeAndAfterEach {
+class PackagesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val service                                      = new PreviousDocumentService(mockRefDataConnector)
-
-  private val documentType1 = PreviousDocumentType("1", Some("Certificate of quality"))
-  private val documentType2 = PreviousDocumentType("2", Some("Bill of lading"))
-  private val documentType3 = PreviousDocumentType("3", Some("Certificate of conformity"))
-  private val documentType4 = PreviousDocumentType("4", None)
+  private val service                                      = new PackagesService(mockRefDataConnector)
 
   private val packageType1 = PackageType("YN", Some("Composite packaging, glass receptacle in steel drum"))
   private val packageType2 = PackageType("RD", Some("Rod"))
@@ -46,20 +41,7 @@ class PreviousDocumentServiceSpec extends SpecBase with BeforeAndAfterEach {
     super.beforeEach()
   }
 
-  "PreviousDocumentService" - {
-
-    "getPreviousReferencesDocumentTypes" - {
-      "must return a list of sorted previous document types" in {
-
-        when(mockRefDataConnector.getPreviousReferencesDocumentTypes()(any(), any()))
-          .thenReturn(Future.successful(Seq(documentType1, documentType2, documentType3, documentType4)))
-
-        service.getPreviousDocumentTypes().futureValue mustBe
-          PreviousDocumentTypeList(Seq(documentType4, documentType2, documentType3, documentType1))
-
-        verify(mockRefDataConnector).getPreviousReferencesDocumentTypes()(any(), any())
-      }
-    }
+  "PackagesService" - {
 
     "getPackageTypes" - {
       "must return a list of sorted package types" in {

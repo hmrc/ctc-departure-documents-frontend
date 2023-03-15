@@ -16,7 +16,7 @@
 
 package views.document
 
-import forms.DocumentTypeFormProvider
+import forms.DocumentFormProvider
 import models.reference.Document
 import models.{DocumentList, NormalMode}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,7 @@ import views.html.document.TypeView
 
 class TypeViewSpec extends InputSelectViewBehaviours[Document] {
 
-  override def form: Form[Document] = new DocumentTypeFormProvider()(prefix, DocumentList(values))
+  override def form: Form[Document] = new DocumentFormProvider()(prefix, DocumentList(values))
 
   override def applyView(form: Form[Document]): HtmlFormat.Appendable =
     injector.instanceOf[TypeView].apply(form, lrn, values, NormalMode, documentIndex)(fakeRequest, messages)

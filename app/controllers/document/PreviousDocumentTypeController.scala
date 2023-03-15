@@ -18,7 +18,7 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentTypeFormProvider
+import forms.DocumentFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.document.PreviousDocumentTypePage
@@ -26,7 +26,7 @@ import pages.external.TransitOperationDeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.DocumentTypesService
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.PreviousDocumentTypeView
 
@@ -39,8 +39,8 @@ class PreviousDocumentTypeController @Inject() (
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: DocumentTypeFormProvider,
-  service: DocumentTypesService,
+  formProvider: DocumentFormProvider,
+  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
 )(implicit ec: ExecutionContext)

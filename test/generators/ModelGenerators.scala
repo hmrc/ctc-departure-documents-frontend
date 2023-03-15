@@ -58,29 +58,12 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
-  implicit lazy val arbitraryPreviousDocumentType: Arbitrary[PreviousDocumentType] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
-      } yield PreviousDocumentType(code, desc)
-    }
-
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
     Arbitrary {
       for {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
       } yield PackageType(code, desc)
-    }
-
-  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- nonEmptyString
-        doc  <- arbitrary[Boolean]
-      } yield DocumentType(code, desc, doc)
     }
 
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
@@ -99,12 +82,6 @@ trait ModelGenerators {
         desc <- Gen.option(nonEmptyString)
       } yield Document(Foo.Previous, code, desc)
     }
-
-  implicit lazy val arbitraryPreviousDocumentTypeList: Arbitrary[PreviousDocumentTypeList] = Arbitrary {
-    for {
-      previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
-    } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
-  }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {

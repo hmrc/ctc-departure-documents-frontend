@@ -17,7 +17,7 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.DocumentTypeFormProvider
+import forms.DocumentFormProvider
 import generators.Generators
 import models.{DocumentList, NormalMode}
 import navigation.DocumentsNavigatorProvider
@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.DocumentTypesService
+import services.DocumentsService
 import views.html.document.TypeView
 
 import scala.concurrent.Future
@@ -39,18 +39,18 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   private val document2    = arbitraryDocument.arbitrary.sample.get
   private val documentList = DocumentList(Seq(document1, document2))
 
-  private val formProvider = new DocumentTypeFormProvider()
+  private val formProvider = new DocumentFormProvider()
   private val form         = formProvider("document.type", documentList)
   private val mode         = NormalMode
 
-  private val mockDocumentTypesService: DocumentTypesService = mock[DocumentTypesService]
-  private lazy val typeRoute                                 = routes.TypeController.onPageLoad(lrn, mode, documentIndex).url
+  private val mockDocumentTypesService: DocumentsService = mock[DocumentsService]
+  private lazy val typeRoute                             = routes.TypeController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
-      .overrides(bind(classOf[DocumentTypesService]).toInstance(mockDocumentTypesService))
+      .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentTypesService))
 
   "Type Controller" - {
 

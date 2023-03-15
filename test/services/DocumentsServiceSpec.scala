@@ -28,10 +28,10 @@ import org.scalatest.BeforeAndAfterEach
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DocumentTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
+class DocumentsServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val service                                      = new DocumentTypesService(mockRefDataConnector)
+  private val service                                      = new DocumentsService(mockRefDataConnector)
 
   private val document1 = Document(Support, "1", Some("CERTIFICATE OF QUALITY"))
   private val document2 = Document(Support, "2", Some("Bill of lading"))
