@@ -63,14 +63,14 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), "test1")
+      val userAnswers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), "12345")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, goodsItemNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test1"))
+      val filledForm = form.bind(Map("value" -> "12345"))
 
       val view = injector.instanceOf[GoodsItemNumberView]
 
@@ -87,7 +87,7 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, goodsItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "test1"))
+        .withFormUrlEncodedBody(("value", "12345"))
 
       val result = route(app, request).value
 
@@ -133,7 +133,7 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, goodsItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "test1"))
+        .withFormUrlEncodedBody(("value", "12345"))
 
       val result = route(app, request).value
 

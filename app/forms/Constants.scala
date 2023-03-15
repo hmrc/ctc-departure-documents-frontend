@@ -18,4 +18,5 @@ package forms
 
 object Constants {
   lazy val maxDocumentRefNumberLength: Int = 70
+  lazy val goodsItemNumberLength: Int      = 5
 }

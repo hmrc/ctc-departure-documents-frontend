@@ -16,7 +16,9 @@
 
 package forms
 
+import forms.Constants.goodsItemNumberLength
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.numericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -25,7 +27,8 @@ class GoodsItemNumberFormProviderSpec extends StringFieldBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
-  val maxLength      = 5
+  val invalidKey     = s"$prefix.error.invalidCharacters"
+  val maxLength      = goodsItemNumberLength
 
   val form = new GoodsItemNumberFormProvider()(prefix)
 
@@ -50,6 +53,13 @@ class GoodsItemNumberFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(numericRegex.regex)),
+      goodsItemNumberLength
     )
   }
 }

@@ -16,15 +16,23 @@
 
 package forms
 
+import forms.Constants.goodsItemNumberLength
 import forms.mappings.Mappings
-import javax.inject.Inject
+import models.domain.StringFieldRegex.numericRegex
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class GoodsItemNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(5, s"$prefix.error.length"))
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(goodsItemNumberLength, s"$prefix.error.length"),
+            regexp(numericRegex, s"$prefix.error.invalidCharacters")
+          )
+        )
     )
 }
