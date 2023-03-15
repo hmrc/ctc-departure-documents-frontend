@@ -16,17 +16,17 @@
 
 package pages.document
 
-import models.reference.DocumentType
+import models.reference.Document
 import pages.behaviours.PageBehaviours
 
 class TypePageSpec extends PageBehaviours {
 
   "TypePage" - {
 
-    beRetrievable[DocumentType](TypePage(documentIndex))
+    beRetrievable[Document](TypePage(documentIndex))
 
-    beSettable[DocumentType](TypePage(documentIndex))
+    beSettable[Document](TypePage(documentIndex))
 
-    beRemovable[DocumentType](TypePage(documentIndex))
+    beRemovable[Document](TypePage(documentIndex))
   }
 }

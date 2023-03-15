@@ -17,14 +17,14 @@
 package pages.document
 
 import controllers.document.routes
-import models.reference.DocumentType
+import models.reference.Document
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.DocumentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TypePage(documentIndex: Index) extends QuestionPage[DocumentType] {
+case class TypePage(documentIndex: Index) extends QuestionPage[Document] {
 
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
 

@@ -16,7 +16,7 @@
 
 @import controllers.document.routes
 @import models.LocalReferenceNumber
-@import models.reference.PreviousDocumentType
+@import models.reference.Document
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[PreviousDocumentType], lrn: LocalReferenceNumber, previousDocumentTypes: Seq[PreviousDocumentType], mode: Mode, declarationType: DeclarationType, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Document], lrn: LocalReferenceNumber, previousDocumentTypes: Seq[Document], mode: Mode, declarationType: DeclarationType, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.previousDocumentType.title"),

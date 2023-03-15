@@ -18,7 +18,7 @@ package generators
 
 import config.Constants.{GB, XI}
 import models._
-import models.reference.{CustomsOffice, DocumentType, PackageType, PreviousDocumentType}
+import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -83,6 +83,23 @@ trait ModelGenerators {
       } yield DocumentType(code, desc, doc)
     }
 
+  implicit lazy val arbitraryDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        documentType <- arbitrary[Foo]
+        code         <- nonEmptyString
+        desc         <- Gen.option(nonEmptyString)
+      } yield Document(documentType, code, desc)
+    }
+
+  lazy val arbitraryPreviousDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield Document(Foo.Previous, code, desc)
+    }
+
   implicit lazy val arbitraryPreviousDocumentTypeList: Arbitrary[PreviousDocumentTypeList] = Arbitrary {
     for {
       previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
@@ -119,5 +136,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values)
+    }
+
+  // TODO - rename
+  implicit lazy val arbitraryFoo: Arbitrary[Foo] =
+    Arbitrary {
+      Gen.oneOf(Foo.values)
     }
 }

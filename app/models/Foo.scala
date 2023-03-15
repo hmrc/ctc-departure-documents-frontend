@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.DocumentList
-import models.reference.Document
-import play.api.data.Form
+// TODO - rename Foo to DocumentType
+sealed trait Foo
 
-import javax.inject.Inject
+object Foo extends EnumerableType[Foo] {
+  case object Support extends Foo
+  case object Transport extends Foo
+  case object Previous extends Foo
 
-class DocumentTypeFormProvider @Inject() extends Mappings {
-
-  def apply(prefix: String, documentList: DocumentList): Form[Document] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => documentList.documents.exists(_.code == value))
-        .transform[Document](value => documentList.getDocument(value).get, _.code)
-    )
+  override val values: Seq[Foo] = Seq(Support, Transport, Previous)
 }

@@ -49,27 +49,27 @@ class TypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocumentTypes().map {
-        documentTypeList =>
-          val form = formProvider(prefix, documentTypeList)
+      service.getDocuments().map {
+        documentList =>
+          val form = formProvider(prefix, documentList)
           val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, documentTypeList.documentTypes, mode, documentIndex))
+          Ok(view(preparedForm, lrn, documentList.documents, mode, documentIndex))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocumentTypes().flatMap {
-        documentTypeList =>
-          val form = formProvider(prefix, documentTypeList)
+      service.getDocuments().flatMap {
+        documentList =>
+          val form = formProvider(prefix, documentList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentTypeList.documentTypes, mode, documentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.documents, mode, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 TypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

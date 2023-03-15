@@ -17,9 +17,9 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.PreviousDocumentTypeFormProvider
+import forms.DocumentTypeFormProvider
 import generators.Generators
-import models.{DeclarationType, NormalMode, PreviousDocumentTypeList}
+import models.{DeclarationType, DocumentList, NormalMode}
 import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.PreviousDocumentService
+import services.DocumentTypesService
 import views.html.document.PreviousDocumentTypeView
 
 import scala.concurrent.Future
@@ -38,22 +38,23 @@ import scala.concurrent.Future
 class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val declarationType          = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F).sample.get
-  private val previousDocumentType1    = arbitraryPreviousDocumentType.arbitrary.sample.get
-  private val previousDocumentType2    = arbitraryPreviousDocumentType.arbitrary.sample.get
-  private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(previousDocumentType1, previousDocumentType2))
+  private val previousDocumentType1    = arbitraryPreviousDocument.arbitrary.sample.get
+  private val previousDocumentType2    = arbitraryPreviousDocument.arbitrary.sample.get
+  private val previousDocumentTypeList = DocumentList(Seq(previousDocumentType1, previousDocumentType2))
 
-  private val formProvider = new PreviousDocumentTypeFormProvider()
+  private val formProvider = new DocumentTypeFormProvider()
   private val form         = formProvider("document.previousDocumentType", previousDocumentTypeList)
   private val mode         = NormalMode
 
-  private val mockPreviousDocumentService: PreviousDocumentService = mock[PreviousDocumentService]
-  private lazy val previousDocumentTypeRoute                       = routes.PreviousDocumentTypeController.onPageLoad(lrn, mode, documentIndex).url
+  private val mockDocumentService: DocumentTypesService = mock[DocumentTypesService]
+
+  private lazy val previousDocumentTypeRoute = routes.PreviousDocumentTypeController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
-      .overrides(bind(classOf[PreviousDocumentService]).toInstance(mockPreviousDocumentService))
+      .overrides(bind(classOf[DocumentTypesService]).toInstance(mockDocumentService))
 
   "PreviousDocumentType Controller" - {
 
@@ -61,7 +62,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, previousDocumentTypeRoute)
@@ -73,12 +74,12 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, previousDocumentTypeList.previousDocumentTypes, mode, declarationType, documentIndex)(request, messages).toString
+        view(form, lrn, previousDocumentTypeList.documents, mode, declarationType, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       val userAnswers = emptyUserAnswers
         .setValue(TransitOperationDeclarationTypePage, declarationType)
         .setValue(PreviousDocumentTypePage(documentIndex), previousDocumentType1)
@@ -95,14 +96,14 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, previousDocumentTypeList.previousDocumentTypes, mode, declarationType, documentIndex)(request, messages).toString
+        view(filledForm, lrn, previousDocumentTypeList.documents, mode, declarationType, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(userAnswers)
@@ -121,7 +122,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, previousDocumentTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -134,7 +135,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, previousDocumentTypeList.previousDocumentTypes, mode, declarationType, documentIndex)(request, messages).toString
+        view(boundForm, lrn, previousDocumentTypeList.documents, mode, declarationType, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

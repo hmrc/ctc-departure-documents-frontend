@@ -16,7 +16,7 @@
 
 @import controllers.document.routes
 @import models.LocalReferenceNumber
-@import models.reference.DocumentType
+@import models.reference.Document
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[DocumentType], lrn: LocalReferenceNumber, documentTypes: Seq[DocumentType], mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Document], lrn: LocalReferenceNumber, documents: Seq[Document], mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.type.title"),
@@ -50,7 +50,7 @@
                 caption = Some(messages("document.caption"))
             ),
             hint = Some(messages("document.type.hint")),
-            selectItems = documentTypes.toSelectItems(form.value),
+            selectItems = documents.toSelectItems(form.value),
             placeholder = messages("document.type.placeholder")
         )
 

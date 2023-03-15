@@ -17,23 +17,22 @@
 package views.document
 
 import forms.DocumentTypeFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
-import models.reference.DocumentType
-import models.DocumentTypeList
+import models.reference.Document
+import models.{DocumentList, NormalMode}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputSelectViewBehaviours
 import views.html.document.TypeView
 
-class TypeViewSpec extends InputSelectViewBehaviours[DocumentType] {
+class TypeViewSpec extends InputSelectViewBehaviours[Document] {
 
-  override def form: Form[DocumentType] = new DocumentTypeFormProvider()(prefix, DocumentTypeList(values))
+  override def form: Form[Document] = new DocumentTypeFormProvider()(prefix, DocumentList(values))
 
-  override def applyView(form: Form[DocumentType]): HtmlFormat.Appendable =
+  override def applyView(form: Form[Document]): HtmlFormat.Appendable =
     injector.instanceOf[TypeView].apply(form, lrn, values, NormalMode, documentIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[DocumentType] = arbitraryDocumentType
+  implicit override val arbitraryT: Arbitrary[Document] = arbitraryDocument
 
   override val prefix: String = "document.type"
 

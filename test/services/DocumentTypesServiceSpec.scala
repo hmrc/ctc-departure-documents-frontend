@@ -18,8 +18,9 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.DocumentTypeList
-import models.reference.DocumentType
+import models.DocumentList
+import models.Foo._
+import models.reference.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -32,9 +33,9 @@ class DocumentTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new DocumentTypesService(mockRefDataConnector)
 
-  private val documentType1 = DocumentType("1", "CERTIFICATE OF QUALITY", transportDocument = false)
-  private val documentType2 = DocumentType("2", "Bill of lading", transportDocument = true)
-  private val documentType3 = DocumentType("3", "Certificate of conformity", transportDocument = false)
+  private val document1 = Document(Support, "1", Some("CERTIFICATE OF QUALITY"))
+  private val document2 = Document(Support, "2", Some("Bill of lading"))
+  private val document3 = Document(Previous, "3", Some("Certificate of conformity"))
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -43,16 +44,20 @@ class DocumentTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   "DocumentTypesService" - {
 
-    "getDocumentTypes" - {
+    "getDocuments" - {
       "must return a list of sorted document types" in {
 
-        when(mockRefDataConnector.getDocumentTypes()(any(), any()))
-          .thenReturn(Future.successful(Seq(documentType1, documentType2, documentType3)))
+        when(mockRefDataConnector.getDocuments()(any(), any()))
+          .thenReturn(Future.successful(Seq(document1, document2)))
 
-        service.getDocumentTypes().futureValue mustBe
-          DocumentTypeList(Seq(documentType2, documentType3, documentType1))
+        when(mockRefDataConnector.getPreviousDocuments()(any(), any()))
+          .thenReturn(Future.successful(Seq(document3)))
 
-        verify(mockRefDataConnector).getDocumentTypes()(any(), any())
+        service.getDocuments().futureValue mustBe
+          DocumentList(Seq(document2, document3, document1))
+
+        verify(mockRefDataConnector).getDocuments()(any(), any())
+        verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
       }
     }
 
