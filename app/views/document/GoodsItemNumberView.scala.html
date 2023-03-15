@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.goodsItemNumber.title"),
@@ -35,7 +35,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.GoodsItemNumberController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.GoodsItemNumberController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
