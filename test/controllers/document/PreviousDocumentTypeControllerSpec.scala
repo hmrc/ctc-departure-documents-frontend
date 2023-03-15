@@ -18,8 +18,8 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PreviousDocumentTypeFormProvider
-import models.{DeclarationType, NormalMode, PreviousDocumentTypeList}
 import generators.Generators
+import models.{DeclarationType, NormalMode, PreviousDocumentTypeList}
 import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.PreviousDocumentTypesService
+import services.PreviousDocumentService
 import views.html.document.PreviousDocumentTypeView
 
 import scala.concurrent.Future
@@ -46,14 +46,14 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   private val form         = formProvider("document.previousDocumentType", previousDocumentTypeList)
   private val mode         = NormalMode
 
-  private val mockPreviousDocumentTypesService: PreviousDocumentTypesService = mock[PreviousDocumentTypesService]
-  private lazy val previousDocumentTypeRoute                                 = routes.PreviousDocumentTypeController.onPageLoad(lrn, mode, documentIndex).url
+  private val mockPreviousDocumentService: PreviousDocumentService = mock[PreviousDocumentService]
+  private lazy val previousDocumentTypeRoute                       = routes.PreviousDocumentTypeController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
-      .overrides(bind(classOf[PreviousDocumentTypesService]).toInstance(mockPreviousDocumentTypesService))
+      .overrides(bind(classOf[PreviousDocumentService]).toInstance(mockPreviousDocumentService))
 
   "PreviousDocumentType Controller" - {
 
@@ -61,7 +61,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, previousDocumentTypeRoute)
@@ -78,7 +78,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       val userAnswers = emptyUserAnswers
         .setValue(TransitOperationDeclarationTypePage, declarationType)
         .setValue(PreviousDocumentTypePage(documentIndex), previousDocumentType1)
@@ -102,7 +102,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(userAnswers)
@@ -121,7 +121,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
-      when(mockPreviousDocumentTypesService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
+      when(mockPreviousDocumentService.getPreviousDocumentTypes()(any())).thenReturn(Future.successful(previousDocumentTypeList))
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, previousDocumentTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))

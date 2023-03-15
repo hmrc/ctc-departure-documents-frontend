@@ -61,3 +61,10 @@ document.goodsItemNumber.checkYourAnswersLabel = Reference number
 document.goodsItemNumber.error.required = Enter the goods item number
 document.goodsItemNumber.error.length = The goods item number must be 5 characters or less
 document.goodsItemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
+
+document.packageType.title = What type of package did the goods arrive in?
+document.packageType.heading = What type of package did the goods arrive in?
+document.packageType.placeholder = Select a package type
+document.packageType.checkYourAnswersLabel = Package type
+document.packageType.change.hidden = package type
+document.packageType.error.required = Select the type of package the goods arrived in

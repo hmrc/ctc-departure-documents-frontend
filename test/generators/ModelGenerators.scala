@@ -18,11 +18,11 @@ package generators
 
 import config.Constants.{GB, XI}
 import models._
-import models.reference.{CustomsOffice, DocumentType, PreviousDocumentType}
+import models.reference.{CustomsOffice, DocumentType, PackageType, PreviousDocumentType}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
-import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
   self: Generators =>
@@ -66,6 +66,14 @@ trait ModelGenerators {
       } yield PreviousDocumentType(code, desc)
     }
 
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield PackageType(code, desc)
+    }
+
   implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
     Arbitrary {
       for {
@@ -80,6 +88,15 @@ trait ModelGenerators {
       previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
     } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
   }
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(id, name, phoneNumber)
+    }
 
   lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
@@ -97,5 +114,10 @@ trait ModelGenerators {
         name        <- stringsWithMaxLength(stringMaxLength)
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
       } yield CustomsOffice(s"$XI$id", name, phoneNumber)
+    }
+
+  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+    Arbitrary {
+      Gen.oneOf(DeclarationType.values)
     }
 }

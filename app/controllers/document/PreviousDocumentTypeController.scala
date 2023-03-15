@@ -26,7 +26,7 @@ import pages.external.TransitOperationDeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.PreviousDocumentTypesService
+import services.PreviousDocumentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.PreviousDocumentTypeView
 
@@ -40,7 +40,7 @@ class PreviousDocumentTypeController @Inject() (
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: PreviousDocumentTypeFormProvider,
-  service: PreviousDocumentTypesService,
+  service: PreviousDocumentService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
 )(implicit ec: ExecutionContext)

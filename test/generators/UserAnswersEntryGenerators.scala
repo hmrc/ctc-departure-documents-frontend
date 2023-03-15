@@ -16,7 +16,8 @@
 
 package generators
 
-import models.reference.PreviousDocumentType
+import models.DeclarationType
+import models.reference.{CustomsOffice, DocumentType, PreviousDocumentType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -26,12 +27,22 @@ trait UserAnswersEntryGenerators {
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
-    generateDocumentsAnswer
+    generateExternalAnswer orElse
+      generateDocumentAnswer
 
-  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.external._
+    {
+      case TransitOperationOfficeOfDeparturePage => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case TransitOperationDeclarationTypePage   => arbitrary[DeclarationType].map(Json.toJson(_))
+    }
+  }
+
+  private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.document._
     {
       case PreviousDocumentTypePage(_) => arbitrary[PreviousDocumentType].map(Json.toJson(_))
+      case TypePage(_)                 => arbitrary[DocumentType].map(Json.toJson(_))
     }
   }
 }
