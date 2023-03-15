@@ -18,10 +18,10 @@ package generators
 
 import models._
 import models.reference.{DocumentType, PackageType, PreviousDocumentType}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
-import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
   self: Generators =>
@@ -86,5 +86,9 @@ trait ModelGenerators {
     for {
       previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
     } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
+  }
+
+  lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
+    Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 }
