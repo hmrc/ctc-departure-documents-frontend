@@ -69,7 +69,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {
-        documentType <- arbitrary[Foo]
+        documentType <- arbitrary[DocumentType]
         code         <- nonEmptyString
         desc         <- Gen.option(nonEmptyString)
       } yield Document(documentType, code, desc)
@@ -80,7 +80,7 @@ trait ModelGenerators {
       for {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
-      } yield Document(Foo.Previous, code, desc)
+      } yield Document(DocumentType.Previous, code, desc)
     }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
@@ -115,9 +115,8 @@ trait ModelGenerators {
       Gen.oneOf(DeclarationType.values)
     }
 
-  // TODO - rename
-  implicit lazy val arbitraryFoo: Arbitrary[Foo] =
+  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
     Arbitrary {
-      Gen.oneOf(Foo.values)
+      Gen.oneOf(DocumentType.values)
     }
 }

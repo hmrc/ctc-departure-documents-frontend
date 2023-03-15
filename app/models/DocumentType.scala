@@ -16,13 +16,12 @@
 
 package models
 
-// TODO - rename Foo to DocumentType
-sealed trait Foo
+sealed trait DocumentType
 
-object Foo extends EnumerableType[Foo] {
-  case object Support extends Foo
-  case object Transport extends Foo
-  case object Previous extends Foo
+object DocumentType extends EnumerableType[DocumentType] {
+  case object Support extends DocumentType
+  case object Transport extends DocumentType
+  case object Previous extends DocumentType
 
-  override val values: Seq[Foo] = Seq(Support, Transport, Previous)
+  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
 }

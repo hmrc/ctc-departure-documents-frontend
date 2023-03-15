@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 import generators.Generators
-import models.Foo._
+import models.DocumentType._
 import models.reference.Document
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 

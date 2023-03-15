@@ -18,8 +18,8 @@ package models.reference
 
 import base.SpecBase
 import generators.Generators
-import models.Foo
-import models.Foo._
+import models.DocumentType
+import models.DocumentType._
 import models.reference.Document.referenceDataReads
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -147,7 +147,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
   }
 
   "must convert to select item" in {
-    forAll(arbitrary[Foo], Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean]) {
+    forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean]) {
       (`type`, code, description, selected) =>
         val document = Document(`type`, code, description)
         document.toSelectItem(selected) mustBe SelectItem(Some(code), document.toString, selected)
@@ -156,7 +156,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
   "must format as string" - {
     "when description defined and non-empty" in {
-      forAll(arbitrary[Foo], Gen.alphaNumStr, nonEmptyString) {
+      forAll(arbitrary[DocumentType], Gen.alphaNumStr, nonEmptyString) {
         (`type`, code, description) =>
           val document = Document(`type`, code, Some(description))
           document.toString mustBe s"($code) $description"
@@ -164,7 +164,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     }
 
     "when description defined and empty" in {
-      forAll(arbitrary[Foo], Gen.alphaNumStr) {
+      forAll(arbitrary[DocumentType], Gen.alphaNumStr) {
         (`type`, code) =>
           val document = Document(`type`, code, Some(""))
           document.toString mustBe code
@@ -172,7 +172,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     }
 
     "when description undefined" in {
-      forAll(arbitrary[Foo], Gen.alphaNumStr) {
+      forAll(arbitrary[DocumentType], Gen.alphaNumStr) {
         (`type`, code) =>
           val document = Document(`type`, code, None)
           document.toString mustBe code

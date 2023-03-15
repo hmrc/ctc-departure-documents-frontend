@@ -18,7 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import models.Foo._
+import models.DocumentType._
 import models.reference.Document
 import org.scalacheck.Gen
 import org.scalatest.Assertion

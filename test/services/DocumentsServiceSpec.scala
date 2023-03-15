@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import models.DocumentList
-import models.Foo._
+import models.DocumentType._
 import models.reference.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

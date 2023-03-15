@@ -16,13 +16,13 @@
 
 package models.reference
 
-import models.Foo._
-import models.{Foo, Selectable}
+import models.DocumentType._
+import models.{DocumentType, Selectable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-case class Document(`type`: Foo, code: String, description: Option[String]) extends Selectable {
+case class Document(`type`: DocumentType, code: String, description: Option[String]) extends Selectable {
 
   override def toString: String = description match {
     case Some(value) if value.trim.nonEmpty => s"($code) $value"
