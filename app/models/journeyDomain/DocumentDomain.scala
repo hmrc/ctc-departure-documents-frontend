@@ -18,11 +18,15 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.DeclarationType.{T2, T2F}
+import models.DocumentType._
 import models.Index
+import models.reference.Document
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 
-case class DocumentDomain() extends JourneyDomainModel
+sealed trait DocumentDomain extends JourneyDomainModel {
+  val document: Document
+}
 
 object DocumentDomain {
 
@@ -32,12 +36,46 @@ object DocumentDomain {
       TransitOperationDeclarationTypePage.reader
     ).flatMapN {
       case (customsOffice, T2 | T2F) if documentIndex.isFirst && customsOffice.isInGB =>
-        PreviousDocumentTypePage(documentIndex).reader.map(
-          _ => DocumentDomain()
-        )
+        PreviousDocumentTypePage(documentIndex).reader
+          .flatMap(PreviousDocumentDomain.userAnswersReader(documentIndex, _).widen[DocumentDomain])
       case _ =>
-        TypePage(documentIndex).reader.map(
-          _ => DocumentDomain()
-        )
+        TypePage(documentIndex).reader.flatMap {
+          document =>
+            document.`type` match {
+              case Support   => SupportDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+              case Transport => TransportDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+              case Previous  => PreviousDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+            }
+        }
     }
+}
+
+case class SupportDocumentDomain(
+  document: Document
+) extends DocumentDomain
+
+object SupportDocumentDomain {
+
+  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[SupportDocumentDomain] =
+    UserAnswersReader(SupportDocumentDomain(document))
+}
+
+case class TransportDocumentDomain(
+  document: Document
+) extends DocumentDomain
+
+object TransportDocumentDomain {
+
+  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[TransportDocumentDomain] =
+    UserAnswersReader(TransportDocumentDomain(document))
+}
+
+case class PreviousDocumentDomain(
+  document: Document
+) extends DocumentDomain
+
+object PreviousDocumentDomain {
+
+  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[PreviousDocumentDomain] =
+    UserAnswersReader(PreviousDocumentDomain(document))
 }

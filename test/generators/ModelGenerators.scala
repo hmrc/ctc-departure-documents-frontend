@@ -75,6 +75,22 @@ trait ModelGenerators {
       } yield Document(documentType, code, desc)
     }
 
+  lazy val arbitraryTransportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield Document(DocumentType.Transport, code, desc)
+    }
+
+  lazy val arbitrarySupportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield Document(DocumentType.Support, code, desc)
+    }
+
   lazy val arbitraryPreviousDocument: Arbitrary[Document] =
     Arbitrary {
       for {

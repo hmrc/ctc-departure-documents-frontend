@@ -19,19 +19,123 @@ package models.journeyDomain
 import base.SpecBase
 import generators.Generators
 import models.DeclarationType._
-import models.Index
-import models.reference.CustomsOffice
+import models.DocumentType._
+import models.reference.{CustomsOffice, Document}
+import models.{DeclarationType, Index}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalacheck.Arbitrary.arbitrary
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
+import pages.sections.DocumentSection
+import play.api.libs.json.Json
 
 class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Document Domain" - {
 
-    "can be read from user answers" - {}
+    "can be read from user answers" - {
+      "when index is 0" - {
+        val index = Index(0)
+        "and mandatory previous document type" in {
+          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
+          val documentGen          = arbitrary[Document](arbitraryPreviousDocument)
+          forAll(declarationTypeGen, officeOfDepartureGen, documentGen) {
+            (declarationType, officeOfDeparture, document) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(PreviousDocumentTypePage(index), document)
+
+              val expectedResult = PreviousDocumentDomain(
+                document = document
+              )
+
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+      }
+
+      "when index is not 0" - {
+        val index = Index(1)
+        "and previous document type" in {
+          val declarationTypeGen   = arbitrary[DeclarationType]
+          val officeOfDepartureGen = arbitrary[CustomsOffice]
+          val documentGen          = arbitrary[Document](arbitraryPreviousDocument)
+          forAll(declarationTypeGen, officeOfDepartureGen, documentGen) {
+            (declarationType, officeOfDeparture, document) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(DocumentSection(Index(0)), Json.obj("foo" -> "bar"))
+                .setValue(TypePage(index), document)
+
+              val expectedResult = PreviousDocumentDomain(
+                document = document
+              )
+
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "and support document type" in {
+          val declarationTypeGen   = arbitrary[DeclarationType]
+          val officeOfDepartureGen = arbitrary[CustomsOffice]
+          val documentGen          = arbitrary[Document](arbitrarySupportDocument)
+          forAll(declarationTypeGen, officeOfDepartureGen, documentGen) {
+            (declarationType, officeOfDeparture, document) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(DocumentSection(Index(0)), Json.obj("foo" -> "bar"))
+                .setValue(TypePage(index), document)
+
+              val expectedResult = SupportDocumentDomain(
+                document = document
+              )
+
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "and transport document type" in {
+          val declarationTypeGen   = arbitrary[DeclarationType]
+          val officeOfDepartureGen = arbitrary[CustomsOffice]
+          val documentGen          = arbitrary[Document](arbitraryTransportDocument)
+          forAll(declarationTypeGen, officeOfDepartureGen, documentGen) {
+            (declarationType, officeOfDeparture, document) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(DocumentSection(Index(0)), Json.obj("foo" -> "bar"))
+                .setValue(TypePage(index), document)
+
+              val expectedResult = TransportDocumentDomain(
+                document = document
+              )
+
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+      }
+    }
 
     "can not be read from user answers" - {
       "when index is 0" - {
@@ -45,8 +149,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-              val result: EitherType[DocumentDomain] =
-                UserAnswersReader[DocumentDomain](DocumentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
 
               result.left.value.page mustBe PreviousDocumentTypePage(index)
           }
@@ -61,8 +166,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-              val result: EitherType[DocumentDomain] =
-                UserAnswersReader[DocumentDomain](DocumentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
 
               result.left.value.page mustBe TypePage(index)
           }
@@ -77,8 +183,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-              val result: EitherType[DocumentDomain] =
-                UserAnswersReader[DocumentDomain](DocumentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
 
               result.left.value.page mustBe TypePage(index)
           }
@@ -96,8 +203,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-              val result: EitherType[DocumentDomain] =
-                UserAnswersReader[DocumentDomain](DocumentDomain.userAnswersReader(index)).run(userAnswers)
+              val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+                DocumentDomain.userAnswersReader(index)
+              ).run(userAnswers)
 
               result.left.value.page mustBe TypePage(index)
           }
@@ -105,5 +213,4 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       }
     }
   }
-
 }
