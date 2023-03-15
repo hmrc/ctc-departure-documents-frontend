@@ -16,8 +16,9 @@
 
 package generators
 
+import config.Constants.{GB, XI}
 import models._
-import models.reference.{DocumentType, PreviousDocumentType}
+import models.reference.{CustomsOffice, DocumentType, PreviousDocumentType}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
@@ -79,4 +80,22 @@ trait ModelGenerators {
       previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
     } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
   }
+
+  lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(s"$GB$id", name, phoneNumber)
+    }
+
+  lazy val arbitraryXiCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(s"$XI$id", name, phoneNumber)
+    }
 }

@@ -16,16 +16,28 @@
 
 package models.journeyDomain
 
+import cats.implicits._
+import models.DeclarationType.{T2, T2F}
 import models.Index
-import models.reference.PreviousDocumentType
-import pages.document.PreviousDocumentTypePage
+import pages.document.{PreviousDocumentTypePage, TypePage}
+import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 
-case class DocumentDomain(
-  previousDocumentType: PreviousDocumentType
-) extends JourneyDomainModel
+case class DocumentDomain() extends JourneyDomainModel
 
 object DocumentDomain {
 
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
-    PreviousDocumentTypePage(documentIndex).reader.map(DocumentDomain.apply)
+    (
+      TransitOperationOfficeOfDeparturePage.reader,
+      TransitOperationDeclarationTypePage.reader
+    ).flatMapN {
+      case (customsOffice, T2 | T2F) if documentIndex.isFirst && customsOffice.isInGB =>
+        PreviousDocumentTypePage(documentIndex).reader.map(
+          _ => DocumentDomain()
+        )
+      case _ =>
+        TypePage(documentIndex).reader.map(
+          _ => DocumentDomain()
+        )
+    }
 }
