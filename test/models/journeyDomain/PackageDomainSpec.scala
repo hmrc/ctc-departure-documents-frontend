@@ -34,7 +34,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
           val expectedResult = PackageDomain(
             `type` = packageType,
-            numberOfPackages = None
+            numberOfPackages = 0
           )
 
           val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](

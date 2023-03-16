@@ -178,7 +178,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             `package` = Some(
               PackageDomain(
                 `type` = packageType,
-                numberOfPackages = None
+                numberOfPackages = 0
               )
             )
           )(index)

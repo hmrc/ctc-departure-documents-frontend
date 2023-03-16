@@ -23,7 +23,7 @@ import pages.document.PackageTypePage
 
 case class PackageDomain(
   `type`: PackageType,
-  numberOfPackages: Option[Int]
+  numberOfPackages: Int
 )
 
 object PackageDomain {
@@ -31,6 +31,6 @@ object PackageDomain {
   implicit def userAnswersReader(index: Index): UserAnswersReader[PackageDomain] =
     (
       PackageTypePage(index).reader,
-      UserAnswersReader(None)
+      UserAnswersReader(0)
     ).tupled.map((PackageDomain.apply _).tupled)
 }
