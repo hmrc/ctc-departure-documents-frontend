@@ -85,7 +85,8 @@ object TransportDocumentDomain {
 case class PreviousDocumentDomain(
   document: Document,
   referenceNumber: String,
-  goodsItemNumber: Option[String]
+  goodsItemNumber: Option[String],
+  `package`: Option[PackageDomain]
 )(override val index: Index)
     extends DocumentDomain
 
@@ -95,6 +96,7 @@ object PreviousDocumentDomain {
     (
       UserAnswersReader(document),
       DocumentReferenceNumberPage(index).reader,
-      AddGoodsItemNumberYesNoPage(index).filterOptionalDependent(identity)(GoodsItemNumberPage(index).reader)
+      AddGoodsItemNumberYesNoPage(index).filterOptionalDependent(identity)(GoodsItemNumberPage(index).reader),
+      AddTypeOfPackageYesNoPage(index).filterOptionalDependent(identity)(PackageDomain.userAnswersReader(index))
     ).tupled.map((PreviousDocumentDomain.apply _).tupled).map(_(index))
 }

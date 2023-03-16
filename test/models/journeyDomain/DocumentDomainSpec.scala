@@ -21,7 +21,7 @@ import generators.Generators
 import models.DeclarationType._
 import models.DocumentType._
 import models.Index
-import models.reference.{CustomsOffice, Document}
+import models.reference.{CustomsOffice, Document, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -162,17 +162,25 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
     "can be read from user answers" in {
-      forAll(documentGen, nonEmptyString, nonEmptyString) {
-        (document, referenceNumber, goodsItemNumber) =>
+      forAll(documentGen, nonEmptyString, nonEmptyString, arbitrary[PackageType]) {
+        (document, referenceNumber, goodsItemNumber, packageType) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceNumber)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
             .setValue(GoodsItemNumberPage(index), goodsItemNumber)
+            .setValue(AddTypeOfPackageYesNoPage(index), true)
+            .setValue(PackageTypePage(index), packageType)
 
           val expectedResult = PreviousDocumentDomain(
             document = document,
             referenceNumber = referenceNumber,
-            goodsItemNumber = Some(goodsItemNumber)
+            goodsItemNumber = Some(goodsItemNumber),
+            `package` = Some(
+              PackageDomain(
+                `type` = packageType,
+                numberOfPackages = None
+              )
+            )
           )(index)
 
           val result: EitherType[PreviousDocumentDomain] = UserAnswersReader[PreviousDocumentDomain](
@@ -210,6 +218,21 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             ).run(userAnswers)
 
             result.left.value.page mustBe GoodsItemNumberPage(index)
+        }
+      }
+
+      "when add package yes/no is unanswered" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+              .setValue(AddGoodsItemNumberYesNoPage(index), false)
+
+            val result: EitherType[PreviousDocumentDomain] = UserAnswersReader[PreviousDocumentDomain](
+              PreviousDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddTypeOfPackageYesNoPage(index)
         }
       }
     }
