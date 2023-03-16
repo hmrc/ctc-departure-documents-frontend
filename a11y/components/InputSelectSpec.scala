@@ -17,8 +17,8 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.PreviousDocumentTypeFormProvider
-import models.PreviousDocumentTypeList
+import forms.DocumentFormProvider
+import models.DocumentList
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -32,19 +32,19 @@ class InputSelectSpec extends A11ySpecBase {
     val template  = app.injector.instanceOf[MainTemplate]
     val component = app.injector.instanceOf[InputSelect]
 
-    val prefix                   = Gen.alphaNumStr.sample.value
-    val title                    = nonEmptyString.sample.value
-    val caption                  = Gen.option(nonEmptyString).sample.value
-    val previousDocumentTypeList = arbitrary[PreviousDocumentTypeList].sample.value
-    val hint                     = Gen.option(nonEmptyString).sample.value
-    val placeholder              = nonEmptyString.sample.value
-    val selectedValue            = Gen.oneOf(None, Some(previousDocumentTypeList.previousDocumentTypes.head)).sample.value
-    val selectItems              = previousDocumentTypeList.previousDocumentTypes.toSelectItems(selectedValue)
-    val additionalHtml           = arbitrary[Html].sample.value
-    val form                     = new PreviousDocumentTypeFormProvider()(prefix, previousDocumentTypeList)
+    val prefix         = Gen.alphaNumStr.sample.value
+    val title          = nonEmptyString.sample.value
+    val caption        = Gen.option(nonEmptyString).sample.value
+    val documentList   = arbitrary[DocumentList].sample.value
+    val hint           = Gen.option(nonEmptyString).sample.value
+    val placeholder    = nonEmptyString.sample.value
+    val selectedValue  = Gen.oneOf(None, Some(documentList.documents.head)).sample.value
+    val selectItems    = documentList.documents.toSelectItems(selectedValue)
+    val additionalHtml = arbitrary[Html].sample.value
+    val form           = new DocumentFormProvider()(prefix, documentList)
     val preparedForm = selectedValue match {
-      case Some(country) => form.fill(country)
-      case None          => form
+      case Some(document) => form.fill(document)
+      case None           => form
     }
 
     "pass accessibility checks" when {

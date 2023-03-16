@@ -139,4 +139,10 @@ trait ModelGenerators {
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
+
+  implicit lazy val arbitraryDocumentList: Arbitrary[DocumentList] = Arbitrary {
+    for {
+      countries <- listWithMaxLength[Document]()
+    } yield DocumentList(countries.distinctBy(_.code))
+  }
 }
