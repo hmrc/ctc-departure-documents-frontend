@@ -25,8 +25,8 @@ import models.reference.{CustomsOffice, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.document.{DocumentReferenceNumberPage, PreviousDocumentTypePage, TypePage}
-import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
+import pages.document._
+import pages.external._
 
 class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -113,9 +113,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
   }
 
   "SupportDocumentDomain userAnswersReader" - {
+    val documentGen = arbitrary[Document](arbitrarySupportDocument)
 
     "can be read from user answers" in {
-      val documentGen = arbitrary[Document](arbitrarySupportDocument)
       forAll(documentGen, nonEmptyString) {
         (document, referenceNumber) =>
           val userAnswers = emptyUserAnswers
@@ -136,9 +136,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
   }
 
   "TransportDocumentDomain userAnswersReader" - {
+    val documentGen = arbitrary[Document](arbitraryTransportDocument)
 
     "can be read from user answers" in {
-      val documentGen = arbitrary[Document](arbitraryTransportDocument)
       forAll(documentGen, nonEmptyString) {
         (document, referenceNumber) =>
           val userAnswers = emptyUserAnswers
@@ -159,17 +159,20 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
   }
 
   "PreviousDocumentDomain userAnswersReader" - {
+    val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
     "can be read from user answers" in {
-      val documentGen = arbitrary[Document](arbitraryPreviousDocument)
-      forAll(documentGen, nonEmptyString) {
-        (document, referenceNumber) =>
+      forAll(documentGen, nonEmptyString, nonEmptyString) {
+        (document, referenceNumber, goodsItemNumber) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+            .setValue(AddGoodsItemNumberYesNoPage(index), true)
+            .setValue(GoodsItemNumberPage(index), goodsItemNumber)
 
           val expectedResult = PreviousDocumentDomain(
             document = document,
-            referenceNumber = referenceNumber
+            referenceNumber = referenceNumber,
+            goodsItemNumber = Some(goodsItemNumber)
           )(index)
 
           val result: EitherType[PreviousDocumentDomain] = UserAnswersReader[PreviousDocumentDomain](
@@ -177,6 +180,37 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           ).run(userAnswers)
 
           result.value mustBe expectedResult
+      }
+    }
+
+    "can not be read from user answers" - {
+      "when add goods item number yes/no is unanswered" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+
+            val result: EitherType[PreviousDocumentDomain] = UserAnswersReader[PreviousDocumentDomain](
+              PreviousDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddGoodsItemNumberYesNoPage(index)
+        }
+      }
+
+      "when goods item number is unanswered" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+              .setValue(AddGoodsItemNumberYesNoPage(index), true)
+
+            val result: EitherType[PreviousDocumentDomain] = UserAnswersReader[PreviousDocumentDomain](
+              PreviousDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe GoodsItemNumberPage(index)
+        }
       }
     }
   }

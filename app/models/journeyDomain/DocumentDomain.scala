@@ -25,6 +25,7 @@ import pages.document._
 import pages.external._
 
 sealed trait DocumentDomain extends JourneyDomainModel {
+  val index: Index
   val document: Document
   val referenceNumber: String
 }
@@ -54,7 +55,7 @@ object DocumentDomain {
 case class SupportDocumentDomain(
   document: Document,
   referenceNumber: String
-)(index: Index)
+)(override val index: Index)
     extends DocumentDomain
 
 object SupportDocumentDomain {
@@ -69,7 +70,7 @@ object SupportDocumentDomain {
 case class TransportDocumentDomain(
   document: Document,
   referenceNumber: String
-)(index: Index)
+)(override val index: Index)
     extends DocumentDomain
 
 object TransportDocumentDomain {
@@ -83,8 +84,9 @@ object TransportDocumentDomain {
 
 case class PreviousDocumentDomain(
   document: Document,
-  referenceNumber: String
-)(index: Index)
+  referenceNumber: String,
+  goodsItemNumber: Option[String]
+)(override val index: Index)
     extends DocumentDomain
 
 object PreviousDocumentDomain {
@@ -92,6 +94,7 @@ object PreviousDocumentDomain {
   implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[PreviousDocumentDomain] =
     (
       UserAnswersReader(document),
-      DocumentReferenceNumberPage(index).reader
+      DocumentReferenceNumberPage(index).reader,
+      AddGoodsItemNumberYesNoPage(index).filterOptionalDependent(identity)(GoodsItemNumberPage(index).reader)
     ).tupled.map((PreviousDocumentDomain.apply _).tupled).map(_(index))
 }
