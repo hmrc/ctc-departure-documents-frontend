@@ -17,15 +17,16 @@
 package models.journeyDomain
 
 import cats.implicits._
-import models.DeclarationType.{T2, T2F}
+import models.DeclarationType._
 import models.DocumentType._
 import models.Index
 import models.reference.Document
-import pages.document.{PreviousDocumentTypePage, TypePage}
-import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
+import pages.document._
+import pages.external._
 
 sealed trait DocumentDomain extends JourneyDomainModel {
   val document: Document
+  val referenceNumber: String
 }
 
 object DocumentDomain {
@@ -51,31 +52,46 @@ object DocumentDomain {
 }
 
 case class SupportDocumentDomain(
-  document: Document
-) extends DocumentDomain
+  document: Document,
+  referenceNumber: String
+)(index: Index)
+    extends DocumentDomain
 
 object SupportDocumentDomain {
 
   implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[SupportDocumentDomain] =
-    UserAnswersReader(SupportDocumentDomain(document))
+    (
+      UserAnswersReader(document),
+      DocumentReferenceNumberPage(index).reader
+    ).tupled.map((SupportDocumentDomain.apply _).tupled).map(_(index))
 }
 
 case class TransportDocumentDomain(
-  document: Document
-) extends DocumentDomain
+  document: Document,
+  referenceNumber: String
+)(index: Index)
+    extends DocumentDomain
 
 object TransportDocumentDomain {
 
   implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[TransportDocumentDomain] =
-    UserAnswersReader(TransportDocumentDomain(document))
+    (
+      UserAnswersReader(document),
+      DocumentReferenceNumberPage(index).reader
+    ).tupled.map((TransportDocumentDomain.apply _).tupled).map(_(index))
 }
 
 case class PreviousDocumentDomain(
-  document: Document
-) extends DocumentDomain
+  document: Document,
+  referenceNumber: String
+)(index: Index)
+    extends DocumentDomain
 
 object PreviousDocumentDomain {
 
   implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[PreviousDocumentDomain] =
-    UserAnswersReader(PreviousDocumentDomain(document))
+    (
+      UserAnswersReader(document),
+      DocumentReferenceNumberPage(index).reader
+    ).tupled.map((PreviousDocumentDomain.apply _).tupled).map(_(index))
 }
