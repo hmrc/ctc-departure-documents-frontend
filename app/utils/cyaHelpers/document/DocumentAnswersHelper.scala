@@ -17,7 +17,7 @@
 package utils.cyaHelpers.document
 
 import config.FrontendAppConfig
-import models.reference.Document
+import models.reference._
 import models.{Index, Mode, UserAnswers}
 import pages.document._
 import play.api.i18n.Messages
@@ -36,5 +36,47 @@ class DocumentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "document.type",
     id = Some("change-type")
+  )
+
+  def previousDocumentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
+    page = PreviousDocumentTypePage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.previousDocumentType",
+    id = Some("change-previous-document-type")
+  )
+
+  def documentReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = DocumentReferenceNumberPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.documentReferenceNumber",
+    id = Some("change-document-reference-number")
+  )
+
+  def goodsItemNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddGoodsItemNumberYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.addGoodsItemNumberYesNo",
+    id = Some("change-add-goods-item-number")
+  )
+
+  def goodsItemNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = GoodsItemNumberPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.goodsItemNumber",
+    id = Some("change-reference-number")
+  )
+
+  def typeOfPackageYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddTypeOfPackageYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.addTypeOfPackageYesNo",
+    id = Some("change-add-type-of-package")
+  )
+
+  def packageType: Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+    page = PackageTypePage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.packageType",
+    id = Some("change-package-type")
   )
 }

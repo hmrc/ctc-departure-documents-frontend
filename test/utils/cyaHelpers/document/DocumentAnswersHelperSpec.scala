@@ -20,10 +20,10 @@ import base.SpecBase
 import controllers.document.routes._
 import generators.Generators
 import models.Mode
-import models.reference.Document
+import models.reference.{Document, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.document.TypePage
+import pages.document._
 
 class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -60,6 +60,222 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               action.href mustBe TypeController.onPageLoad(answers.lrn, mode, documentIndex).url
               action.visuallyHiddenText.get mustBe "document type"
               action.id mustBe "change-type"
+          }
+        }
+      }
+    }
+
+    "previousDocumentType" - {
+      "must return None" - {
+        "when previousDocumentType page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.previousDocumentType
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when previousDocumentType page is defined" in {
+          forAll(arbitrary[Mode], arbitrary[Document]) {
+            (mode, document) =>
+              val answers = emptyUserAnswers.setValue(PreviousDocumentTypePage(documentIndex), document)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.previousDocumentType.get
+
+              result.key.value mustBe "Document type"
+              result.value.value mustBe document.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PreviousDocumentTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "document type"
+              action.id mustBe "change-previous-document-type"
+          }
+        }
+      }
+    }
+
+    "documentReferenceNumber" - {
+      "must return None" - {
+        "when documentReferenceNumber page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.documentReferenceNumber
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when documentReferenceNumber page is defined" in {
+          forAll(arbitrary[Mode], arbitrary[String]) {
+            (mode, reference) =>
+              val answers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), reference)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.documentReferenceNumber.get
+
+              result.key.value mustBe "Document reference number"
+              result.value.value mustBe reference
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe DocumentReferenceNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "document reference number"
+              action.id mustBe "change-document-reference-number"
+          }
+        }
+      }
+    }
+
+    "goodsItemNumberYesNo" - {
+      "must return None" - {
+        "when AddGoodsItemNumberYesNo page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.goodsItemNumberYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddGoodsItemNumberYesNo page is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddGoodsItemNumberYesNoPage(documentIndex), true)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.goodsItemNumberYesNo.get
+
+              result.key.value mustBe "Do you want to add a goods item number?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddGoodsItemNumberYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to add a goods item number"
+              action.id mustBe "change-add-goods-item-number"
+          }
+        }
+      }
+    }
+
+    "goodsItemNumber" - {
+      "must return None" - {
+        "when GoodsItemNumber page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.goodsItemNumber
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when GoodsItemNumber page is defined" in {
+          forAll(arbitrary[Mode], arbitrary[String]) {
+            (mode, number) =>
+              val answers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), number)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.goodsItemNumber.get
+
+              result.key.value mustBe "Reference number"
+              result.value.value mustBe number
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe GoodsItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "reference number"
+              action.id mustBe "change-reference-number"
+          }
+        }
+      }
+    }
+
+    "typeOfPackageYesNo" - {
+      "must return None" - {
+        "when AddTypeOfPackageYesNo page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.typeOfPackageYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddTypeOfPackageYesNo page is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.typeOfPackageYesNo.get
+
+              result.key.value mustBe "Do you want to declare the package the goods arrived in?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddTypeOfPackageYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to declare the package the goods arrived in"
+              action.id mustBe "change-add-type-of-package"
+          }
+        }
+      }
+    }
+
+    "packageType" - {
+      "must return None" - {
+        "when PackageType page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.packageType
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when PackageType page is defined" in {
+          forAll(arbitrary[Mode], arbitrary[PackageType]) {
+            (mode, packageType) =>
+              val answers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.packageType.get
+
+              result.key.value mustBe "Package type"
+              result.value.value mustBe packageType.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PackageTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "package type"
+              action.id mustBe "change-package-type"
           }
         }
       }
