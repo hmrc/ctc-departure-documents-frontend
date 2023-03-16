@@ -17,6 +17,7 @@
 package pages.document
 
 import pages.behaviours.PageBehaviours
+import org.scalacheck.Arbitrary.arbitrary
 
 class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
 
@@ -28,6 +29,34 @@ class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddGoodsItemNumberYesNoPage(documentIndex))
 
-    // TODO Add test for clean up logic
+    "cleanup" - {
+      "when NO selected" - {
+        "must clean up goods item number page at document index" in {
+          forAll(arbitrary[String]) {
+            goodsItemNumber =>
+              val preChange = emptyUserAnswers
+                .setValue(GoodsItemNumberPage(documentIndex), goodsItemNumber)
+
+              val postChange = preChange.setValue(AddGoodsItemNumberYesNoPage(documentIndex), false)
+
+              postChange.get(GoodsItemNumberPage(documentIndex)) mustNot be(defined)
+          }
+        }
+      }
+
+      "when YES selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            goodsItemNumber =>
+              val preChange = emptyUserAnswers
+                .setValue(GoodsItemNumberPage(documentIndex), goodsItemNumber)
+
+              val postChange = preChange.setValue(AddGoodsItemNumberYesNoPage(documentIndex), true)
+
+              postChange.get(GoodsItemNumberPage(documentIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }
