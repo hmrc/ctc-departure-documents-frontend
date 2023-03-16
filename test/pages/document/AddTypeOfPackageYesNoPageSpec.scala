@@ -16,6 +16,8 @@
 
 package pages.document
 
+import models.reference.PackageType
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddTypeOfPackageYesNoPageSpec extends PageBehaviours {
@@ -28,6 +30,34 @@ class AddTypeOfPackageYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddTypeOfPackageYesNoPage(documentIndex))
 
-    // TODO: Add cleanup logic test
+    "cleanup" - {
+      "when NO selected" - {
+        "must clean up package type page at document index" in {
+          forAll(arbitrary[PackageType]) {
+            packageType =>
+              val preChange = emptyUserAnswers
+                .setValue(PackageTypePage(documentIndex), packageType)
+
+              val postChange = preChange.setValue(AddTypeOfPackageYesNoPage(documentIndex), false)
+
+              postChange.get(PackageTypePage(documentIndex)) mustNot be(defined)
+          }
+        }
+      }
+
+      "when YES selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[PackageType]) {
+            packageType =>
+              val preChange = emptyUserAnswers
+                .setValue(PackageTypePage(documentIndex), packageType)
+
+              val postChange = preChange.setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
+
+              postChange.get(PackageTypePage(documentIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }
