@@ -18,8 +18,7 @@ package models
 
 import base.SpecBase
 import generators.Generators
-import models.reference.{DocumentType, PackageType}
-import org.scalacheck.Arbitrary.arbitrary
+import models.reference.PackageType
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class PackageTypeListSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {

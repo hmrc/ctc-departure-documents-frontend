@@ -18,7 +18,7 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.PreviousDocumentTypeFormProvider
+import forms.DocumentFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.document.PreviousDocumentTypePage
@@ -26,7 +26,7 @@ import pages.external.TransitOperationDeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.PreviousDocumentService
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.PreviousDocumentTypeView
 
@@ -39,8 +39,8 @@ class PreviousDocumentTypeController @Inject() (
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: PreviousDocumentTypeFormProvider,
-  service: PreviousDocumentService,
+  formProvider: DocumentFormProvider,
+  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
 )(implicit ec: ExecutionContext)
@@ -54,7 +54,7 @@ class PreviousDocumentTypeController @Inject() (
     .andThen(getMandatoryPage(TransitOperationDeclarationTypePage))
     .async {
       implicit request =>
-        service.getPreviousDocumentTypes().map {
+        service.getPreviousDocuments().map {
           previousDocumentTypeList =>
             val form = formProvider(prefix, previousDocumentTypeList)
             val preparedForm = request.userAnswers.get(PreviousDocumentTypePage(documentIndex)) match {
@@ -62,7 +62,7 @@ class PreviousDocumentTypeController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, previousDocumentTypeList.previousDocumentTypes, mode, request.arg, documentIndex))
+            Ok(view(preparedForm, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))
         }
     }
 
@@ -71,14 +71,14 @@ class PreviousDocumentTypeController @Inject() (
     .andThen(getMandatoryPage(TransitOperationDeclarationTypePage))
     .async {
       implicit request =>
-        service.getPreviousDocumentTypes().flatMap {
+        service.getPreviousDocuments().flatMap {
           previousDocumentTypeList =>
             val form = formProvider(prefix, previousDocumentTypeList)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.previousDocumentTypes, mode, request.arg, documentIndex))),
+                  Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

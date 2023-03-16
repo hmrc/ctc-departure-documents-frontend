@@ -18,7 +18,8 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
-import models.reference.{DocumentType, PreviousDocumentType}
+import models.DocumentType._
+import models.reference.Document
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -62,54 +63,54 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |  },
       |  {
       |    "code": "2",
-      |    "transportDocument": false,
+      |    "transportDocument": true,
       |    "description": "Certificate of conformity"
       |  }
       |]
       |""".stripMargin
 
-  "getPreviousDocumentType" - {
+  "getPreviousDocuments" - {
 
-    "must return list of previous document types when successful" in {
+    "must return list of previous documents when successful" in {
       server.stubFor(
         get(urlEqualTo(s"/$baseUrl/previous-document-types"))
           .willReturn(okJson(previousDocumentJson))
       )
 
       val expectResult = Seq(
-        PreviousDocumentType("1", Some("Certificate of quality")),
-        PreviousDocumentType("4", None)
+        Document(Previous, "1", Some("Certificate of quality")),
+        Document(Previous, "4", None)
       )
 
-      connector.getPreviousReferencesDocumentTypes().futureValue mustEqual expectResult
+      connector.getPreviousDocuments().futureValue mustEqual expectResult
     }
 
     "must return an exception when an error response is returned" in {
 
-      checkErrorResponse(s"/$baseUrl/previous-document-types", connector.getPreviousReferencesDocumentTypes())
+      checkErrorResponse(s"/$baseUrl/previous-document-types", connector.getPreviousDocuments())
     }
 
   }
 
-  "getDocumentType" - {
+  "getDocuments" - {
 
-    "must return list of document types when successful" in {
+    "must return list of documents when successful" in {
       server.stubFor(
         get(urlEqualTo(s"/$baseUrl/document-types"))
           .willReturn(okJson(documentJson))
       )
 
       val expectResult = Seq(
-        DocumentType("18", "Movement certificate A.TR.1", transportDocument = false),
-        DocumentType("2", "Certificate of conformity", transportDocument = false)
+        Document(Support, "18", Some("Movement certificate A.TR.1")),
+        Document(Transport, "2", Some("Certificate of conformity"))
       )
 
-      connector.getDocumentTypes().futureValue mustEqual expectResult
+      connector.getDocuments().futureValue mustEqual expectResult
     }
 
     "must return an exception when an error response is returned" in {
 
-      checkErrorResponse(s"/$baseUrl/document-type", connector.getDocumentTypes())
+      checkErrorResponse(s"/$baseUrl/document-type", connector.getDocuments())
     }
 
   }

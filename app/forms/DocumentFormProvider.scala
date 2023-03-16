@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package services
+package forms
 
-import connectors.ReferenceDataConnector
-import models.DocumentTypeList
-import models.reference.DocumentType
-import uk.gov.hmrc.http.HeaderCarrier
+import forms.mappings.Mappings
+import models.DocumentList
+import models.reference.Document
+import play.api.data.Form
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class DocumentFormProvider @Inject() extends Mappings {
 
-  def getDocumentTypes()(implicit hc: HeaderCarrier): Future[DocumentTypeList] =
-    referenceDataConnector
-      .getDocumentTypes()
-      .map(sort)
-
-  private def sort(documentTypes: Seq[DocumentType]): DocumentTypeList =
-    DocumentTypeList(documentTypes.sortBy(_.description.toLowerCase))
+  def apply(prefix: String, documentList: DocumentList): Form[Document] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(s"$prefix.error.required", value => documentList.documents.exists(_.code == value))
+        .transform[Document](value => documentList.getDocument(value).get, _.code)
+    )
 }

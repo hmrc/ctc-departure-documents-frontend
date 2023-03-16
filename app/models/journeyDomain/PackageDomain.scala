@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package models.journeyDomain
 
-import models.reference.PreviousDocumentType
+import cats.implicits._
+import models.Index
+import models.reference.PackageType
+import pages.document.PackageTypePage
 
-case class PreviousDocumentTypeList(previousDocumentTypes: Seq[PreviousDocumentType]) {
+case class PackageDomain(
+  `type`: PackageType,
+  numberOfPackages: Int
+)
 
-  def getPreviousReferencesDocumentType(code: String): Option[PreviousDocumentType] =
-    previousDocumentTypes.find(_.code == code)
+object PackageDomain {
+
+  implicit def userAnswersReader(index: Index): UserAnswersReader[PackageDomain] =
+    (
+      PackageTypePage(index).reader,
+      UserAnswersReader(0)
+    ).tupled.map((PackageDomain.apply _).tupled)
 }

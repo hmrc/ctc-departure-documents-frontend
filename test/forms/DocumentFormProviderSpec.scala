@@ -17,21 +17,21 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.PreviousDocumentTypeList
-import play.api.data.FormError
 import generators.Generators
+import models.DocumentList
 import org.scalacheck.Gen
+import play.api.data.FormError
 
-class PreviousDocumentTypeFormProviderSpec extends FormSpec with StringFieldBehaviours with Generators {
+class DocumentFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
 
-  private val previousDocumentType1    = arbitraryPreviousDocumentType.arbitrary.sample.get
-  private val previousDocumentType2    = arbitraryPreviousDocumentType.arbitrary.sample.get
-  private val previousDocumentTypeList = PreviousDocumentTypeList(Seq(previousDocumentType1, previousDocumentType2))
+  private val documentType1    = arbitraryDocument.arbitrary.sample.value
+  private val documentType2    = arbitraryDocument.arbitrary.sample.value
+  private val documentTypeList = DocumentList(Seq(documentType1, documentType2))
 
-  private val form = new PreviousDocumentTypeFormProvider()(prefix, previousDocumentTypeList)
+  private val form = new DocumentFormProvider()(prefix, documentTypeList)
 
   ".value" - {
 
@@ -49,14 +49,14 @@ class PreviousDocumentTypeFormProviderSpec extends FormSpec with StringFieldBeha
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if previousDocumentType code does not exist in the previousDocumentTypeList" in {
+    "not bind if documentType id does not exist in the documentTypeList" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a previousDocumentType id which is in the list" in {
-      val boundForm = form.bind(Map("value" -> previousDocumentType1.code))
+    "bind a documentType id which is in the list" in {
+      val boundForm = form.bind(Map("value" -> documentType1.code))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

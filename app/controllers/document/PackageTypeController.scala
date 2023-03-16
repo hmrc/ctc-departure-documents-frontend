@@ -25,7 +25,7 @@ import pages.document.PackageTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.PreviousDocumentService
+import services.PackagesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.PackageTypeView
 
@@ -38,7 +38,7 @@ class PackageTypeController @Inject() (
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   formProvider: PackageTypeFormProvider,
-  service: PreviousDocumentService,
+  service: PackagesService,
   val controllerComponents: MessagesControllerComponents,
   view: PackageTypeView
 )(implicit ec: ExecutionContext)

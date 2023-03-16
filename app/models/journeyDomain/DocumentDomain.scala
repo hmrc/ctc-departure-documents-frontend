@@ -16,16 +16,87 @@
 
 package models.journeyDomain
 
+import cats.implicits._
+import models.DeclarationType._
+import models.DocumentType._
 import models.Index
-import models.reference.PreviousDocumentType
-import pages.document.PreviousDocumentTypePage
+import models.reference.Document
+import pages.document._
+import pages.external._
 
-case class DocumentDomain(
-  previousDocumentType: PreviousDocumentType
-) extends JourneyDomainModel
+sealed trait DocumentDomain extends JourneyDomainModel {
+  val index: Index
+  val document: Document
+  val referenceNumber: String
+}
 
 object DocumentDomain {
 
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
-    PreviousDocumentTypePage(documentIndex).reader.map(DocumentDomain.apply)
+    (
+      TransitOperationOfficeOfDeparturePage.reader,
+      TransitOperationDeclarationTypePage.reader
+    ).flatMapN {
+      case (customsOffice, T2 | T2F) if documentIndex.isFirst && customsOffice.isInGB =>
+        PreviousDocumentTypePage(documentIndex).reader
+          .flatMap(PreviousDocumentDomain.userAnswersReader(documentIndex, _).widen[DocumentDomain])
+      case _ =>
+        TypePage(documentIndex).reader.flatMap {
+          document =>
+            document.`type` match {
+              case Support   => SupportDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+              case Transport => TransportDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+              case Previous  => PreviousDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+            }
+        }
+    }
+}
+
+case class SupportDocumentDomain(
+  document: Document,
+  referenceNumber: String
+)(override val index: Index)
+    extends DocumentDomain
+
+object SupportDocumentDomain {
+
+  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[SupportDocumentDomain] =
+    (
+      UserAnswersReader(document),
+      DocumentReferenceNumberPage(index).reader
+    ).tupled.map((SupportDocumentDomain.apply _).tupled).map(_(index))
+}
+
+case class TransportDocumentDomain(
+  document: Document,
+  referenceNumber: String
+)(override val index: Index)
+    extends DocumentDomain
+
+object TransportDocumentDomain {
+
+  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[TransportDocumentDomain] =
+    (
+      UserAnswersReader(document),
+      DocumentReferenceNumberPage(index).reader
+    ).tupled.map((TransportDocumentDomain.apply _).tupled).map(_(index))
+}
+
+case class PreviousDocumentDomain(
+  document: Document,
+  referenceNumber: String,
+  goodsItemNumber: Option[String],
+  `package`: Option[PackageDomain]
+)(override val index: Index)
+    extends DocumentDomain
+
+object PreviousDocumentDomain {
+
+  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[PreviousDocumentDomain] =
+    (
+      UserAnswersReader(document),
+      DocumentReferenceNumberPage(index).reader,
+      AddGoodsItemNumberYesNoPage(index).filterOptionalDependent(identity)(GoodsItemNumberPage(index).reader),
+      AddTypeOfPackageYesNoPage(index).filterOptionalDependent(identity)(PackageDomain.userAnswersReader(index))
+    ).tupled.map((PreviousDocumentDomain.apply _).tupled).map(_(index))
 }

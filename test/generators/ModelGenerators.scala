@@ -16,8 +16,9 @@
 
 package generators
 
+import config.Constants.{GB, XI}
 import models._
-import models.reference.{DocumentType, PackageType, PreviousDocumentType}
+import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -57,14 +58,6 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
-  implicit lazy val arbitraryPreviousDocumentType: Arbitrary[PreviousDocumentType] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
-      } yield PreviousDocumentType(code, desc)
-    }
-
   implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
     Arbitrary {
       for {
@@ -73,22 +66,83 @@ trait ModelGenerators {
       } yield PackageType(code, desc)
     }
 
-  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
+  implicit lazy val arbitraryDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        documentType <- arbitrary[DocumentType]
+        code         <- nonEmptyString
+        desc         <- Gen.option(nonEmptyString)
+      } yield Document(documentType, code, desc)
+    }
+
+  lazy val arbitraryTransportDocument: Arbitrary[Document] =
     Arbitrary {
       for {
         code <- nonEmptyString
-        desc <- nonEmptyString
-        doc  <- arbitrary[Boolean]
-      } yield DocumentType(code, desc, doc)
+        desc <- Gen.option(nonEmptyString)
+      } yield Document(DocumentType.Transport, code, desc)
     }
 
-  implicit lazy val arbitraryPreviousDocumentTypeList: Arbitrary[PreviousDocumentTypeList] = Arbitrary {
-    for {
-      previousDocumentType <- listWithMaxLength[PreviousDocumentType]()
-    } yield PreviousDocumentTypeList(previousDocumentType.distinctBy(_.code))
-  }
+  lazy val arbitrarySupportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield Document(DocumentType.Support, code, desc)
+    }
+
+  lazy val arbitraryPreviousDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield Document(DocumentType.Previous, code, desc)
+    }
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(id, name, phoneNumber)
+    }
+
+  lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(s"$GB$id", name, phoneNumber)
+    }
+
+  lazy val arbitraryXiCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- stringsWithMaxLength(stringMaxLength)
+        name        <- stringsWithMaxLength(stringMaxLength)
+        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
+      } yield CustomsOffice(s"$XI$id", name, phoneNumber)
+    }
+
+  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+    Arbitrary {
+      Gen.oneOf(DeclarationType.values)
+    }
+
+  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
+    Arbitrary {
+      Gen.oneOf(DocumentType.values)
+    }
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
+  }
+
+  implicit lazy val arbitraryDocumentList: Arbitrary[DocumentList] = Arbitrary {
+    for {
+      countries <- listWithMaxLength[Document]()
+    } yield DocumentList(countries.distinctBy(_.code))
   }
 }

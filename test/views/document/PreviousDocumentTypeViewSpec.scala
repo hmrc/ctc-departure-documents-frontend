@@ -16,25 +16,26 @@
 
 package views.document
 
-import forms.PreviousDocumentTypeFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.{DeclarationType, NormalMode, PreviousDocumentTypeList}
-import models.reference.PreviousDocumentType
-import org.scalacheck.{Arbitrary, Gen}
+import forms.DocumentFormProvider
+import models.reference.Document
+import models.{DeclarationType, DocumentList, NormalMode}
+import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputSelectViewBehaviours
 import views.html.document.PreviousDocumentTypeView
 
-class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[PreviousDocumentType] {
+class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[Document] {
 
-  private val declarationType = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F).sample.get
+  private val declarationType = arbitrary[DeclarationType].sample.get
 
-  override def form: Form[PreviousDocumentType] = new PreviousDocumentTypeFormProvider()(prefix, PreviousDocumentTypeList(values))
+  override def form: Form[Document] = new DocumentFormProvider()(prefix, DocumentList(values))
 
-  override def applyView(form: Form[PreviousDocumentType]): HtmlFormat.Appendable =
+  override def applyView(form: Form[Document]): HtmlFormat.Appendable =
     injector.instanceOf[PreviousDocumentTypeView].apply(form, lrn, values, NormalMode, declarationType, documentIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[PreviousDocumentType] = arbitraryPreviousDocumentType
+  implicit override val arbitraryT: Arbitrary[Document] = arbitraryPreviousDocument
 
   override val prefix: String = "document.previousDocumentType"
 

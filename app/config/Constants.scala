@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package config
 
-import models.reference.DocumentType
-
-case class DocumentTypeList(documentTypes: Seq[DocumentType]) {
-
-  def getDocumentType(code: String): Option[DocumentType] =
-    documentTypes.find(_.code == code)
-
+object Constants {
+  val GB = "GB"
+  val XI = "XI"
 }

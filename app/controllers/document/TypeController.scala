@@ -18,14 +18,14 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentTypeFormProvider
+import forms.DocumentFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.DocumentTypesService
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.TypeView
 
@@ -37,8 +37,8 @@ class TypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
-  formProvider: DocumentTypeFormProvider,
-  service: DocumentTypesService,
+  formProvider: DocumentFormProvider,
+  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView
 )(implicit ec: ExecutionContext)
@@ -49,27 +49,27 @@ class TypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocumentTypes().map {
-        documentTypeList =>
-          val form = formProvider(prefix, documentTypeList)
+      service.getDocuments().map {
+        documentList =>
+          val form = formProvider(prefix, documentList)
           val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, documentTypeList.documentTypes, mode, documentIndex))
+          Ok(view(preparedForm, lrn, documentList.documents, mode, documentIndex))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocumentTypes().flatMap {
-        documentTypeList =>
-          val form = formProvider(prefix, documentTypeList)
+      service.getDocuments().flatMap {
+        documentList =>
+          val form = formProvider(prefix, documentList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentTypeList.documentTypes, mode, documentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.documents, mode, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 TypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

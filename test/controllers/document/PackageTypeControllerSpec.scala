@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.PreviousDocumentService
+import services.PackagesService
 import views.html.document.PackageTypeView
 
 import scala.concurrent.Future
@@ -43,14 +43,14 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val form         = formProvider("document.packageType", packageTypeList)
   private val mode         = NormalMode
 
-  private val mockPreviousDocumentService: PreviousDocumentService = mock[PreviousDocumentService]
-  private lazy val packageTypeRoute                                = routes.PackageTypeController.onPageLoad(lrn, mode, documentIndex).url
+  private val mockPreviousDocumentService: PackagesService = mock[PackagesService]
+  private lazy val packageTypeRoute                        = routes.PackageTypeController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
-      .overrides(bind(classOf[PreviousDocumentService]).toInstance(mockPreviousDocumentService))
+      .overrides(bind(classOf[PackagesService]).toInstance(mockPreviousDocumentService))
 
   "PackageType Controller" - {
 

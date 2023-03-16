@@ -16,17 +16,17 @@
 
 package pages.document
 
-import models.reference.PreviousDocumentType
+import models.reference.Document
 import pages.behaviours.PageBehaviours
 
 class PreviousDocumentTypePageSpec extends PageBehaviours {
 
   "PreviousDocumentTypePage" - {
 
-    beRetrievable[PreviousDocumentType](PreviousDocumentTypePage(documentIndex))
+    beRetrievable[Document](PreviousDocumentTypePage(documentIndex))
 
-    beSettable[PreviousDocumentType](PreviousDocumentTypePage(documentIndex))
+    beSettable[Document](PreviousDocumentTypePage(documentIndex))
 
-    beRemovable[PreviousDocumentType](PreviousDocumentTypePage(documentIndex))
+    beRemovable[Document](PreviousDocumentTypePage(documentIndex))
   }
 }

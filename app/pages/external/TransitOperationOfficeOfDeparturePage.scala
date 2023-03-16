@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.external
 
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import models.reference.CustomsOffice
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
-case class PreviousDocumentType(code: String, description: Option[String]) extends Selectable {
+case object TransitOperationOfficeOfDeparturePage extends ReadOnlyPage[CustomsOffice] {
 
-  override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"($code) $value"
-    case _                                  => code
-  }
+  override def path: JsPath = preTaskListPath \ toString
 
-  override val value: String = code
-}
-
-object PreviousDocumentType {
-  implicit val format: OFormat[PreviousDocumentType] = Json.format[PreviousDocumentType]
+  override def toString: String = "officeOfDeparture"
 }

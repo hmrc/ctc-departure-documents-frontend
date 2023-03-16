@@ -16,15 +16,18 @@
 
 package models.reference
 
+import config.Constants.GB
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class DocumentType(code: String, description: String, transportDocument: Boolean) extends Selectable {
-  override def toString: String = s"($code) $description"
+case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
+  override def toString: String = s"$name ($id)"
 
-  override val value: String = code
+  def isInGB: Boolean = id.startsWith(GB)
+
+  override val value: String = id
 }
 
-object DocumentType {
-  implicit val format: OFormat[DocumentType] = Json.format[DocumentType]
+object CustomsOffice {
+  implicit val format: OFormat[CustomsOffice] = Json.format[CustomsOffice]
 }

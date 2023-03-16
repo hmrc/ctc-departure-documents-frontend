@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package pages.document
+package models
 
-import controllers.document.routes
 import models.reference.Document
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.DocumentSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class PreviousDocumentTypePage(documentIndex: Index) extends QuestionPage[Document] {
+case class DocumentList(documents: Seq[Document]) {
 
-  override def path: JsPath = DocumentSection(documentIndex).path \ toString
+  def getDocument(code: String): Option[Document] =
+    documents.find(_.code == code)
 
-  override def toString: String = "previousDocumentType"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }
