@@ -21,8 +21,6 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-import java.time.LocalDate
-
 private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatAsYesOrNo(answer: Boolean): Content =
@@ -33,12 +31,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     }
 
   protected def formatAsText[T](answer: T): Content = s"$answer".toText
-
-  protected def formatEnumAsText[T](messageKeyPrefix: String)(answer: T): Content =
-    formatEnumAsString(messageKeyPrefix)(answer).toText
-
-  protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
-    messages(s"$messageKeyPrefix.$answer")
 
   protected def buildRow(
     prefix: String,
@@ -54,19 +46,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
       id = id,
       call = Some(call),
       args = args: _*
-    )
-
-  protected def buildRowWithNoChangeLink(
-    prefix: String,
-    answer: Content,
-    args: Any*
-  ): SummaryListRow =
-    buildSimpleRow(
-      prefix = prefix,
-      label = messages(s"$prefix.checkYourAnswersLabel", args: _*),
-      answer = answer,
-      id = None,
-      call = None
     )
 
   protected def buildSimpleRow(
