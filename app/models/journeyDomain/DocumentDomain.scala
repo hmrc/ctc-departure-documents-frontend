@@ -19,18 +19,25 @@ package models.journeyDomain
 import cats.implicits._
 import models.DeclarationType._
 import models.DocumentType._
-import models.Index
+import models.{Index, Mode, UserAnswers}
 import models.reference.Document
 import pages.document._
 import pages.external._
+import play.api.mvc.Call
 
 sealed trait DocumentDomain extends JourneyDomainModel {
   val index: Index
   val document: Document
   val referenceNumber: String
+
+  def asString = DocumentDomain.asString(document, referenceNumber)
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(Call("GET", "#")) //TODO - change to documents CYA page when built
 }
 
 object DocumentDomain {
+
+  def asString(document: Document, referenceNumber: String) = s"${document.toString} - $referenceNumber"
 
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
     (
