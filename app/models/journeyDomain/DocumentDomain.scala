@@ -32,7 +32,9 @@ sealed trait DocumentDomain extends JourneyDomainModel {
 
   def asString = DocumentDomain.asString(document, referenceNumber)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(Call("GET", "#")) //TODO - change to documents CYA page when built
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+    Call("GET", "#")
+  ) //TODO - change to documents CYA page when built
 }
 
 object DocumentDomain {
