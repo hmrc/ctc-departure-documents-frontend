@@ -17,11 +17,17 @@
 package utils.cyaHelpers
 
 import config.FrontendAppConfig
-import models.{LocalReferenceNumber, Mode, UserAnswers}
+import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.Stage.AccessingJourney
+import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
+import pages.sections.Section
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{JsArray, Reads}
+import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
+import viewModels.ListItem
 
 class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends SummaryListRowHelper {
 
@@ -44,4 +50,46 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
       call = call,
       args = args: _*
     )
+
+  protected def buildListItems(
+    section: Section[JsArray]
+  )(block: Index => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
+    userAnswers
+      .get(section)
+      .mapWithIndex {
+        (_, index) => block(index)
+      }
+
+  protected def buildListItem[A <: JourneyDomainModel](
+    nameWhenComplete: A => String,
+    nameWhenInProgress: => Option[String],
+    removeRoute: Option[Call]
+  )(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ListItem, ListItem]] =
+    userAnswersReader.run(userAnswers) match {
+      case Left(readerError) =>
+        readerError.page.route(userAnswers, mode).flatMap {
+          changeRoute =>
+            nameWhenInProgress
+              .map {
+                name =>
+                  ListItem(
+                    name = name,
+                    changeUrl = changeRoute.url,
+                    removeUrl = removeRoute.map(_.url)
+                  )
+              }
+              .map(Left(_))
+        }
+      case Right(journeyDomainModel) =>
+        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
+          changeRoute =>
+            Right(
+              ListItem(
+                name = nameWhenComplete(journeyDomainModel),
+                changeUrl = changeRoute.url,
+                removeUrl = removeRoute.map(_.url)
+              )
+            )
+        }
+    }
 }
