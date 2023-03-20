@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.cyaHelpers.document
+package utils.cyaHelpers
 
 import config.FrontendAppConfig
 import models.journeyDomain.DocumentDomain
@@ -23,7 +23,6 @@ import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
 class DocumentsAnswersHelper(

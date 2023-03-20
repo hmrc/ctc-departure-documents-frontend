@@ -71,3 +71,11 @@ document.packageType.placeholder = Select a package type
 document.packageType.checkYourAnswersLabel = Package type
 document.packageType.change.hidden = package type
 document.packageType.error.required = Select the type of package the goods arrived in
+
+addAnotherDocument.singular.title = You have added {0} document
+addAnotherDocument.singular.heading = You have added {0} document
+addAnotherDocument.plural.title = You have added {0} documents
+addAnotherDocument.plural.heading = You have added {0} documents
+addAnotherDocument.error.required =  Select yes if you want to add another document
+addAnotherDocument.label = Do you want to add another document?
+addAnotherDocument.maxLimit.label = You cannot add any more documents. To add another, you need to remove one first.

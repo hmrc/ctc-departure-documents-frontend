@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.cyaHelpers.document
+package utils.cyaHelpers
 
 import base.SpecBase
 import generators.Generators
