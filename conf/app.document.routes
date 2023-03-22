@@ -33,3 +33,8 @@ GET        /:documentIndex/previous/package/:lrn                          contro
 POST       /:documentIndex/previous/package/:lrn                          controllers.document.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-package/:lrn                   controllers.document.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-package/:lrn                   controllers.document.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/supporting/line-item-number/:lrn               controllers.document.LineItemNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/supporting/line-item-number/:lrn               controllers.document.LineItemNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/supporting/change-line-item-number/:lrn        controllers.document.LineItemNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/supporting/change-line-item-number/:lrn        controllers.document.LineItemNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)

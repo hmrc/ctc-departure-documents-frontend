@@ -17,7 +17,7 @@
 package base
 
 import controllers.actions._
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -67,6 +67,9 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected val fakeDocumentsNavigatorProvider: DocumentsNavigatorProvider =
     (mode: Mode) => new FakeDocumentsNavigator(onwardRoute, mode)
+
+  protected val fakeDocumentNavigatorProvider: DocumentNavigatorProvider =
+    (mode: Mode, index: Index) => new FakeDocumentNavigator(onwardRoute, mode, index)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
