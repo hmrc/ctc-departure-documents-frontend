@@ -79,3 +79,7 @@ addAnotherDocument.plural.heading = You have added {0} documents
 addAnotherDocument.error.required =  Select yes if you want to add another document
 addAnotherDocument.label = Do you want to add another document?
 addAnotherDocument.maxLimit.label = You cannot add any more documents. To add another, you need to remove one first.
+document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of goods?
+document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of goods?
+document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to declare the quantity of goods?
+document.declareQuantityOfGoodsYesNo.error.required = Select yes if Do you want to declare the quantity of goods?
