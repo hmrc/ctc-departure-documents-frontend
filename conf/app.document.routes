@@ -34,7 +34,7 @@ POST       /:documentIndex/previous/package/:lrn                          contro
 GET        /:documentIndex/previous/change-package/:lrn                   controllers.document.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-package/:lrn                   controllers.document.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 
-GET        /document/do-you-want-to-add-a-line-item-number/:lrn                        controllers.document.AddSupportingItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /document/do-you-want-to-add-a-line-item-number/:lrn                        controllers.document.AddSupportingItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /document/change-do-you-want-to-add-a-line-item-number/:lrn                 controllers.document.AddSupportingItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /document/change-do-you-want-to-add-a-line-item-number/:lrn                 controllers.document.AddSupportingItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:documentIndex/supporting/line-item-number/add/:lrn           controllers.document.AddSupportingItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/supporting/line-item-number/add/:lrn           controllers.document.AddSupportingItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/supporting/change-line-item-number/add/:lrn    controllers.document.AddSupportingItemNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/supporting/change-line-item-number/add/:lrn    controllers.document.AddSupportingItemNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
