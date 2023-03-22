@@ -78,6 +78,14 @@ document.addLineItemNumberYesNo.checkYourAnswersLabel = Line item number
 document.addLineItemNumberYesNo.change.hidden = line item number
 document.addLineItemNumberYesNo.error.required = Select yes if you want to add a line item number
 
+document.lineItemNumber.title = What is the line item number?
+document.lineItemNumber.heading = What is the line item number?
+document.lineItemNumber.hint = This can be up to 5 numbers long.
+document.lineItemNumber.error.nonNumeric = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.required = Enter the line item number
+document.lineItemNumber.error.wholeNumber = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.maximum = The line item number must be 5 characters or less
+
 addAnotherDocument.singular.title = You have added {0} document
 addAnotherDocument.singular.heading = You have added {0} document
 addAnotherDocument.plural.title = You have added {0} documents

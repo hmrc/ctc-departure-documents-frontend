@@ -18,52 +18,52 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.YesNoFormProvider
+import forms.Constants.maxLineItemNumber
+import forms.IntFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.AddLineItemNumberYesNoPage
+import pages.document.LineItemNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.document.AddLineItemNumberYesNoView
+import views.html.document.LineItemNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddLineItemNumberYesNoController @Inject() (
+class LineItemNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
+  formProvider: IntFormProvider,
   actions: Actions,
-  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddLineItemNumberYesNoView
+  view: LineItemNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("document.addLineItemNumberYesNo")
+  private val form = formProvider("document.lineItemNumber", maxLineItemNumber)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddLineItemNumberYesNoPage(documentIndex)) match {
+      val preparedForm = request.userAnswers.get(LineItemNumberPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, lrn, mode, documentIndex))
+      Ok(view(preparedForm, lrn, mode, index))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            AddLineItemNumberYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            LineItemNumberPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

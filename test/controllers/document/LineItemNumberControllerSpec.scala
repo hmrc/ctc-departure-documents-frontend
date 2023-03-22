@@ -17,77 +17,78 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
+import forms.IntFormProvider
 import models.NormalMode
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.document.AddLineItemNumberYesNoPage
+import pages.document.LineItemNumberPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.document.AddLineItemNumberYesNoView
+import views.html.document.LineItemNumberView
 
 import scala.concurrent.Future
 
-class AddLineItemNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class LineItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                     = new YesNoFormProvider()
-  private val form                             = formProvider("document.addLineItemNumberYesNo")
-  private val mode                             = NormalMode
-  private lazy val addLineItemNumberYesNoRoute = routes.AddLineItemNumberYesNoController.onPageLoad(lrn, mode, documentIndex).url
+  private val formProvider             = new IntFormProvider()
+  private val form                     = formProvider("document.lineItemNumber", 99999)
+  private val mode                     = NormalMode
+  private val validAnswer              = 1
+  private lazy val lineItemNumberRoute = routes.LineItemNumberController.onPageLoad(lrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
-  "AddLineItemNumberYesNo Controller" - {
+  "LineItemNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addLineItemNumberYesNoRoute)
-      val result  = route(app, request).value
+      val request = FakeRequest(GET, lineItemNumberRoute)
 
-      val view = injector.instanceOf[AddLineItemNumberYesNoView]
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[LineItemNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, documentIndex)(request, messages).toString
+        view(form, lrn, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddLineItemNumberYesNoPage(documentIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(LineItemNumberPage(index), validAnswer)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addLineItemNumberYesNoRoute)
+      val request = FakeRequest(GET, lineItemNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
-      val view = injector.instanceOf[AddLineItemNumberYesNoView]
+      val view = injector.instanceOf[LineItemNumberView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addLineItemNumberYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, lineItemNumberRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
@@ -100,24 +101,26 @@ class AddLineItemNumberYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addLineItemNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val invalidAnswer = ""
+
+      val request    = FakeRequest(POST, lineItemNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddLineItemNumberYesNoView]
+      val view = injector.instanceOf[LineItemNumberView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addLineItemNumberYesNoRoute)
+      val request = FakeRequest(GET, lineItemNumberRoute)
 
       val result = route(app, request).value
 
@@ -130,8 +133,8 @@ class AddLineItemNumberYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addLineItemNumberYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, lineItemNumberRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
