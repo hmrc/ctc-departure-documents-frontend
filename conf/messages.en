@@ -74,8 +74,8 @@ document.packageType.error.required = Select the type of package the goods arriv
 
 document.addLineItemNumberYesNo.title = Do you want to add a line item number?
 document.addLineItemNumberYesNo.heading = Do you want to add a line item number?
-document.addLineItemNumberYesNo.checkYourAnswersLabel = Line item number
-document.addLineItemNumberYesNo.change.hidden = line item number
+document.addLineItemNumberYesNo.checkYourAnswersLabel = Do you want to add a line item number to the document?
+document.addLineItemNumberYesNo.change.hidden = if you want to add a line item number to the document
 document.addLineItemNumberYesNo.error.required = Select yes if you want to add a line item number
 
 document.lineItemNumber.title = What is the line item number?
