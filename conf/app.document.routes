@@ -38,3 +38,8 @@ GET        /:documentIndex/supporting/line-item-number/:lrn               contro
 POST       /:documentIndex/supporting/line-item-number/:lrn               controllers.document.LineItemNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/supporting/change-line-item-number/:lrn        controllers.document.LineItemNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/supporting/change-line-item-number/:lrn        controllers.document.LineItemNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/previous/quantity/add/:lrn                     controllers.document.DeclareQuantityOfGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/quantity/add/:lrn                     controllers.document.DeclareQuantityOfGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/quantity/change-add/:lrn              controllers.document.DeclareQuantityOfGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/quantity/change-add/:lrn              controllers.document.DeclareQuantityOfGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
