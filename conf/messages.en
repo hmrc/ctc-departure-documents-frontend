@@ -74,6 +74,7 @@ document.packageType.error.required = Select the type of package the goods arriv
 
 document.lineItemNumber.title = What is the line item number?
 document.lineItemNumber.heading = What is the line item number?
+document.lineItemNumber.hint = This can be up to 5 numbers long.
 document.lineItemNumber.error.nonNumeric = The line item number must only include numbers 0 to 9
 document.lineItemNumber.error.required = Enter the line item number
 document.lineItemNumber.error.wholeNumber = The line item number must only include numbers 0 to 9

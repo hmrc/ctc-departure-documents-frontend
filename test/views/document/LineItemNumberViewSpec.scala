@@ -42,9 +42,11 @@ class LineItemNumberViewSpec extends InputTextViewBehaviours[Int] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This can be up to 5 numbers long.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
