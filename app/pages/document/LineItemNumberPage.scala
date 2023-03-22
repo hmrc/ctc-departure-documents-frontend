@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.document
 
-import config.FrontendAppConfig
+import controllers.document.routes
 import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-}
+case class LineItemNumberPage(index: Index) extends QuestionPage[Int] {
 
-class FakeDocumentsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends DocumentsNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-}
+  override def path: JsPath = DocumentDetailsSection(index).path \ toString
 
-class FakeDocumentNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig) extends DocumentNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def toString: String = "lineItemNumber"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.LineItemNumberController.onPageLoad(userAnswers.lrn, mode, index))
 }

@@ -16,8 +16,16 @@
 
 package forms
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int = 70
-  lazy val goodsItemNumberLength: Int      = 5
-  lazy val maxLineItemNumber: Int          = 99999
+import javax.inject.Inject
+
+import forms.mappings.Mappings
+import play.api.data.Form
+
+class IntFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, maximum: Int): Form[Int] =
+    Form(
+      "value" -> int(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.nonNumeric")
+        .verifying(maximumValue(maximum, s"$prefix.error.maximum"))
+    )
 }

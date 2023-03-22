@@ -72,6 +72,14 @@ document.packageType.checkYourAnswersLabel = Package type
 document.packageType.change.hidden = package type
 document.packageType.error.required = Select the type of package the goods arrived in
 
+document.lineItemNumber.title = What is the line item number?
+document.lineItemNumber.heading = What is the line item number?
+document.lineItemNumber.hint = This can be up to 5 numbers long.
+document.lineItemNumber.error.nonNumeric = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.required = Enter the line item number
+document.lineItemNumber.error.wholeNumber = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.maximum = The line item number must be 5 characters or less
+
 addAnotherDocument.singular.title = You have added {0} document
 addAnotherDocument.singular.heading = You have added {0} document
 addAnotherDocument.plural.title = You have added {0} documents
@@ -79,6 +87,7 @@ addAnotherDocument.plural.heading = You have added {0} documents
 addAnotherDocument.error.required =  Select yes if you want to add another document
 addAnotherDocument.label = Do you want to add another document?
 addAnotherDocument.maxLimit.label = You cannot add any more documents. To add another, you need to remove one first.
+
 document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to declare the quantity of goods?

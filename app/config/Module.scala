@@ -34,6 +34,7 @@ class Module extends AbstractModule {
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
 
     bind(classOf[DocumentsNavigatorProvider]).to(classOf[DocumentsNavigatorProviderImpl])
+    bind(classOf[DocumentNavigatorProvider]).to(classOf[DocumentNavigatorProviderImpl])
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
