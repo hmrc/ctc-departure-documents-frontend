@@ -30,19 +30,20 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.addSupportingItemNumberYesNo.title"),
+    title = messages("document.addLineItemNumberYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddSupportingItemNumberYesNoController.onSubmit(lrn, mode, documentIndex: Index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddLineItemNumberYesNoController.onSubmit(lrn, mode, documentIndex: Index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("document.addSupportingItemNumberYesNo.heading")
+                heading = messages("document.addLineItemNumberYesNo.heading"),
+                caption = Some(messages("document.caption"))
             )
         )
 

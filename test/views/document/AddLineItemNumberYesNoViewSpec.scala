@@ -20,18 +20,20 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.document.AddSupportingItemNumberYesNoView
+import views.html.document.AddLineItemNumberYesNoView
 
-class AddSupportingItemNumberYesNoViewSpec extends YesNoViewBehaviours {
+class AddLineItemNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddSupportingItemNumberYesNoView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
+    injector.instanceOf[AddLineItemNumberYesNoView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
 
-  override val prefix: String = "document.addSupportingItemNumberYesNo"
+  override val prefix: String = "document.addLineItemNumberYesNo"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
+
+  behave like pageWithSectionCaption("Documents")
 
   behave like pageWithHeading()
 

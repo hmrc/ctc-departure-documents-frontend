@@ -16,16 +16,19 @@
 
 package pages.document
 
-import pages.behaviours.PageBehaviours
+import controllers.document.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class AddSupportingItemNumberYesNoPageSpec extends PageBehaviours {
+case class AddLineItemNumberYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
-  "AddSupportingItemNumberYesNoPage" - {
+  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
-    beRetrievable[Boolean](AddSupportingItemNumberYesNoPage(documentIndex))
+  override def toString: String = "addLineItemNumberYesNo"
 
-    beSettable[Boolean](AddSupportingItemNumberYesNoPage(documentIndex))
-
-    beRemovable[Boolean](AddSupportingItemNumberYesNoPage(documentIndex))
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddLineItemNumberYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }
