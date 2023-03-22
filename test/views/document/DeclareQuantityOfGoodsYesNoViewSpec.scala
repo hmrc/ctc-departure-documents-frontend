@@ -33,6 +33,8 @@ class DeclareQuantityOfGoodsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()
