@@ -72,6 +72,13 @@ document.packageType.checkYourAnswersLabel = Package type
 document.packageType.change.hidden = package type
 document.packageType.error.required = Select the type of package the goods arrived in
 
+document.lineItemNumber.title = What is the line item number?
+document.lineItemNumber.heading = What is the line item number?
+document.lineItemNumber.error.nonNumeric = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.required = Enter the line item number
+document.lineItemNumber.error.wholeNumber = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.maximum = The line item number must be 5 characters or less
+
 addAnotherDocument.singular.title = You have added {0} document
 addAnotherDocument.singular.heading = You have added {0} document
 addAnotherDocument.plural.title = You have added {0} documents
