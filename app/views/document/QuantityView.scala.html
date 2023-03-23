@@ -16,6 +16,7 @@
 
 @import controllers.document.routes
 @import models.LocalReferenceNumber
+@import models.reference.Metric
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText, InsetText}
 
@@ -28,24 +29,24 @@
     button: Button
 )
 
-@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, index: Index, metric: Metric)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.numberOfPackages.title"),
+    title = messages("document.quantity.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.NumberOfPackagesController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QuantityController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages("document.numberOfPackages.heading"),
+                heading = messages("document.quantity.heading"),
                 caption = Some(messages("document.caption")),
-                additionalHtml = insetText(packageType)
+                additionalHtml = insetText(metric.toString)
             ),
             inputClass = InputSize.Width20
         )
