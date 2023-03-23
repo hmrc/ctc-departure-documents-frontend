@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.BigDecimalFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.QuantityPage
+import pages.document.{MetricPage, QuantityPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -37,6 +37,7 @@ class QuantityController @Inject() (
   navigatorProvider: DocumentNavigatorProvider,
   formProvider: BigDecimalFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: QuantityView
 )(implicit ec: ExecutionContext)
@@ -45,25 +46,30 @@ class QuantityController @Inject() (
 
   private val form = formProvider("document.quantity")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QuantityPage(index)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, lrn, mode, index))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(MetricPage(index))) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(QuantityPage(index)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, lrn, mode, index, request.arg))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            QuantityPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(MetricPage(index)))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index, request.arg))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+              QuantityPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }

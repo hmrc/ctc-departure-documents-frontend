@@ -51,6 +51,8 @@ class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
 
   behave like pageWithoutHint()
 
+  behave like pageWithInsetText(packageType.toString)
+
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")

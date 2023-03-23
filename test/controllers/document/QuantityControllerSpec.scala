@@ -18,11 +18,14 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.BigDecimalFormProvider
+import generators.Generators
 import models.NormalMode
+import models.reference.Metric
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.document.QuantityPage
+import org.scalacheck.Arbitrary.arbitrary
+import pages.document.{MetricPage, QuantityPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -31,7 +34,7 @@ import views.html.document.QuantityView
 
 import scala.concurrent.Future
 
-class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider       = new BigDecimalFormProvider()
   private val form               = formProvider("document.quantity")
@@ -44,11 +47,15 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
+  private val metric = arbitrary[Metric].sample.value
+
+  private val baseAnswers = emptyUserAnswers.setValue(MetricPage(index), metric)
+
   "Quantity Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(baseAnswers)
 
       val request = FakeRequest(GET, quantityRoute)
 
@@ -59,12 +66,12 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, index)(request, messages).toString
+        view(form, lrn, mode, index, metric)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(QuantityPage(index), validAnswer)
+      val userAnswers = baseAnswers.setValue(QuantityPage(index), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, quantityRoute)
@@ -78,12 +85,12 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, index)(request, messages).toString
+        view(filledForm, lrn, mode, index, metric)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(baseAnswers)
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -99,7 +106,7 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(baseAnswers)
 
       val invalidAnswer = ""
 
@@ -113,34 +120,66 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       val view = injector.instanceOf[QuantityView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, index)(request, messages).toString
+        view(filledForm, lrn, mode, index, metric)(request, messages).toString
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
+    "must redirect to Session Expired for a GET" - {
+      "when no existing data is found" in {
 
-      setNoExistingUserAnswers()
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, quantityRoute)
+        val request = FakeRequest(GET, quantityRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when metric is undefined" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, quantityRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
+    "must redirect to Session Expired for a POST" - {
 
-      setNoExistingUserAnswers()
+      "when no existing data is found" in {
 
-      val request = FakeRequest(POST, quantityRoute)
-        .withFormUrlEncodedBody(("value", validAnswer.toString))
+        setNoExistingUserAnswers()
 
-      val result = route(app, request).value
+        val request = FakeRequest(POST, quantityRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when metric is undefined" in {
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, quantityRoute)
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
     }
   }
 }

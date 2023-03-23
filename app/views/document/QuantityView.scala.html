@@ -16,6 +16,7 @@
 
 @import controllers.document.routes
 @import models.LocalReferenceNumber
+@import models.reference.Metric
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText, InsetText}
 
@@ -28,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, index: Index, metric: Metric)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.quantity.title"),
@@ -45,7 +46,7 @@
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("document.quantity.heading"),
                 caption = Some(messages("document.caption")),
-                additionalHtml = insetText("placeholder")
+                additionalHtml = insetText(metric.toString)
             ),
             inputClass = InputSize.Width20
         )

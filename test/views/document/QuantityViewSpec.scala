@@ -18,7 +18,9 @@ package views.document
 
 import forms.BigDecimalFormProvider
 import models.NormalMode
+import models.reference.Metric
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
@@ -27,10 +29,12 @@ import views.html.document.QuantityView
 
 class QuantityViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
+  private val metric = arbitrary[Metric].sample.value
+
   override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[QuantityView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[QuantityView].apply(form, lrn, NormalMode, index, metric)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
@@ -44,7 +48,7 @@ class QuantityViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithoutHint()
 
-  behave like pageWithInsetText("placeholder")
+  behave like pageWithInsetText(metric.toString)
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
