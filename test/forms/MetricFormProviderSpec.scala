@@ -50,13 +50,13 @@ class MetricFormProviderSpec extends StringFieldBehaviours with Generators {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if customs office id does not exist in the metricList" in {
+    "not bind if metric code does not exist in the metric list" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a metric id which is in the list" in {
+    "bind a metric code which is in the metric list" in {
       val boundForm = form.bind(Map("value" -> metric1.code))
       val field     = boundForm("value")
       field.errors must be(empty)
