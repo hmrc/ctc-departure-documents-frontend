@@ -20,6 +20,7 @@ import play.api.data.{Field, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 import uk.gov.hmrc.govukfrontend.views.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
@@ -105,5 +106,10 @@ object ViewUtils {
 
   implicit class StringImplicits(string: String) {
     def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+
+    def toInsetText: Html = {
+      val t = new GovukInsetText()
+      t.apply(InsetText(content = Text("")))
+    }
   }
 }

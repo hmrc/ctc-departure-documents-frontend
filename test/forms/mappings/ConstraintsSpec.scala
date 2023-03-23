@@ -16,14 +16,14 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
+
+import java.time.LocalDate
 
 class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
@@ -83,6 +83,27 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must return Invalid for a number above the threshold" in {
       val result = maximumValue(1, "error.max").apply(2)
       result mustEqual Invalid("error.max", 1)
+    }
+  }
+
+  "maximumNumberOfDecimalPlaces" - {
+
+    val errorKey         = "error.invalidFormat"
+    val maxDecimalPlaces = 6
+
+    "must return Valid for a number with fewer decimal places than the threshold" in {
+      val result = maximumNumberOfDecimalPlaces(maxDecimalPlaces, errorKey).apply(BigDecimal(1.12345))
+      result mustEqual Valid
+    }
+
+    "must return Valid for a number with the same number of decimal places as the threshold" in {
+      val result = maximumNumberOfDecimalPlaces(maxDecimalPlaces, errorKey).apply(1.123456)
+      result mustEqual Valid
+    }
+
+    "must return Invalid for a number with more decimal plaves than the threshold" in {
+      val result = maximumNumberOfDecimalPlaces(maxDecimalPlaces, errorKey).apply(BigDecimal(1.1234567))
+      result mustEqual Invalid(errorKey, maxDecimalPlaces)
     }
   }
 

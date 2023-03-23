@@ -56,6 +56,16 @@ trait Constraints {
         }
     }
 
+  protected def maximumNumberOfDecimalPlaces(maxDecimalPlaces: Int, errorKey: String): Constraint[BigDecimal] =
+    Constraint {
+      input =>
+        if (input.scale > maxDecimalPlaces) {
+          Invalid(errorKey, maxDecimalPlaces)
+        } else {
+          Valid
+        }
+    }
+
   protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
     Constraint {
       input =>
