@@ -49,6 +49,8 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
 
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)

@@ -42,7 +42,8 @@
     @errorSummary(form.errors)
 
     @heading(
-        heading = viewModel.heading
+        heading = viewModel.heading,
+        caption = Some(messages("document.caption"))
     )
 
     @listWithActions(viewModel.listItems)
