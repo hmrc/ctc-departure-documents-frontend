@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentFormProvider
 import generators.Generators
 import models.{DocumentList, NormalMode}
-import navigation.DocumentsNavigatorProvider
+import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.document.TypePage
@@ -49,7 +49,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
+      .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
       .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentTypesService))
 
   "Type Controller" - {

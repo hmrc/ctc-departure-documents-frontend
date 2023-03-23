@@ -19,7 +19,7 @@ package controllers.document
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.GoodsItemNumberFormProvider
 import models.NormalMode
-import navigation.DocumentsNavigatorProvider
+import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.document.GoodsItemNumberPage
@@ -41,7 +41,7 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
+      .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
   "GoodsItemNumber Controller" - {
 
