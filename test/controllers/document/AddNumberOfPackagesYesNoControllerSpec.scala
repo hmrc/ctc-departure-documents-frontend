@@ -23,21 +23,21 @@ import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.DeclarePackageGoodsYesNoPage
+import pages.document.AddNumberOfPackagesYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.document.DeclarePackageGoodsYesNoView
+import views.html.document.AddNumberOfPackagesYesNoView
 
 import scala.concurrent.Future
 
-class DeclarePackageGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                       = new YesNoFormProvider()
-  private val form                               = formProvider("document.declarePackageGoodsYesNo")
+  private val form                               = formProvider("document.addNumberOfPackagesYesNo")
   private val mode                               = NormalMode
-  private lazy val declarePackageGoodsYesNoRoute = routes.DeclarePackageGoodsYesNoController.onPageLoad(lrn, mode, documentIndex).url
+  private lazy val declarePackageGoodsYesNoRoute = routes.AddNumberOfPackagesYesNoController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -53,7 +53,7 @@ class DeclarePackageGoodsYesNoControllerSpec extends SpecBase with AppWithDefaul
       val request = FakeRequest(GET, declarePackageGoodsYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[DeclarePackageGoodsYesNoView]
+      val view = injector.instanceOf[AddNumberOfPackagesYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,7 +63,7 @@ class DeclarePackageGoodsYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DeclarePackageGoodsYesNoPage(documentIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddNumberOfPackagesYesNoPage(documentIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, declarePackageGoodsYesNoRoute)
@@ -72,7 +72,7 @@ class DeclarePackageGoodsYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[DeclarePackageGoodsYesNoView]
+      val view = injector.instanceOf[AddNumberOfPackagesYesNoView]
 
       status(result) mustEqual OK
 
@@ -107,7 +107,7 @@ class DeclarePackageGoodsYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[DeclarePackageGoodsYesNoView]
+      val view = injector.instanceOf[AddNumberOfPackagesYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode, documentIndex)(request, messages).toString

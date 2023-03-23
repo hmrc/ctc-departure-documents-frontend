@@ -18,14 +18,14 @@ package pages.document
 
 import pages.behaviours.PageBehaviours
 
-class DeclarePackageGoodsYesNoPageSpec extends PageBehaviours {
+class AddNumberOfPackagesYesNoPageSpec extends PageBehaviours {
 
   "DeclarePackageGoodsYesNoPage" - {
 
-    beRetrievable[Boolean](DeclarePackageGoodsYesNoPage(documentIndex))
+    beRetrievable[Boolean](AddNumberOfPackagesYesNoPage(documentIndex))
 
-    beSettable[Boolean](DeclarePackageGoodsYesNoPage(documentIndex))
+    beSettable[Boolean](AddNumberOfPackagesYesNoPage(documentIndex))
 
-    beRemovable[Boolean](DeclarePackageGoodsYesNoPage(documentIndex))
+    beRemovable[Boolean](AddNumberOfPackagesYesNoPage(documentIndex))
   }
 }

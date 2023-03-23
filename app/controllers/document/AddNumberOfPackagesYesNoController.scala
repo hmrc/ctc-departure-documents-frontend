@@ -16,22 +16,22 @@
 
 package controllers.document
 
-import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.actions._
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.DeclarePackageGoodsYesNoPage
+import pages.document.AddNumberOfPackagesYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.document.DeclarePackageGoodsYesNoView
+import views.html.document.AddNumberOfPackagesYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarePackageGoodsYesNoController @Inject() (
+class AddNumberOfPackagesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
@@ -43,11 +43,11 @@ class DeclarePackageGoodsYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("document.declarePackageGoodsYesNo")
+  private val form = formProvider("document.addNumberOfPackagesYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DeclarePackageGoodsYesNoPage(documentIndex)) match {
+      val preparedForm = request.userAnswers.get(AddNumberOfPackagesYesNoPage(documentIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +63,7 @@ class DeclarePackageGoodsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            DeclarePackageGoodsYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddNumberOfPackagesYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

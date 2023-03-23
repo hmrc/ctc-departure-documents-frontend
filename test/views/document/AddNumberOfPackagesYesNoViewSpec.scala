@@ -20,14 +20,14 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.document.DeclarePackageGoodsYesNoView
+import views.html.document.AddNumberOfPackagesYesNoView
 
-class DeclarePackageGoodsYesNoViewSpec extends YesNoViewBehaviours {
+class AddNumberOfPackagesYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[DeclarePackageGoodsYesNoView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
+    injector.instanceOf[AddNumberOfPackagesYesNoView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
 
-  override val prefix: String = "document.declarePackageGoodsYesNo"
+  override val prefix: String = "document.addNumberOfPackagesYesNo"
 
   behave like pageWithTitle()
 
