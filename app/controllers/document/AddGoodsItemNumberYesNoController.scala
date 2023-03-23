@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
+import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.AddGoodsItemNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddGoodsItemNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: DocumentsNavigatorProvider,
+  navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -62,7 +62,7 @@ class AddGoodsItemNumberYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
             AddGoodsItemNumberYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )

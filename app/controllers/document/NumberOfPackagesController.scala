@@ -18,72 +18,59 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentFormProvider
+import forms.Constants.maxNumberOfPackages
+import forms.IntFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.PreviousDocumentTypePage
-import pages.external.TransitOperationDeclarationTypePage
+import pages.document.{NumberOfPackagesPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.document.PreviousDocumentTypeView
+import views.html.document.NumberOfPackagesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDocumentTypeController @Inject() (
+class NumberOfPackagesController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
+  formProvider: IntFormProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: DocumentFormProvider,
-  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
-  view: PreviousDocumentTypeView
+  view: NumberOfPackagesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix: String = "document.previousDocumentType"
+  private val form = formProvider("document.numberOfPackages", maxNumberOfPackages)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TransitOperationDeclarationTypePage))
-    .async {
+    .andThen(getMandatoryPage(PackageTypePage(documentIndex))) {
       implicit request =>
-        service.getPreviousDocuments().map {
-          previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList)
-            val preparedForm = request.userAnswers.get(PreviousDocumentTypePage(documentIndex)) match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
-
-            Ok(view(preparedForm, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))
+        val preparedForm = request.userAnswers.get(NumberOfPackagesPage(documentIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
         }
+        Ok(view(preparedForm, lrn, mode, documentIndex, request.arg.toString))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TransitOperationDeclarationTypePage))
+    .andThen(getMandatoryPage(PackageTypePage(documentIndex)))
     .async {
       implicit request =>
-        service.getPreviousDocuments().flatMap {
-          previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))),
-                value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                  PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-                }
-              )
-        }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, request.arg.toString))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+              NumberOfPackagesPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
     }
 }

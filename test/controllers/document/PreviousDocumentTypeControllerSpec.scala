@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentFormProvider
 import generators.Generators
 import models.{DeclarationType, DocumentList, NormalMode}
-import navigation.DocumentsNavigatorProvider
+import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
@@ -53,7 +53,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
+      .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
       .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentService))
 
   "PreviousDocumentType Controller" - {

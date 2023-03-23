@@ -17,77 +17,88 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GoodsItemNumberFormProvider
+import forms.IntFormProvider
+import generators.Generators
 import models.NormalMode
+import models.reference.PackageType
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.document.GoodsItemNumberPage
+import org.scalacheck.Arbitrary
+import pages.document.{NumberOfPackagesPage, PackageTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.document.GoodsItemNumberView
+import views.html.document.NumberOfPackagesView
 
 import scala.concurrent.Future
 
-class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider              = new GoodsItemNumberFormProvider()
-  private val form                      = formProvider("document.goodsItemNumber")
-  private val mode                      = NormalMode
-  private lazy val goodsItemNumberRoute = routes.GoodsItemNumberController.onPageLoad(lrn, mode, documentIndex).url
+  private val packageType                = Arbitrary.arbitrary[PackageType].sample.get
+  private val formProvider               = new IntFormProvider()
+  private val form                       = formProvider("document.numberOfPackages", 99999999)
+  private val mode                       = NormalMode
+  private val validAnswer                = 1
+  private lazy val numberOfPackagesRoute = routes.NumberOfPackagesController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
-  "GoodsItemNumber Controller" - {
+  "NumberOfPackages Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
 
-      val request = FakeRequest(GET, goodsItemNumberRoute)
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, numberOfPackagesRoute)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[GoodsItemNumberView]
+      val view = injector.instanceOf[NumberOfPackagesView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, documentIndex)(request, messages).toString
+        view(form, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), "12345")
+      val userAnswers = emptyUserAnswers
+        .setValue(PackageTypePage(documentIndex), packageType)
+        .setValue(NumberOfPackagesPage(documentIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, goodsItemNumberRoute)
+      val request = FakeRequest(GET, numberOfPackagesRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "12345"))
+      val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
-      val view = injector.instanceOf[GoodsItemNumberView]
+      val view = injector.instanceOf[NumberOfPackagesView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, goodsItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "12345"))
+      val request = FakeRequest(POST, numberOfPackagesRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
@@ -98,28 +109,30 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, goodsItemNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, numberOfPackagesRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[GoodsItemNumberView]
+      val view = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, goodsItemNumberRoute)
+      val request = FakeRequest(GET, numberOfPackagesRoute)
 
       val result = route(app, request).value
 
@@ -132,8 +145,8 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, goodsItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "12345"))
+      val request = FakeRequest(POST, numberOfPackagesRoute)
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 

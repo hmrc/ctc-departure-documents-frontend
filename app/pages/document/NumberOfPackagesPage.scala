@@ -16,18 +16,19 @@
 
 package pages.document
 
-import pages.behaviours.PageBehaviours
+import controllers.document.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
+case class NumberOfPackagesPage(documentIndex: Index) extends QuestionPage[Int] {
 
-  "DeclareQuantityOfGoodsYesNoPage" - {
+  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
-    beRetrievable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
+  override def toString: String = "numberOfPackages"
 
-    beSettable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    // TODO: Add clean up logic test
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.NumberOfPackagesController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }
