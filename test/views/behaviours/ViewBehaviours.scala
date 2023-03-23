@@ -37,6 +37,8 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   val hasSignOutLink: Boolean = true
 
+  val urlContainsLrn: Boolean = false
+
   if (hasSignOutLink) {
     "must render sign out link in header" in {
       val link = getElementByClass(doc, "hmrc-sign-out-nav__link")

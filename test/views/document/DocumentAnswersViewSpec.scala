@@ -16,20 +16,36 @@
 
 package views.document
 
+import models.Mode
+import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import viewModels.Section
+import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.document.DocumentAnswersView
+import controllers.document.routes
 
-class DocumentAnswersViewSpec extends ViewBehaviours {
+class DocumentAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[DocumentAnswersView].apply(lrn)(fakeRequest, messages)
+  private val mode: Mode = arbitrary[Mode].sample.value
+
+  override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
+    injector.instanceOf[DocumentAnswersView].apply(lrn, mode, documentIndex, sections)(fakeRequest, messages)
 
   override val prefix: String = "document.documentAnswers"
+
+  override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
+
+  behave like pageWithCheckYourAnswers()
+
+  behave like pageWithFormAction(routes.DocumentAnswersController.onSubmit(lrn, mode, index).url)
+
+  behave like pageWithSubmitButton("Save and continue")
 }

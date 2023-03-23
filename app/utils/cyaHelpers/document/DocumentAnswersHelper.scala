@@ -107,4 +107,11 @@ class DocumentAnswersHelper(
     prefix = "document.numberOfPackages",
     id = Some("change-number-of-packages")
   )
+
+  def metric: Option[SummaryListRow] = getAnswerAndBuildRow[Metric](
+    page = MetricPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.metric",
+    id = Some("change-metric")
+  )
 }

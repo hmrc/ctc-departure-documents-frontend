@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.document.routes._
 import generators.Generators
 import models.Mode
-import models.reference.{Document, PackageType}
+import models.reference.{Document, Metric, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.document._
@@ -402,7 +402,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
 
       "must return Some(Row)" - {
-        "when NumberOfPackagesPage page is defined" in {
+        "when NumberOfPackagesPage is defined" in {
           forAll(arbitrary[Mode], arbitrary[Int]) {
             (mode, number) =>
               val answers = emptyUserAnswers.setValue(NumberOfPackagesPage(documentIndex), number)
@@ -420,6 +420,42 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               action.href mustBe NumberOfPackagesController.onPageLoad(answers.lrn, mode, documentIndex).url
               action.visuallyHiddenText.get mustBe "number of packages"
               action.id mustBe "change-number-of-packages"
+          }
+        }
+      }
+    }
+
+    "metric" - {
+      "must return None" - {
+        "when MetricPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.metric
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when MetricPage is defined" in {
+          forAll(arbitrary[Mode], arbitrary[Metric]) {
+            (mode, metric) =>
+              val answers = emptyUserAnswers.setValue(MetricPage(documentIndex), metric)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.metric.get
+
+              result.key.value mustBe "Metric for quantity of goods"
+              result.value.value mustBe metric.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe MetricController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "metric for quantity of goods"
+              action.id mustBe "change-metric"
           }
         }
       }

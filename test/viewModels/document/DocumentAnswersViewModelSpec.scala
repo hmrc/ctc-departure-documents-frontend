@@ -19,7 +19,7 @@ package viewModels.document
 import base.SpecBase
 import generators.Generators
 import models.Mode
-import models.reference.{Document, PackageType}
+import models.reference.{Document, Metric, PackageType}
 import pages.document._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -56,13 +56,14 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
           val userAnswers = emptyUserAnswers
             .setValue(TypePage(index), arbitrary[Document](arbitrarySupportDocument).sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-          // TODO - include line item number pages
+            .setValue(AddLineItemNumberYesNoPage(index), true)
+            .setValue(LineItemNumberPage(index), positiveIntsMinMax(0, 99999).sample.value)
 
           val result = viewModelProvider.apply(userAnswers, mode, index).sections.head
 
           result.sectionTitle must not be defined
 
-          result.rows.size mustBe 2
+          result.rows.size mustBe 4
 
           result.addAnotherLink must not be defined
       }
@@ -80,13 +81,16 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
             .setValue(GoodsItemNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddTypeOfPackageYesNoPage(index), true)
             .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
+            .setValue(NumberOfPackagesPage(index), positiveIntsMinMax(0, 99999999).sample.value)
+            .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
+            .setValue(MetricPage(index), arbitrary[Metric].sample.value)
           // TODO - include remaining pages
 
           val result = viewModelProvider.apply(userAnswers, mode, index).sections.head
 
           result.sectionTitle must not be defined
 
-          result.rows.size mustBe 6
+          result.rows.size mustBe 9
 
           result.addAnotherLink must not be defined
       }
