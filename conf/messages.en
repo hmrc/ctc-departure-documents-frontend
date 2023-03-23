@@ -99,11 +99,9 @@ document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quanti
 document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to declare the quantity of goods
 
-document.metric.title = What metric do you want to use for the quantity of goods
-document.metric.heading = What metric do you want to use for the quantity of goods
-document.metric.hint = What metric do you want to use for the quantity of goods hint
-document.metric.label = What metric do you want to use for the quantity of goods label
+document.metric.title = What metric do you want to use for the quantity of goods?
+document.metric.heading = What metric do you want to use for the quantity of goods?
 document.metric.placeholder = Select a metric
-document.metric.change.hidden = What metric do you want to use for the quantity of goods
-document.metric.checkYourAnswersLabel = What metric do you want to use for the quantity of goods
-document.metric.error.required = Select the metric
+document.metric.checkYourAnswersLabel = Metric for quantity of goods
+document.metric.change.hidden = metric for quantity of goods
+document.metric.error.required = Select a metric for the quantity of goods

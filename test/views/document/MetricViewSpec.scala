@@ -41,6 +41,8 @@ class MetricViewSpec extends InputSelectViewBehaviours[Metric] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect()
