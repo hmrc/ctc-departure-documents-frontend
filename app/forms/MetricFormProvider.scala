@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages.document
+package forms
 
-import pages.behaviours.PageBehaviours
+import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.reference.Metric
+import models.MetricList
 
-class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
+class MetricFormProvider @Inject() extends Mappings {
 
-  "DeclareQuantityOfGoodsYesNoPage" - {
-
-    beRetrievable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    beSettable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    // TODO: Add clean up logic test
-  }
+  def apply(prefix: String, metrics: MetricList): Form[Metric] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(s"$prefix.error.required", value => metrics.metrics.exists(_.code == value))
+        .transform[Metric](value => metrics.getMetric(value).get, _.code)
+    )
 }

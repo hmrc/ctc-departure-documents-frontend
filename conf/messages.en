@@ -104,3 +104,18 @@ document.quantity.heading = How many of these do the goods include?
 document.quantity.error.nonNumeric = The quantity must only include numbers 0 to 9 and a decimal point
 document.quantity.error.invalidFormat = The quantity must have 6 decimal places or less
 document.quantity.error.invalidValue = The quantity must be less than 10,000,000,000,000,000
+
+document.metric.title = What metric do you want to use for the quantity of goods?
+document.metric.heading = What metric do you want to use for the quantity of goods?
+document.metric.placeholder = Select a metric
+document.metric.checkYourAnswersLabel = Metric for quantity of goods
+document.metric.change.hidden = metric for quantity of goods
+document.metric.error.required = Select a metric for the quantity of goods
+
+document.numberOfPackages.title = How many of these were there?
+document.numberOfPackages.heading = How many of these were there?
+document.numberOfPackages.checkYourAnswersLabel = Number of packages
+document.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
+document.numberOfPackages.error.required = Enter the quantity of the package type
+document.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
+document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less

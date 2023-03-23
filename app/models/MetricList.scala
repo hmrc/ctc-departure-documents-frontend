@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-package object mappings {
+import models.reference.Metric
 
-  implicit class RichBigDecimal(bigDecimal: BigDecimal) {
+case class MetricList(metrics: Seq[Metric]) {
 
-    def isGreaterThan(that: BigDecimal): Boolean =
-      bigDecimal.compareTo(that) == 1
+  def getMetric(code: String): Option[Metric] =
+    metrics.find(_.code == code)
 
-    def isGreaterThanOrEqualTo(that: BigDecimal): Boolean =
-      !isLessThan(that)
-
-    def isLessThan(that: BigDecimal): Boolean =
-      bigDecimal.compareTo(that) == -1
-  }
 }

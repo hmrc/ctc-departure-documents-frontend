@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages.document
+package models.reference
 
-import pages.behaviours.PageBehaviours
+import models.Selectable
+import play.api.libs.json.{Json, OFormat}
 
-class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
+case class Metric(code: String, description: String) extends Selectable {
 
-  "DeclareQuantityOfGoodsYesNoPage" - {
-
-    beRetrievable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    beSettable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    // TODO: Add clean up logic test
+  override def toString: String = description match {
+    case value if value.trim.nonEmpty => s"($code) $value"
+    case _                            => code
   }
+
+  override val value: String = code
+}
+
+object Metric {
+  implicit val format: OFormat[Metric] = Json.format[Metric]
 }

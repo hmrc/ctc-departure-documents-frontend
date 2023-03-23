@@ -53,3 +53,13 @@ GET        /:documentIndex/previous/quantity/:lrn                        control
 POST       /:documentIndex/previous/quantity/:lrn                        controllers.document.QuantityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-quantity/:lrn                 controllers.document.QuantityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-quantity/:lrn                 controllers.document.QuantityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/previous/quantity/metric/:lrn                  controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/quantity/metric/:lrn                  controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/quantity/change-metric/:lrn           controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/quantity/change-metric/:lrn           controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)

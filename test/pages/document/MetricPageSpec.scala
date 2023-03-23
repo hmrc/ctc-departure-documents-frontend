@@ -16,18 +16,17 @@
 
 package pages.document
 
+import models.reference.Metric
 import pages.behaviours.PageBehaviours
 
-class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
+class MetricPageSpec extends PageBehaviours {
 
-  "DeclareQuantityOfGoodsYesNoPage" - {
+  "MetricPage" - {
 
-    beRetrievable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
+    beRetrievable[Metric](MetricPage(documentIndex))
 
-    beSettable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
+    beSettable[Metric](MetricPage(documentIndex))
 
-    beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    // TODO: Add clean up logic test
+    beRemovable[Metric](MetricPage(documentIndex))
   }
 }

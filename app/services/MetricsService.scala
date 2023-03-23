@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package pages.document
+package services
 
-import pages.behaviours.PageBehaviours
+import connectors.ReferenceDataConnector
+import models.MetricList
+import models.reference.Metric
+import uk.gov.hmrc.http.HeaderCarrier
 
-class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  "DeclareQuantityOfGoodsYesNoPage" - {
+class MetricsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-    beRetrievable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
+  def getMetrics()(implicit hc: HeaderCarrier): Future[MetricList] =
+    referenceDataConnector
+      .getMetrics()
+      .map(sort)
 
-    beSettable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    // TODO: Add clean up logic test
-  }
+  private def sort(metrics: Seq[Metric]): MetricList =
+    MetricList(metrics.sortBy(_.description.toLowerCase))
 }
