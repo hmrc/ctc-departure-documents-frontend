@@ -19,8 +19,8 @@ package models.journeyDomain
 import cats.implicits._
 import models.DeclarationType._
 import models.DocumentType._
-import models.{Index, Mode, UserAnswers}
 import models.reference.Document
+import models.{Index, Mode, UserAnswers}
 import pages.document._
 import pages.external._
 import play.api.mvc.Call
@@ -63,7 +63,8 @@ object DocumentDomain {
 
 case class SupportDocumentDomain(
   document: Document,
-  referenceNumber: String
+  referenceNumber: String,
+  lineItemNumber: Option[Int]
 )(override val index: Index)
     extends DocumentDomain
 
@@ -72,7 +73,8 @@ object SupportDocumentDomain {
   implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[SupportDocumentDomain] =
     (
       UserAnswersReader(document),
-      DocumentReferenceNumberPage(index).reader
+      DocumentReferenceNumberPage(index).reader,
+      AddLineItemNumberYesNoPage(index).filterOptionalDependent(identity)(LineItemNumberPage(index).reader)
     ).tupled.map((SupportDocumentDomain.apply _).tupled).map(_(index))
 }
 

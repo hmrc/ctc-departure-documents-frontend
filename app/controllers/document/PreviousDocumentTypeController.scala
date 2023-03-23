@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
+import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.PreviousDocumentTypePage
 import pages.external.TransitOperationDeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PreviousDocumentTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: DocumentsNavigatorProvider,
+  navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DocumentFormProvider,
@@ -80,7 +80,7 @@ class PreviousDocumentTypeController @Inject() (
                 formWithErrors =>
                   Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))),
                 value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
                   PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
                 }
               )

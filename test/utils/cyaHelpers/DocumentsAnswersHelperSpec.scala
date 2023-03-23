@@ -19,8 +19,8 @@ package utils.cyaHelpers
 import base.SpecBase
 import generators.Generators
 import models.DeclarationType._
-import models.reference.{Document, PackageType}
-import models.{Index, Mode, NormalMode}
+import models.reference.{CustomsOffice, Document}
+import models.{DeclarationType, Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -51,23 +51,17 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         "when Type page is populated" - {
           "must return list items with remove links" in {
             forAll(
-              arbitrary[Document],
-              nonEmptyString,
-              nonEmptyString,
-              arbitrary[PackageType],
-              Gen.oneOf(T1, TIR, T),
-              arbitraryXiCustomsOffice
+              arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
+              arbitrary[DeclarationType],
+              arbitrary[Document](arbitraryTransportDocument),
+              nonEmptyString
             ) {
-              (document, referenceNumber, goodsItemNumber, packageType, declarationType, xiCustomsOffice) =>
+              (xiCustomsOffice, declarationType, document, referenceNumber) =>
                 val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)
-                  .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice.arbitrary.sample.get)
                   .setValue(TypePage(Index(0)), document)
                   .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
-                  .setValue(AddGoodsItemNumberYesNoPage(Index(0)), true)
-                  .setValue(GoodsItemNumberPage(Index(0)), goodsItemNumber)
-                  .setValue(AddTypeOfPackageYesNoPage(Index(0)), true)
-                  .setValue(PackageTypePage(Index(0)), packageType)
 
                 val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
 
@@ -85,23 +79,20 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           "when Previous Type page is populated" - {
             "must return list items with remove links" in {
-              forAll(arbitrary[Document](arbitraryPreviousDocument),
-                     nonEmptyString,
-                     nonEmptyString,
-                     arbitrary[PackageType],
-                     Gen.oneOf(T2, T2F),
-                     arbitraryGbCustomsOffice
+              forAll(
+                arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
+                Gen.oneOf(T2, T2F),
+                arbitrary[Document](arbitraryPreviousDocument),
+                nonEmptyString
               ) {
-                (previousDocument, referenceNumber, goodsItemNumber, packageType, declarationType, gbCustomsOffice) =>
+                (gbCustomsOffice, declarationType, previousDocument, referenceNumber) =>
                   val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
-                    .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice.arbitrary.sample.get)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
                     .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
-                    .setValue(AddGoodsItemNumberYesNoPage(Index(0)), true)
-                    .setValue(GoodsItemNumberPage(Index(0)), goodsItemNumber)
-                    .setValue(AddTypeOfPackageYesNoPage(Index(0)), true)
-                    .setValue(PackageTypePage(Index(0)), packageType)
+                    .setValue(AddGoodsItemNumberYesNoPage(Index(0)), false)
+                    .setValue(AddTypeOfPackageYesNoPage(Index(0)), false)
 
                   val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
 
@@ -123,14 +114,14 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           "when Type page is populated" - {
             "must return list items with remove links" in {
               forAll(
-                arbitrary[Document],
-                Gen.oneOf(T1, TIR, T),
-                arbitraryXiCustomsOffice
+                arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
+                arbitrary[DeclarationType],
+                arbitrary[Document]
               ) {
-                (document, declarationType, xiCustomsOffice) =>
+                (xiCustomsOffice, declarationType, document) =>
                   val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
-                    .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice.arbitrary.sample.get)
                     .setValue(TypePage(Index(0)), document)
 
                   val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)

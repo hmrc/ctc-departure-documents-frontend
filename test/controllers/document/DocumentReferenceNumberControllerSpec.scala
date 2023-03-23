@@ -19,7 +19,7 @@ package controllers.document
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentReferenceNumberFormProvider
 import models.NormalMode
-import navigation.DocumentsNavigatorProvider
+import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.document.DocumentReferenceNumberPage
@@ -42,7 +42,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
+      .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
   "DocumentReferenceNumber Controller" - {
 

@@ -115,22 +115,92 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
   "SupportDocumentDomain userAnswersReader" - {
     val documentGen = arbitrary[Document](arbitrarySupportDocument)
 
-    "can be read from user answers" in {
-      forAll(documentGen, nonEmptyString) {
-        (document, referenceNumber) =>
-          val userAnswers = emptyUserAnswers
-            .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+    "can be read from user answers" - {
+      "when line item number defined" in {
+        forAll(documentGen, nonEmptyString, positiveInts) {
+          (document, referenceNumber, lineItemNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+              .setValue(AddLineItemNumberYesNoPage(index), true)
+              .setValue(LineItemNumberPage(index), lineItemNumber)
 
-          val expectedResult = SupportDocumentDomain(
-            document = document,
-            referenceNumber = referenceNumber
-          )(index)
+            val expectedResult = SupportDocumentDomain(
+              document = document,
+              referenceNumber = referenceNumber,
+              lineItemNumber = Some(lineItemNumber)
+            )(index)
 
-          val result: EitherType[SupportDocumentDomain] = UserAnswersReader[SupportDocumentDomain](
-            SupportDocumentDomain.userAnswersReader(index, document)
-          ).run(userAnswers)
+            val result: EitherType[SupportDocumentDomain] = UserAnswersReader[SupportDocumentDomain](
+              SupportDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
 
-          result.value mustBe expectedResult
+            result.value mustBe expectedResult
+        }
+      }
+
+      "when line item number undefined" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+              .setValue(AddLineItemNumberYesNoPage(index), false)
+
+            val expectedResult = SupportDocumentDomain(
+              document = document,
+              referenceNumber = referenceNumber,
+              lineItemNumber = None
+            )(index)
+
+            val result: EitherType[SupportDocumentDomain] = UserAnswersReader[SupportDocumentDomain](
+              SupportDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+        }
+      }
+    }
+
+    "can not be read from user answers" - {
+      "when reference number is unanswered" in {
+        forAll(documentGen) {
+          document =>
+            val userAnswers = emptyUserAnswers
+
+            val result: EitherType[SupportDocumentDomain] = UserAnswersReader[SupportDocumentDomain](
+              SupportDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe DocumentReferenceNumberPage(index)
+        }
+      }
+
+      "when add line item number yes/no is unanswered" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+
+            val result: EitherType[SupportDocumentDomain] = UserAnswersReader[SupportDocumentDomain](
+              SupportDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddLineItemNumberYesNoPage(index)
+        }
+      }
+
+      "when line item number is unanswered" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+              .setValue(AddLineItemNumberYesNoPage(index), true)
+
+            val result: EitherType[SupportDocumentDomain] = UserAnswersReader[SupportDocumentDomain](
+              SupportDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe LineItemNumberPage(index)
+        }
       }
     }
   }
