@@ -48,6 +48,8 @@ trait UserAnswersEntryGenerators {
       case GoodsItemNumberPage(_)         => nonEmptyString.map(JsString)
       case AddTypeOfPackageYesNoPage(_)   => arbitrary[Boolean].map(JsBoolean)
       case PackageTypePage(_)             => arbitrary[PackageType].map(Json.toJson(_))
+      case AddLineItemNumberYesNoPage(_)  => arbitrary[Boolean].map(JsBoolean)
+      case LineItemNumberPage(_)          => positiveInts.map(Json.toJson(_))
     }
   }
 }
