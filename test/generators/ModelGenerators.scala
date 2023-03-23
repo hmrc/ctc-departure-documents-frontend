@@ -145,4 +145,18 @@ trait ModelGenerators {
       countries <- listWithMaxLength[Document]()
     } yield DocumentList(countries.distinctBy(_.code))
   }
+
+  implicit lazy val arbitraryMetric: Arbitrary[Metric] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Metric(code, desc)
+    }
+
+  implicit lazy val arbitraryMetricList: Arbitrary[MetricList] = Arbitrary {
+    for {
+      metrics <- listWithMaxLength[Metric]()
+    } yield MetricList(metrics.distinctBy(_.code))
+  }
 }
