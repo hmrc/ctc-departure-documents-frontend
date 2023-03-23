@@ -19,10 +19,11 @@ package generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
+import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.{Link, ListItem, Section}
+import viewModels.{AddAnotherDocumentViewModel, Link, ListItem, Section}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -166,5 +167,12 @@ trait ViewModelGenerators {
       changeUrl <- nonEmptyString
       removeUrl <- Gen.option(nonEmptyString)
     } yield ListItem(name, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitraryAddAnotherDocumentViewModel: Arbitrary[AddAnotherDocumentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall)
   }
 }

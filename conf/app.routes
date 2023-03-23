@@ -7,7 +7,5 @@ GET        /assets/*file                                controllers.Assets.versi
 
 GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 
-GET        /document/you-have-added-1-document/:lrn                        controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /document/you-have-added-1-document/:lrn                        controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /document/change-you-have-added-1-document/:lrn                 controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /document/change-you-have-added-1-document/:lrn                 controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /documents/add-another/:lrn                  controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /documents/add-another/:lrn                  controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

@@ -17,10 +17,13 @@ error.summary.title = There is a problem
 
 document.caption = Documents
 
-addAnotherDocument.title = You have added 1 document
-addAnotherDocument.heading = You have added 1 document
-addAnotherDocument.checkYourAnswersLabel = You have added 1 document
+addAnotherDocument.singular.title = You have added {0} document
+addAnotherDocument.singular.heading = You have added {0} document
+addAnotherDocument.plural.title = You have added {0} documents
+addAnotherDocument.plural.heading = You have added {0} documents
 addAnotherDocument.error.required = Select yes if You have added 1 document
+addAnotherDocument.label = Do you want to add another document?
+addAnotherDocument.maxLimit.label = You cannot add any more documents. To add another document, you need to remove one first.
 
 document.previousDocumentType.title = What previous document do you want to add?
 document.previousDocumentType.heading = What previous document do you want to add?
