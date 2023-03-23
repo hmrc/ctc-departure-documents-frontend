@@ -19,7 +19,7 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.DocumentType._
-import models.reference.Document
+import models.reference.{Document, Metric}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -69,6 +69,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val metricJson: String =
+    """
+      |[
+      | {
+      |    "code": "CTM",
+      |    "description": "Carats (one metric carat = 2 x 10-4kg)"
+      |  },
+      |  {
+      |    "code": "DTN",
+      |    "description": "Hectokilogram"
+      |  }
+      |]
+      |""".stripMargin
+
   "getPreviousDocuments" - {
 
     "must return list of previous documents when successful" in {
@@ -111,6 +125,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "must return an exception when an error response is returned" in {
 
       checkErrorResponse(s"/$baseUrl/document-type", connector.getDocuments())
+    }
+
+  }
+
+  "getMetrics" - {
+
+    "must return list of metrics when successful" in {
+      server.stubFor(
+        get(urlEqualTo(s"/$baseUrl/metrics"))
+          .willReturn(okJson(metricJson))
+      )
+
+      val expectResult = Seq(
+        Metric("CTM", "Carats (one metric carat = 2 x 10-4kg)"),
+        Metric("DTN", "Hectokilogram")
+      )
+
+      connector.getMetrics().futureValue mustEqual expectResult
+    }
+
+    "must return an exception when an error response is returned" in {
+
+      checkErrorResponse(s"/$baseUrl/metrics", connector.getMetrics())
     }
 
   }
