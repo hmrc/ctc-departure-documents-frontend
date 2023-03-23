@@ -32,5 +32,5 @@ case class DeclareQuantityOfGoodsYesNoPage(documentIndex: Index) extends Questio
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.DeclareQuantityOfGoodsYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 
-  // TODO: Add clean up logic
+  //  TODO: Add clean up logic
 }

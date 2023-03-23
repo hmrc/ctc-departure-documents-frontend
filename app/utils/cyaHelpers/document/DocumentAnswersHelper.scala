@@ -79,4 +79,32 @@ class DocumentAnswersHelper(
     prefix = "document.packageType",
     id = Some("change-package-type")
   )
+
+  def lineItemNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddLineItemNumberYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.addLineItemNumberYesNo",
+    id = Some("change-add-line-item-number")
+  )
+
+  def lineItemNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
+    page = LineItemNumberPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.lineItemNumber",
+    id = Some("change-line-item-number")
+  )
+
+  def declareQuantityOfGoodsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = DeclareQuantityOfGoodsYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.declareQuantityOfGoodsYesNo",
+    id = Some("change-declare-quantity-of-goods")
+  )
+
+  def numberOfPackage: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
+    page = NumberOfPackagesPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.numberOfPackages",
+    id = Some("change-number-of-packages")
+  )
 }
