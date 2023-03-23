@@ -17,6 +17,11 @@ error.summary.title = There is a problem
 
 document.caption = Documents
 
+addAnotherDocument.title = You have added 1 document
+addAnotherDocument.heading = You have added 1 document
+addAnotherDocument.checkYourAnswersLabel = You have added 1 document
+addAnotherDocument.error.required = Select yes if You have added 1 document
+
 document.previousDocumentType.title = What previous document do you want to add?
 document.previousDocumentType.heading = What previous document do you want to add?
 document.previousDocumentType.paragraph = You need to provide this as you’re creating a {0} declaration departing from Great Britain.
