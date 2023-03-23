@@ -53,3 +53,5 @@ GET        /:documentIndex/previous/package-quantity/:lrn                 contro
 POST       /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:lrn/document/check-your-answers                        controllers.document.DocumentAnswersController.onPageLoad(lrn: LocalReferenceNumber)
