@@ -122,7 +122,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
               val result = helper.documentReferenceNumber.get
 
-              result.key.value mustBe "Document reference number"
+              result.key.value mustBe "Reference number"
               result.value.value mustBe reference
 
               val actions = result.actions.get.items
@@ -130,8 +130,8 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe DocumentReferenceNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "document reference number"
-              action.id mustBe "change-document-reference-number"
+              action.visuallyHiddenText.get mustBe "reference number"
+              action.id mustBe "change-reference-number"
           }
         }
       }
@@ -194,7 +194,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
               val result = helper.goodsItemNumber.get
 
-              result.key.value mustBe "Reference number"
+              result.key.value mustBe "Goods item number"
               result.value.value mustBe number
 
               val actions = result.actions.get.items
@@ -202,7 +202,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe GoodsItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "reference number"
+              action.visuallyHiddenText.get mustBe "goods item number"
               action.id mustBe "change-reference-number"
           }
         }
@@ -410,7 +410,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
               val result = helper.numberOfPackage.get
 
-              result.key.value mustBe "Number of packages"
+              result.key.value mustBe "Package quantity"
               result.value.value mustBe number.toString
 
               val actions = result.actions.get.items
@@ -418,7 +418,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe NumberOfPackagesController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "number of packages"
+              action.visuallyHiddenText.get mustBe "package quantity"
               action.id mustBe "change-number-of-packages"
           }
         }
@@ -456,6 +456,42 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               action.href mustBe MetricController.onPageLoad(answers.lrn, mode, documentIndex).url
               action.visuallyHiddenText.get mustBe "metric for quantity of goods"
               action.id mustBe "change-metric"
+          }
+        }
+      }
+    }
+
+    "quantity" - {
+      "must return None" - {
+        "when QuantityPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.quantity
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when QuantityPage is defined" in {
+          forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[Metric]) {
+            (mode, quantity, metric) =>
+              val answers = emptyUserAnswers.setValue(QuantityPage(documentIndex), quantity)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.quantity.get
+
+              result.key.value mustBe s"Number of ${metric.toString}"
+              result.value.value mustBe quantity.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe QuantityController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe s"number of ${metric.toString}"
+              action.id mustBe "change-quantity-of-the-goods"
           }
         }
       }

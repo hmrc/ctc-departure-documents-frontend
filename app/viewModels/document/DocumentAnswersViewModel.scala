@@ -38,15 +38,16 @@ object DocumentAnswersViewModel {
           helper.documentType,
           helper.previousDocumentType,
           helper.documentReferenceNumber,
-          helper.goodsItemNumberYesNo,
-          helper.goodsItemNumber,
           helper.typeOfPackageYesNo,
           helper.packageType,
+          helper.goodsItemNumberYesNo,
+          helper.goodsItemNumber,
           helper.lineItemNumberYesNo,
           helper.lineItemNumber,
           helper.declareQuantityOfGoodsYesNo,
           helper.numberOfPackage,
-          helper.metric
+          helper.metric,
+          helper.quantity
         ).flatten
       )
 

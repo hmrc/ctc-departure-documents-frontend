@@ -49,7 +49,7 @@ class DocumentAnswersHelper(
     page = DocumentReferenceNumberPage(documentIndex),
     formatAnswer = formatAsText,
     prefix = "document.documentReferenceNumber",
-    id = Some("change-document-reference-number")
+    id = Some("change-reference-number")
   )
 
   def goodsItemNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -113,5 +113,12 @@ class DocumentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "document.metric",
     id = Some("change-metric")
+  )
+
+  def quantity: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = QuantityPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.quantity",
+    id = Some("change-quantity-of-the-goods")
   )
 }
