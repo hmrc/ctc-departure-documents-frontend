@@ -18,16 +18,14 @@ package pages.document
 
 import pages.behaviours.PageBehaviours
 
-class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
+class NumberOfPackagesPageSpec extends PageBehaviours {
 
-  "DeclareQuantityOfGoodsYesNoPage" - {
+  "NumberOfPackagesPage" - {
 
-    beRetrievable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
+    beRetrievable[Int](NumberOfPackagesPage(documentIndex))
 
-    beSettable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
+    beSettable[Int](NumberOfPackagesPage(documentIndex))
 
-    beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
-
-    // TODO: Add clean up logic test
+    beRemovable[Int](NumberOfPackagesPage(documentIndex))
   }
 }

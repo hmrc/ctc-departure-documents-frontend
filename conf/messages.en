@@ -98,3 +98,11 @@ document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity
 document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to declare the quantity of goods
+
+document.numberOfPackages.title = How many of these were there?
+document.numberOfPackages.heading = How many of these were there?
+document.numberOfPackages.checkYourAnswersLabel = How many of these were there?
+document.numberOfPackages.error.nonNumeric = Enter your How many of these were there? using numbers
+document.numberOfPackages.error.required = Enter your How many of these were there?
+document.numberOfPackages.error.wholeNumber = Enter your How many of these were there? using whole numbers
+document.numberOfPackages.error.maximum = How many of these were there? must be {0} or less
