@@ -23,14 +23,14 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DeclarePackageGoodsYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
+case class AddNumberOfPackagesYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
-  override def toString: String = "declarePackageGoodsYesNo"
+  override def toString: String = "addNumberOfPackagesYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.DeclarePackageGoodsYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+    Some(routes.AddNumberOfPackagesYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }
 
 //TODO: Add cleanup when package goods page is added

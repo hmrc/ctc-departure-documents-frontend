@@ -30,21 +30,21 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.declarePackageGoodsYesNo.title"),
+    title = messages("document.addNumberOfPackagesYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.DeclarePackageGoodsYesNoController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddNumberOfPackagesYesNoController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("document.declarePackageGoodsYesNo.heading"),
+                heading = messages("document.addNumberOfPackagesYesNo.heading"),
                 caption = Some(messages("document.caption")),
-                additionalHtml = messages("document.declarePackageGoodsYesNo.paragraph").toParagraph
+                additionalHtml = messages("document.addNumberOfPackagesYesNo.paragraph").toParagraph
             )
         )
 

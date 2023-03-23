@@ -38,7 +38,7 @@ class DeclarePackageGoodsYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: DeclarePackageGoodsYesNoView
+  view: AddNumberOfPackagesYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
