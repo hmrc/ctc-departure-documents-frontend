@@ -86,27 +86,6 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
-  "maximumNumberOfDecimalPlaces" - {
-
-    val errorKey         = "error.invalidFormat"
-    val maxDecimalPlaces = 6
-
-    "must return Valid for a number with fewer decimal places than the threshold" in {
-      val result = maximumNumberOfDecimalPlaces(maxDecimalPlaces, errorKey).apply(BigDecimal(1.12345))
-      result mustEqual Valid
-    }
-
-    "must return Valid for a number with the same number of decimal places as the threshold" in {
-      val result = maximumNumberOfDecimalPlaces(maxDecimalPlaces, errorKey).apply(1.123456)
-      result mustEqual Valid
-    }
-
-    "must return Invalid for a number with more decimal plaves than the threshold" in {
-      val result = maximumNumberOfDecimalPlaces(maxDecimalPlaces, errorKey).apply(BigDecimal(1.1234567))
-      result mustEqual Invalid(errorKey, maxDecimalPlaces)
-    }
-  }
-
   "regexp" - {
 
     "must return Valid for an input that matches the expression" in {
