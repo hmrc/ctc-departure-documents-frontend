@@ -203,6 +203,59 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
+  "bigDecimal" - {
+
+    val testForm: Form[BigDecimal] =
+      Form(
+        "value" -> bigDecimal()
+      )
+
+    "must bind a valid big decimal" in {
+      val result = testForm.bind(Map("value" -> "1"))
+      result.get mustEqual BigDecimal(1)
+    }
+
+    "must bind a valid comma-separated big decimal" in {
+      val result = testForm.bind(Map("value" -> "1,000"))
+      result.get mustEqual BigDecimal(1000)
+    }
+
+    "must not bind an invalid value" in {
+      val result = testForm.bind(Map("value" -> "foo"))
+      result.errors must contain(FormError("value", "error.invalidCharacters"))
+    }
+
+    "must not bind an empty value" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must unbind a valid value" in {
+      val result = testForm.fill(BigDecimal(123))
+      result.apply("value").value.value mustEqual "123"
+    }
+
+    "must not bind a value larger than 9,999,999,999,999,999" in {
+      val result = testForm.bind(Map("value" -> "10000000000000000"))
+      result.errors must contain(FormError("value", "error.invalidValue"))
+    }
+
+    "must not bind a value with more than 6 decimal places" in {
+      val result = testForm.bind(Map("value" -> "1.1234567"))
+      result.errors must contain(FormError("value", "error.invalidFormat"))
+    }
+
+    "must not bind a negative value" in {
+      val result = testForm.bind(Map("value" -> "-1"))
+      result.errors must contain(FormError("value", "error.invalidCharacters"))
+    }
+  }
+
   "enumerable" - {
 
     val testForm = Form(
