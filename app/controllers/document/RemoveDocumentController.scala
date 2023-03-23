@@ -14,59 +14,72 @@
  * limitations under the License.
  */
 
-package controllers.equipment.index
+package controllers.document
 
-import controllers.actions._
-import controllers.equipment.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.actions._
 import forms.YesNoFormProvider
+import models.reference.Document
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.sections.equipment.EquipmentSection
+import pages.document.TypePage
+import pages.sections.DocumentDetailsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HttpVerbs.POST
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.equipment.index.RemoveTransportEquipmentView
+import views.html.document.RemoveDocumentView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveTransportEquipmentController @Inject() (
+class RemoveDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveTransportEquipmentView
+  view: RemoveDocumentView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(equipmentIndex: Index): Form[Boolean] = formProvider("equipment.index.removeTransportEquipment", equipmentIndex.display)
+  private def form(documentType: Document): Form[Boolean] = formProvider("document.removeDocument", documentType)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      Ok(view(form(equipmentIndex), lrn, mode, equipmentIndex))
-  }
+  private type Request = SpecificDataRequestProvider1[Document]#SpecificDataRequest[_]
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      lazy val redirect = routes.AddAnotherEquipmentController.onPageLoad(lrn, mode)
-      form(equipmentIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
-          {
-            case true =>
-              EquipmentSection(equipmentIndex)
-                .removeFromUserAnswers()
-                .updateTask()
-                .writeToSession()
-                .navigateTo(redirect)
-            case false =>
-              Future.successful(Redirect(redirect))
-          }
-        )
-  }
+  private def documentType(implicit request: Request): Document = request.arg
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(TypePage(documentIndex))) {
+      implicit request =>
+        Ok(view(form(documentType), lrn, mode, documentIndex, documentType))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(TypePage(documentIndex)))
+    .async {
+      implicit request =>
+        lazy val redirect = Call(POST, "#")
+        form(documentType)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, documentType))),
+            {
+              case true =>
+                DocumentDetailsSection(documentIndex)
+                  .removeFromUserAnswers()
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(redirect)
+              case false =>
+                Future.successful(Redirect(redirect))
+            }
+          )
+    }
 }

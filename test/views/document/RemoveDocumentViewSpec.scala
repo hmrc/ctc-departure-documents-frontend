@@ -14,38 +14,37 @@
  * limitations under the License.
  */
 
-package views.authorisationsAndLimit.authorisations.index
+package views.document
 
+import generators.Generators
 import models.NormalMode
-import models.authorisations.AuthorisationType
-import org.scalacheck.{Arbitrary, Gen}
+import models.reference.Document
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.authorisationsAndLimit.authorisations.index.RemoveAuthorisationYesNoView
+import views.html.document.RemoveDocumentView
 
-class RemoveAuthorisationYesNoViewSpec extends YesNoViewBehaviours {
+class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val authorisationType = Gen.oneOf(AuthorisationType.values).sample.value.forDisplay
-
-  private val authorisationReferenceNumber = Arbitrary(Gen.alphaStr).arbitrary.sample.value
+  private val documentType = arbitrary[Document].sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
-      .instanceOf[RemoveAuthorisationYesNoView]
-      .apply(form, lrn, NormalMode, authorisationIndex, authorisationType, authorisationReferenceNumber)(fakeRequest, messages)
+      .instanceOf[RemoveDocumentView]
+      .apply(form, lrn, NormalMode, documentIndex, documentType)(fakeRequest, messages)
 
-  override val prefix: String = "authorisations.index.removeAuthorisationYesNo"
+  override val prefix: String = "document.removeDocument"
 
-  behave like pageWithTitle(authorisationType, authorisationReferenceNumber)
+  behave like pageWithTitle(documentType)
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Transport details - Authorisations")
+  behave like pageWithSectionCaption("Documents")
 
-  behave like pageWithHeading(authorisationType, authorisationReferenceNumber)
+  behave like pageWithHeading(documentType)
 
-  behave like pageWithRadioItems(args = Seq(authorisationType, authorisationReferenceNumber))
+  behave like pageWithRadioItems(args = Seq(documentType))
 
   behave like pageWithSubmitButton("Save and continue")
 }
