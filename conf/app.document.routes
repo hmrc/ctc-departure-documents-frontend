@@ -48,3 +48,8 @@ GET        /:documentIndex/previous/quantity/add/:lrn                     contro
 POST       /:documentIndex/previous/quantity/add/:lrn                     controllers.document.DeclareQuantityOfGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/quantity/change-add/:lrn              controllers.document.DeclareQuantityOfGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/quantity/change-add/:lrn              controllers.document.DeclareQuantityOfGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:lrn/document/what-metric-do-you-want-to-use-for-the-quantity-of-goods                        controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/document/what-metric-do-you-want-to-use-for-the-quantity-of-goods                        controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/document/change-what-metric-do-you-want-to-use-for-the-quantity-of-goods                 controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/document/change-what-metric-do-you-want-to-use-for-the-quantity-of-goods                 controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
