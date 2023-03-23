@@ -37,8 +37,6 @@ class AddNumberOfPackagesYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This means the packaging used to ship this document’s goods into the UK.")
-
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
