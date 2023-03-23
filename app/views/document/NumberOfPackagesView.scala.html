@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.numberOfPackages.title"),
@@ -41,9 +41,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
+            inputTextType = TextInputWithHiddenLabel(
                 heading = messages("document.numberOfPackages.heading"),
-                caption = Some(messages("document.caption"))
+                caption = Some(messages("document.caption")),
+                additionalHtml = Html(s"""<div class="govuk-inset-text">$packageType</div>""")
             ),
             inputClass = InputSize.Width20
         )

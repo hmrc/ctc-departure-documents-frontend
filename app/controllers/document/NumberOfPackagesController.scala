@@ -22,7 +22,7 @@ import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.NumberOfPackagesPage
+import pages.document.{NumberOfPackagesPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -38,6 +38,7 @@ class NumberOfPackagesController @Inject() (
   navigatorProvider: DocumentNavigatorProvider,
   formProvider: IntFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: NumberOfPackagesView
 )(implicit ec: ExecutionContext)
@@ -46,25 +47,30 @@ class NumberOfPackagesController @Inject() (
 
   private val form = formProvider("document.numberOfPackages", maxNumberOfPackages)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(NumberOfPackagesPage(documentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, lrn, mode, documentIndex))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(PackageTypePage(documentIndex))) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(NumberOfPackagesPage(documentIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, lrn, mode, documentIndex, request.arg.toString))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            NumberOfPackagesPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(PackageTypePage(documentIndex)))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, request.arg.toString))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+              NumberOfPackagesPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }

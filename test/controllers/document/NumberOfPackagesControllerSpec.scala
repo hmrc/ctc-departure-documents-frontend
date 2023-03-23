@@ -18,11 +18,14 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IntFormProvider
+import generators.Generators
 import models.NormalMode
+import models.reference.PackageType
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.document.NumberOfPackagesPage
+import org.scalacheck.Arbitrary
+import pages.document.{NumberOfPackagesPage, PackageTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -31,8 +34,9 @@ import views.html.document.NumberOfPackagesView
 
 import scala.concurrent.Future
 
-class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val packageType                = Arbitrary.arbitrary[PackageType].sample.get
   private val formProvider               = new IntFormProvider()
   private val form                       = formProvider("document.numberOfPackages", 99999999)
   private val mode                       = NormalMode
@@ -48,7 +52,9 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, numberOfPackagesRoute)
 
@@ -59,12 +65,14 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, documentIndex)(request, messages).toString
+        view(form, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(NumberOfPackagesPage(documentIndex), validAnswer)
+      val userAnswers = emptyUserAnswers
+        .setValue(PackageTypePage(documentIndex), packageType)
+        .setValue(NumberOfPackagesPage(documentIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, numberOfPackagesRoute)
@@ -78,12 +86,14 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -99,7 +109,9 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
@@ -113,7 +125,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       val view = injector.instanceOf[NumberOfPackagesView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

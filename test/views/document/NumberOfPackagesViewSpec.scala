@@ -18,6 +18,7 @@ package views.document
 
 import forms.IntFormProvider
 import models.NormalMode
+import models.reference.PackageType
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,10 +28,12 @@ import views.html.document.NumberOfPackagesView
 
 class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
 
+  private val packageType = Arbitrary.arbitrary[PackageType].sample.get
+
   override def form: Form[Int] = new IntFormProvider()(prefix, 10)
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
+    injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, documentIndex, packageType.toString)(fakeRequest, messages)
 
   private val maxInt = 99999999
 

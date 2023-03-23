@@ -101,8 +101,8 @@ document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to 
 
 document.numberOfPackages.title = How many of these were there?
 document.numberOfPackages.heading = How many of these were there?
-document.numberOfPackages.checkYourAnswersLabel = How many of these were there?
-document.numberOfPackages.error.nonNumeric = Enter your How many of these were there? using numbers
-document.numberOfPackages.error.required = Enter your How many of these were there?
-document.numberOfPackages.error.wholeNumber = Enter your How many of these were there? using whole numbers
-document.numberOfPackages.error.maximum = How many of these were there? must be {0} or less
+document.numberOfPackages.checkYourAnswersLabel = Number of packages
+document.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
+document.numberOfPackages.error.required = Enter the quantity of the package type
+document.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
+document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
