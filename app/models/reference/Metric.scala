@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package pages.document
+package models.reference
 
-import models.reference.Metric
-import pages.behaviours.PageBehaviours
+import models.Selectable
+import play.api.libs.json.{Json, OFormat}
 
-class MetricPageSpec extends PageBehaviours {
+case class Metric(code: String, description: String) extends Selectable {
 
-  "MetricPage" - {
-
-    beRetrievable[Metric](MetricPage(documentIndex))
-
-    beSettable[Metric](MetricPage(documentIndex))
-
-    beRemovable[Metric](MetricPage(documentIndex))
+  override def toString: String = description match {
+    case value if value.trim.nonEmpty => s"($code) $value"
+    case _                            => code
   }
+
+  override val value: String = code
+}
+
+object Metric {
+  implicit val format: OFormat[Metric] = Json.format[Metric]
 }

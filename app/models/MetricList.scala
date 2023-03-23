@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package pages.document
+package models
 
 import models.reference.Metric
-import pages.behaviours.PageBehaviours
 
-class MetricPageSpec extends PageBehaviours {
+case class MetricList(metrics: Seq[Metric]) {
 
-  "MetricPage" - {
+  def getMetric(code: String): Option[Metric] =
+    metrics.find(_.code == code)
 
-    beRetrievable[Metric](MetricPage(documentIndex))
-
-    beSettable[Metric](MetricPage(documentIndex))
-
-    beRemovable[Metric](MetricPage(documentIndex))
-  }
 }

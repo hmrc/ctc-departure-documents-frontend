@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Metric], lrn: LocalReferenceNumber, metrics: Seq[Metric], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Metric], lrn: LocalReferenceNumber, metrics: Seq[Metric], mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.metric.title"),
@@ -39,7 +39,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.MetricController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.MetricController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
@@ -48,7 +48,6 @@
             selectType = OrdinarySelect(
                 heading = messages("document.metric.heading")
             ),
-            hint = Some(messages("document.metric.hint")),
             selectItems = metrics.toSelectItems(form.value),
             placeholder = messages("document.metric.placeholder")
         )

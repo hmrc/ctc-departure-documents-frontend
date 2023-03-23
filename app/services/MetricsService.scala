@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package pages.document
+package services
 
+import connectors.ReferenceDataConnector
+import models.MetricList
 import models.reference.Metric
-import pages.behaviours.PageBehaviours
+import uk.gov.hmrc.http.HeaderCarrier
 
-class MetricPageSpec extends PageBehaviours {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  "MetricPage" - {
+class MetricsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-    beRetrievable[Metric](MetricPage(documentIndex))
+  def getMetrics()(implicit hc: HeaderCarrier): Future[MetricList] =
+    referenceDataConnector
+      .getMetrics()
+      .map(sort)
 
-    beSettable[Metric](MetricPage(documentIndex))
-
-    beRemovable[Metric](MetricPage(documentIndex))
-  }
+  private def sort(metrics: Seq[Metric]): MetricList =
+    MetricList(metrics.sortBy(_.description.toLowerCase))
 }
