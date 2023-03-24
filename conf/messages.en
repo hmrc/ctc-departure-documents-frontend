@@ -58,12 +58,13 @@ document.addTypeOfPackageYesNo.error.required = Select yes if you want to declar
 document.goodsItemNumber.title = What is the goods item number?
 document.goodsItemNumber.heading = What is the goods item number?
 document.goodsItemNumber.hint = This can be up to 5 numbers long.
-document.goodsItemNumber.change.hidden = reference number
 document.goodsItemNumber.checkYourAnswersLabel = Goods item number
 document.goodsItemNumber.change.hidden = goods item number
+document.goodsItemNumber.error.nonNumeric = The goods item number must only include numbers 0 to 9
 document.goodsItemNumber.error.required = Enter the goods item number
-document.goodsItemNumber.error.length = The goods item number must be 5 characters or less
-document.goodsItemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
+document.goodsItemNumber.error.wholeNumber = The goods item number must only include numbers 0 to 9
+document.goodsItemNumber.error.negative = The goods item number must only include numbers 0 to 9
+document.goodsItemNumber.error.maximum = The goods item number must be 5 characters or less
 
 document.packageType.title = What type of package did the goods arrive in?
 document.packageType.heading = What type of package did the goods arrive in?
@@ -86,6 +87,7 @@ document.lineItemNumber.change.hidden = line item number
 document.lineItemNumber.error.nonNumeric = The line item number must only include numbers 0 to 9
 document.lineItemNumber.error.required = Enter the line item number
 document.lineItemNumber.error.wholeNumber = The line item number must only include numbers 0 to 9
+document.lineItemNumber.error.negative = The line item number must only include numbers 0 to 9
 document.lineItemNumber.error.maximum = The line item number must be 5 characters or less
 
 addAnotherDocument.singular.title = You have added {0} document
@@ -131,7 +133,6 @@ document.numberOfPackages.change.hidden = package quantity
 document.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
 document.numberOfPackages.error.required = Enter the quantity of the package type
 document.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
-document.numberOfPackages.error.negative = The quantity must only include numbers 0 to 9
 document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
 
 document.documentAnswers.title = Check your answers

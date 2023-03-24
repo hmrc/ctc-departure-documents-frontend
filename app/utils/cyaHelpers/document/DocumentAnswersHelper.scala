@@ -63,7 +63,7 @@ class DocumentAnswersHelper(
     page = GoodsItemNumberPage(documentIndex),
     formatAnswer = formatAsText,
     prefix = "document.goodsItemNumber",
-    id = Some("change-reference-number")
+    id = Some("change-goods-item-number")
   )
 
   def typeOfPackageYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

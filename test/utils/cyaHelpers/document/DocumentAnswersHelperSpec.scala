@@ -203,7 +203,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               action.content.value mustBe "Change"
               action.href mustBe GoodsItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
               action.visuallyHiddenText.get mustBe "goods item number"
-              action.id mustBe "change-reference-number"
+              action.id mustBe "change-goods-item-number"
           }
         }
       }
