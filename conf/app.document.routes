@@ -69,6 +69,11 @@ POST       /:documentIndex/previous/package-quantity/:lrn                 contro
 GET        /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 
+GET        /:documentIndex/check-answers/:lrn                             controllers.document.DocumentAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/check-answers/:lrn                             controllers.document.DocumentAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/change-check-answers/:lrn                      controllers.document.DocumentAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/change-check-answers/:lrn                      controllers.document.DocumentAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
 GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 POST       /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)

@@ -24,17 +24,18 @@ import models.{Index, Mode, UserAnswers}
 import pages.document._
 import pages.external._
 import play.api.mvc.Call
+import controllers.document.routes
 
 sealed trait DocumentDomain extends JourneyDomainModel {
   val index: Index
   val document: Document
   val referenceNumber: String
 
-  def asString = DocumentDomain.asString(document, referenceNumber)
+  def asString: String = DocumentDomain.asString(document, referenceNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
-    Call("GET", "#")
-  ) //TODO - change to documents CYA page when built
+    routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, index)
+  )
 }
 
 object DocumentDomain {
