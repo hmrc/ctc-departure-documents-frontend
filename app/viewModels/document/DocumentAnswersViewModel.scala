@@ -36,7 +36,6 @@ object DocumentAnswersViewModel {
       val section = Section(
         rows = Seq(
           helper.documentType,
-          helper.previousDocumentType,
           helper.documentReferenceNumber,
           helper.goodsItemNumberYesNo,
           helper.goodsItemNumber,
