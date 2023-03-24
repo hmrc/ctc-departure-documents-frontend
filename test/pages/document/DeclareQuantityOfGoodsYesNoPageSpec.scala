@@ -16,6 +16,8 @@
 
 package pages.document
 
+import models.reference.Metric
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
@@ -28,6 +30,20 @@ class DeclareQuantityOfGoodsYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](DeclareQuantityOfGoodsYesNoPage(documentIndex))
 
-    // TODO: Add clean up logic test
+    "cleanup" - {
+      "when no selected" - {
+        "must remove metric and quantity" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
+            .setValue(MetricPage(index), arbitrary[Metric].sample.value)
+            .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
+
+          val result = userAnswers.setValue(DeclareQuantityOfGoodsYesNoPage(index), false)
+
+          result.get(MetricPage(index)) must not be defined
+          result.get(QuantityPage(index)) must not be defined
+        }
+      }
+    }
   }
 }

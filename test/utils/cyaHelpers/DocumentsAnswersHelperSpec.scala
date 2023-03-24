@@ -94,6 +94,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
                     .setValue(AddGoodsItemNumberYesNoPage(Index(0)), false)
                     .setValue(AddTypeOfPackageYesNoPage(Index(0)), false)
+                    .setValue(DeclareQuantityOfGoodsYesNoPage(Index(0)), false)
 
                   val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
 

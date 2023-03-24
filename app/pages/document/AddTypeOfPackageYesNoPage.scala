@@ -39,6 +39,9 @@ case class AddTypeOfPackageYesNoPage(documentIndex: Index) extends QuestionPage[
       case Some(false) =>
         userAnswers
           .remove(PackageTypePage(documentIndex))
-      case _ => super.cleanup(value, userAnswers)
+          .flatMap(_.remove(AddNumberOfPackagesYesNoPage(documentIndex)))
+          .flatMap(_.remove(NumberOfPackagesPage(documentIndex)))
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 }

@@ -23,6 +23,8 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class AddNumberOfPackagesYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
@@ -31,6 +33,10 @@ case class AddNumberOfPackagesYesNoPage(documentIndex: Index) extends QuestionPa
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddNumberOfPackagesYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
-}
 
-//TODO: Add cleanup when package goods page is added
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(NumberOfPackagesPage(documentIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
+}
