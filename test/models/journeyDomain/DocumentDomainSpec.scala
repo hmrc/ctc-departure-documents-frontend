@@ -21,7 +21,7 @@ import generators.Generators
 import models.DeclarationType._
 import models.DocumentType._
 import models.Index
-import models.reference.{CustomsOffice, Document, PackageType}
+import models.reference.{CustomsOffice, Document, Metric, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -232,14 +232,18 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
     "can be read from user answers" in {
-      forAll(documentGen, nonEmptyString, nonEmptyString, arbitrary[PackageType]) {
-        (document, referenceNumber, goodsItemNumber, packageType) =>
+      forAll(documentGen, nonEmptyString, nonEmptyString, arbitrary[PackageType], arbitrary[Metric], arbitrary[BigDecimal]) {
+        (document, referenceNumber, goodsItemNumber, packageType, metric, quantity) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceNumber)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
             .setValue(GoodsItemNumberPage(index), goodsItemNumber)
             .setValue(AddTypeOfPackageYesNoPage(index), true)
             .setValue(PackageTypePage(index), packageType)
+            .setValue(AddNumberOfPackagesYesNoPage(index), false)
+            .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
+            .setValue(MetricPage(index), metric)
+            .setValue(QuantityPage(index), quantity)
 
           val expectedResult = PreviousDocumentDomain(
             document = document,
@@ -248,7 +252,13 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             `package` = Some(
               PackageDomain(
                 `type` = packageType,
-                numberOfPackages = 0
+                numberOfPackages = None
+              )
+            ),
+            quantity = Some(
+              QuantityDomain(
+                metric = metric,
+                value = quantity
               )
             )
           )(index)
@@ -303,6 +313,22 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             ).run(userAnswers)
 
             result.left.value.page mustBe AddTypeOfPackageYesNoPage(index)
+        }
+      }
+
+      "when add quantity yes/no is unanswered" in {
+        forAll(documentGen, nonEmptyString) {
+          (document, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
+              .setValue(AddGoodsItemNumberYesNoPage(index), false)
+              .setValue(AddTypeOfPackageYesNoPage(index), false)
+
+            val result: EitherType[PreviousDocumentDomain] = UserAnswersReader[PreviousDocumentDomain](
+              PreviousDocumentDomain.userAnswersReader(index, document)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe DeclareQuantityOfGoodsYesNoPage(index)
         }
       }
     }

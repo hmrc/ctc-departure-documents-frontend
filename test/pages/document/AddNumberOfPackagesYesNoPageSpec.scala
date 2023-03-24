@@ -16,6 +16,7 @@
 
 package pages.document
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddNumberOfPackagesYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,19 @@ class AddNumberOfPackagesYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddNumberOfPackagesYesNoPage(documentIndex))
 
     beRemovable[Boolean](AddNumberOfPackagesYesNoPage(documentIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove number of packages" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddNumberOfPackagesYesNoPage(index), true)
+            .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
+
+          val result = userAnswers.setValue(AddNumberOfPackagesYesNoPage(index), false)
+
+          result.get(NumberOfPackagesPage(index)) must not be defined
+        }
+      }
+    }
   }
 }

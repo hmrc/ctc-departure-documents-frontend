@@ -18,19 +18,19 @@ package models.journeyDomain
 
 import cats.implicits._
 import models.Index
-import models.reference.PackageType
+import models.reference.Metric
 import pages.document._
 
-case class PackageDomain(
-  `type`: PackageType,
-  numberOfPackages: Option[Int]
+case class QuantityDomain(
+  metric: Metric,
+  value: BigDecimal
 )
 
-object PackageDomain {
+object QuantityDomain {
 
-  implicit def userAnswersReader(index: Index): UserAnswersReader[PackageDomain] =
+  implicit def userAnswersReader(index: Index): UserAnswersReader[QuantityDomain] =
     (
-      PackageTypePage(index).reader,
-      AddNumberOfPackagesYesNoPage(index).filterOptionalDependent(identity)(NumberOfPackagesPage(index).reader)
-    ).tupled.map((PackageDomain.apply _).tupled)
+      MetricPage(index).reader,
+      QuantityPage(index).reader
+    ).tupled.map((QuantityDomain.apply _).tupled)
 }

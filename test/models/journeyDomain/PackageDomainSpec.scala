@@ -21,20 +21,22 @@ import generators.Generators
 import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.document.PackageTypePage
+import pages.document._
 
 class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "can be read from user answers" - {
     "when package type is answered" in {
-      forAll(arbitrary[PackageType]) {
-        packageType =>
+      forAll(arbitrary[PackageType], arbitrary[Int]) {
+        (packageType, numberOfPackages) =>
           val userAnswers = emptyUserAnswers
             .setValue(PackageTypePage(index), packageType)
+            .setValue(AddNumberOfPackagesYesNoPage(index), true)
+            .setValue(NumberOfPackagesPage(index), numberOfPackages)
 
           val expectedResult = PackageDomain(
             `type` = packageType,
-            numberOfPackages = 0
+            numberOfPackages = Some(numberOfPackages)
           )
 
           val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
@@ -53,6 +55,35 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
       ).run(emptyUserAnswers)
 
       result.left.value.page mustBe PackageTypePage(index)
+    }
+
+    "when add number of packages yes/no is unanswered" in {
+      forAll(arbitrary[PackageType]) {
+        packageType =>
+          val userAnswers = emptyUserAnswers
+            .setValue(PackageTypePage(index), packageType)
+
+          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+            PackageDomain.userAnswersReader(index)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe AddNumberOfPackagesYesNoPage(index)
+      }
+    }
+
+    "when number of packages is unanswered" in {
+      forAll(arbitrary[PackageType]) {
+        packageType =>
+          val userAnswers = emptyUserAnswers
+            .setValue(PackageTypePage(index), packageType)
+            .setValue(AddNumberOfPackagesYesNoPage(index), true)
+
+          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+            PackageDomain.userAnswersReader(index)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe NumberOfPackagesPage(index)
+      }
     }
   }
 
