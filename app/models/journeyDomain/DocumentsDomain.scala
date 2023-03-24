@@ -16,10 +16,16 @@
 
 package models.journeyDomain
 
-import models.{Index, RichJsArray}
+import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.DocumentsSection
+import play.api.mvc.Call
 
-case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainModel
+case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainModel {
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+    controllers.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn)
+  )
+}
 
 object DocumentsDomain {
 
