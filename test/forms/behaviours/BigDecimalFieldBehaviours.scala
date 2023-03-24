@@ -66,5 +66,17 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
       val result = form.bind(Map(fieldName -> BigDecimal(-1).toString)).apply(fieldName)
       result.errors mustEqual Seq(invalidCharactersError)
     }
+
+    "must not bind values with more than 16 characters" in {
+      val result = form.bind(Map(fieldName -> BigDecimal(1234567890123.456).toString)).apply(fieldName)
+      result.errors mustEqual Seq(invalidValueError)
+
+    }
+
+    "must not bind values that end in a full stop" in {
+      val result = form.bind(Map(fieldName -> "123456789012345.")).apply(fieldName)
+      result.errors mustEqual Seq(invalidFormatError)
+
+    }
   }
 }
