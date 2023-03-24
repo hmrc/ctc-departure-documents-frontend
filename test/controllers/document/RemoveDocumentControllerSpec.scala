@@ -29,7 +29,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.document.TypePage
 import pages.sections.DocumentSection
 import play.api.data.Form
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.document.RemoveDocumentView

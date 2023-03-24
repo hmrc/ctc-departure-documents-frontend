@@ -19,14 +19,11 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.DeclarationType._
-import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode, NormalMode}
+import models.{LocalReferenceNumber, Mode, NormalMode}
 import navigation.DocumentsNavigatorProvider
-import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.AddAnotherDocumentViewModel
