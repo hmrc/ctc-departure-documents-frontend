@@ -32,30 +32,34 @@ class AddTypeOfPackageYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when NO selected" - {
-        "must clean up package type page at document index" in {
-          forAll(arbitrary[PackageType]) {
-            packageType =>
-              val preChange = emptyUserAnswers
-                .setValue(PackageTypePage(documentIndex), packageType)
+        "must clean up package pages at document index" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
+            .setValue(PackageTypePage(documentIndex), arbitrary[PackageType].sample.value)
+            .setValue(AddNumberOfPackagesYesNoPage(documentIndex), true)
+            .setValue(NumberOfPackagesPage(documentIndex), arbitrary[Int].sample.value)
 
-              val postChange = preChange.setValue(AddTypeOfPackageYesNoPage(documentIndex), false)
+          val result = userAnswers.setValue(AddTypeOfPackageYesNoPage(documentIndex), false)
 
-              postChange.get(PackageTypePage(documentIndex)) mustNot be(defined)
-          }
+          result.get(PackageTypePage(documentIndex)) must not be defined
+          result.get(AddNumberOfPackagesYesNoPage(documentIndex)) must not be defined
+          result.get(NumberOfPackagesPage(documentIndex)) must not be defined
         }
       }
 
       "when YES selected" - {
         "must do nothing" in {
-          forAll(arbitrary[PackageType]) {
-            packageType =>
-              val preChange = emptyUserAnswers
-                .setValue(PackageTypePage(documentIndex), packageType)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
+            .setValue(PackageTypePage(documentIndex), arbitrary[PackageType].sample.value)
+            .setValue(AddNumberOfPackagesYesNoPage(documentIndex), true)
+            .setValue(NumberOfPackagesPage(documentIndex), arbitrary[Int].sample.value)
 
-              val postChange = preChange.setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
+          val result = userAnswers.setValue(AddTypeOfPackageYesNoPage(documentIndex), true)
 
-              postChange.get(PackageTypePage(documentIndex)) must be(defined)
-          }
+          result.get(PackageTypePage(documentIndex)) must be(defined)
+          result.get(AddNumberOfPackagesYesNoPage(documentIndex)) must be(defined)
+          result.get(NumberOfPackagesPage(documentIndex)) must be(defined)
         }
       }
     }

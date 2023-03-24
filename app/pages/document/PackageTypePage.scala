@@ -24,6 +24,8 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class PackageTypePage(documentIndex: Index) extends QuestionPage[PackageType] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
@@ -32,4 +34,10 @@ case class PackageTypePage(documentIndex: Index) extends QuestionPage[PackageTyp
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+
+  override def cleanup(value: Option[PackageType], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) => userAnswers.remove(AddNumberOfPackagesYesNoPage(documentIndex)).flatMap(_.remove(NumberOfPackagesPage(documentIndex)))
+      case None    => super.cleanup(value, userAnswers)
+    }
 }

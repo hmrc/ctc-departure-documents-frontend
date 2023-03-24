@@ -24,6 +24,8 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class MetricPage(documentIndex: Index) extends QuestionPage[Metric] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
@@ -32,4 +34,10 @@ case class MetricPage(documentIndex: Index) extends QuestionPage[Metric] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.MetricController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+
+  override def cleanup(value: Option[Metric], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) => userAnswers.remove(QuantityPage(documentIndex))
+      case None    => super.cleanup(value, userAnswers)
+    }
 }
