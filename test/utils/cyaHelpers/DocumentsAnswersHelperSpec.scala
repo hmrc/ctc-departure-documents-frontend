@@ -27,7 +27,6 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.document._
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
-import play.api.mvc.Call
 import viewModels.ListItem
 
 class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -70,7 +69,9 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   Right(
                     ListItem(
                       name = s"${document.toString} - $referenceNumber",
-                      changeUrl = Call("GET", "#").url, //TODO - change to documents CYA page when built
+                      changeUrl = routes.DocumentAnswersController
+                        .onPageLoad(userAnswers.lrn, NormalMode, documentIndex)
+                        .url,
                       removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
                     )
                   )
@@ -102,7 +103,9 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     Right(
                       ListItem(
                         name = s"${previousDocument.toString} - $referenceNumber",
-                        changeUrl = Call("GET", "#").url, //TODO - change to documents CYA page when built
+                        changeUrl = routes.DocumentAnswersController
+                          .onPageLoad(userAnswers.lrn, NormalMode, documentIndex)
+                          .url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
                       )
                     )
