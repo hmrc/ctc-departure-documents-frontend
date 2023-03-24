@@ -19,6 +19,7 @@ package utils.cyaHelpers
 import base.SpecBase
 import generators.Generators
 import models.DeclarationType._
+import controllers.document.routes
 import models.reference.{CustomsOffice, Document}
 import models.{DeclarationType, Index, Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -70,7 +71,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     ListItem(
                       name = s"${document.toString} - $referenceNumber",
                       changeUrl = Call("GET", "#").url, //TODO - change to documents CYA page when built
-                      removeUrl = Some(Call("GET", "#").url) //TODO - change to remove controller when built
+                      removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
                     )
                   )
                 )
@@ -101,7 +102,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ListItem(
                         name = s"${previousDocument.toString} - $referenceNumber",
                         changeUrl = Call("GET", "#").url, //TODO - change to documents CYA page when built
-                        removeUrl = Some(Call("GET", "#").url) //TODO - change to remove controller when built
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
                       )
                     )
                   )
@@ -131,7 +132,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ListItem(
                         name = s"${document.toString}",
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
-                        removeUrl = Some(Call("GET", "#").url) //TODO - change to remove controller when built
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
                       )
                     )
                   )
@@ -159,7 +160,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ListItem(
                         name = s"${previousDocument.toString}",
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
-                        removeUrl = Some(Call("GET", "#").url) //TODO - change to remove controller when built
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
                       )
                     )
                   )

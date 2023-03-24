@@ -59,6 +59,11 @@ POST       /:documentIndex/previous/quantity/metric/:lrn                  contro
 GET        /:documentIndex/previous/quantity/change-metric/:lrn           controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/quantity/change-metric/:lrn           controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 
+GET        /:documentIndex/previous/add-package-quantity/:lrn             controllers.document.AddNumberOfPackagesYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/add-package-quantity/:lrn             controllers.document.AddNumberOfPackagesYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/change-add-package-quantity/:lrn      controllers.document.AddNumberOfPackagesYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/change-add-package-quantity/:lrn      controllers.document.AddNumberOfPackagesYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
 GET        /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 POST       /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
@@ -68,3 +73,9 @@ GET        /:documentIndex/check-answers/:lrn                             contro
 POST       /:documentIndex/check-answers/:lrn                             controllers.document.DocumentAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/change-check-answers/:lrn                      controllers.document.DocumentAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/change-check-answers/:lrn                      controllers.document.DocumentAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+

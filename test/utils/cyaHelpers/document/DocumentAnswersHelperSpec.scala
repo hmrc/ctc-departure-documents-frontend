@@ -477,7 +477,9 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when QuantityPage is defined" in {
           forAll(arbitrary[Mode], arbitrary[BigDecimal], arbitrary[Metric]) {
             (mode, quantity, metric) =>
-              val answers = emptyUserAnswers.setValue(QuantityPage(documentIndex), quantity)
+              val answers = emptyUserAnswers
+                .setValue(MetricPage(documentIndex), metric)
+                .setValue(QuantityPage(documentIndex), quantity)
 
               val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
               val result = helper.quantity.get

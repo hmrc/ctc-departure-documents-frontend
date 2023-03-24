@@ -115,10 +115,15 @@ class DocumentAnswersHelper(
     id = Some("change-metric")
   )
 
-  def quantity: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
-    page = QuantityPage(documentIndex),
-    formatAnswer = formatAsText,
-    prefix = "document.quantity",
-    id = Some("change-quantity-of-the-goods")
-  )
+  def quantity: Option[SummaryListRow] =
+    userAnswers.get(MetricPage(documentIndex)).flatMap {
+      metric =>
+        getAnswerAndBuildRow[BigDecimal](
+          page = QuantityPage(documentIndex),
+          formatAnswer = formatAsText,
+          prefix = "document.quantity",
+          id = Some("change-quantity-of-the-goods"),
+          args = metric
+        )
+    }
 }

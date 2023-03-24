@@ -118,6 +118,11 @@ document.metric.checkYourAnswersLabel = Metric for quantity of goods
 document.metric.change.hidden = metric for quantity of goods
 document.metric.error.required = Select a metric for the quantity of goods
 
+document.addNumberOfPackagesYesNo.title = Do you want to declare the quantity of this package?
+document.addNumberOfPackagesYesNo.heading = Do you want to declare the quantity of this package?
+document.addNumberOfPackagesYesNo.checkYourAnswersLabel = Do you want to declare the quantity of this package
+document.addNumberOfPackagesYesNo.error.required = Select yes if you want to declare the quantity of the package type
+
 document.numberOfPackages.title = How many of these were there?
 document.numberOfPackages.heading = How many of these were there?
 document.numberOfPackages.checkYourAnswersLabel = Package quantity
@@ -129,3 +134,7 @@ document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or les
 
 document.documentAnswers.title = Check your answers
 document.documentAnswers.heading = Check your answers
+
+document.removeDocument.title = Are you sure you want to remove the {0}?
+document.removeDocument.heading = Are you sure you want to remove the {0}?
+document.removeDocument.error.required = Select yes if you want to remove the {0}

@@ -17,12 +17,12 @@
 package utils.cyaHelpers
 
 import config.FrontendAppConfig
+import controllers.document.routes
 import models.journeyDomain.DocumentDomain
 import models.{Mode, UserAnswers}
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import viewModels.ListItem
 
 class DocumentsAnswersHelper(
@@ -37,7 +37,7 @@ class DocumentsAnswersHelper(
         buildListItem[DocumentDomain](
           nameWhenComplete = _.asString,
           nameWhenInProgress = (userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))).map(_.toString),
-          removeRoute = Some(Call("GET", "#")) //TODO: Update to be remove route when built
+          removeRoute = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex))
         )(DocumentDomain.userAnswersReader(documentIndex))
     }
 }
