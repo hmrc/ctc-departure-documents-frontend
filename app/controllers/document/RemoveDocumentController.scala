@@ -16,14 +16,14 @@
 
 package controllers.document
 
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.Document
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.document.TypePage
-import pages.sections.DocumentDetailsSection
+import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -72,7 +72,7 @@ class RemoveDocumentController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, documentType))),
             {
               case true =>
-                DocumentDetailsSection(documentIndex)
+                DocumentSection(documentIndex)
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()

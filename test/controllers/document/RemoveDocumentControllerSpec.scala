@@ -27,7 +27,7 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.document.TypePage
-import pages.sections.DocumentDetailsSection
+import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -90,7 +90,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
-        userAnswersCaptor.getValue.get(DocumentDetailsSection(documentIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.get(DocumentSection(documentIndex)) mustNot be(defined)
       }
     }
 
