@@ -17,7 +17,7 @@
 package generators
 
 import models.DeclarationType
-import models.reference.{CustomsOffice, Document, PackageType}
+import models.reference.{CustomsOffice, Document, Metric, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -41,15 +41,20 @@ trait UserAnswersEntryGenerators {
   private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.document._
     {
-      case PreviousDocumentTypePage(_)    => arbitrary[Document].map(Json.toJson(_))
-      case TypePage(_)                    => arbitrary[Document].map(Json.toJson(_))
-      case DocumentReferenceNumberPage(_) => nonEmptyString.map(JsString)
-      case AddGoodsItemNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
-      case GoodsItemNumberPage(_)         => nonEmptyString.map(JsString)
-      case AddTypeOfPackageYesNoPage(_)   => arbitrary[Boolean].map(JsBoolean)
-      case PackageTypePage(_)             => arbitrary[PackageType].map(Json.toJson(_))
-      case AddLineItemNumberYesNoPage(_)  => arbitrary[Boolean].map(JsBoolean)
-      case LineItemNumberPage(_)          => positiveInts.map(Json.toJson(_))
+      case PreviousDocumentTypePage(_)        => arbitrary[Document].map(Json.toJson(_))
+      case TypePage(_)                        => arbitrary[Document].map(Json.toJson(_))
+      case DocumentReferenceNumberPage(_)     => nonEmptyString.map(JsString)
+      case AddGoodsItemNumberYesNoPage(_)     => arbitrary[Boolean].map(JsBoolean)
+      case GoodsItemNumberPage(_)             => nonEmptyString.map(JsString)
+      case AddTypeOfPackageYesNoPage(_)       => arbitrary[Boolean].map(JsBoolean)
+      case PackageTypePage(_)                 => arbitrary[PackageType].map(Json.toJson(_))
+      case AddNumberOfPackagesYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
+      case NumberOfPackagesPage(_)            => arbitrary[Int].map(Json.toJson(_))
+      case DeclareQuantityOfGoodsYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case MetricPage(_)                      => arbitrary[Metric].map(Json.toJson(_))
+      case QuantityPage(_)                    => arbitrary[BigDecimal].map(Json.toJson(_))
+      case AddLineItemNumberYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
+      case LineItemNumberPage(_)              => positiveInts.map(Json.toJson(_))
     }
   }
 }

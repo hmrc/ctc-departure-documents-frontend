@@ -17,6 +17,7 @@
 package pages.document
 
 import models.reference.PackageType
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class PackageTypePageSpec extends PageBehaviours {
@@ -28,5 +29,44 @@ class PackageTypePageSpec extends PageBehaviours {
     beSettable[PackageType](PackageTypePage(documentIndex))
 
     beRemovable[PackageType](PackageTypePage(documentIndex))
+
+    "cleanup" - {
+      "when answer changes" - {
+        "must remove number of packages pages" in {
+          forAll(arbitrary[PackageType]) {
+            packageType =>
+              forAll(arbitrary[PackageType].retryUntil(_ != packageType)) {
+                differentPackageType =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(PackageTypePage(index), packageType)
+                    .setValue(AddNumberOfPackagesYesNoPage(index), true)
+                    .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
+
+                  val result = userAnswers.setValue(PackageTypePage(index), differentPackageType)
+
+                  result.get(AddNumberOfPackagesYesNoPage(index)) must not be defined
+                  result.get(NumberOfPackagesPage(index)) must not be defined
+              }
+          }
+        }
+      }
+
+      "when answer doesn't change" - {
+        "must do nothing" in {
+          forAll(arbitrary[PackageType]) {
+            packageType =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(index), packageType)
+                .setValue(AddNumberOfPackagesYesNoPage(index), true)
+                .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
+
+              val result = userAnswers.setValue(PackageTypePage(index), packageType)
+
+              result.get(AddNumberOfPackagesYesNoPage(index)) must be(defined)
+              result.get(NumberOfPackagesPage(index)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }

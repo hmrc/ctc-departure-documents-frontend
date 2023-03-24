@@ -23,6 +23,8 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class DeclareQuantityOfGoodsYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
@@ -32,5 +34,9 @@ case class DeclareQuantityOfGoodsYesNoPage(documentIndex: Index) extends Questio
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.DeclareQuantityOfGoodsYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 
-  //  TODO: Add clean up logic
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(MetricPage(documentIndex)).flatMap(_.remove(QuantityPage(documentIndex)))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
