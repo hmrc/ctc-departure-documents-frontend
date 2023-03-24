@@ -20,7 +20,7 @@ import play.api.data.{Form, FormError}
 
 trait IntFieldBehaviours extends FieldBehaviours {
 
-  def intField(form: Form[_], fieldName: String, nonNumericError: FormError, wholeNumberError: FormError): Unit = {
+  def intField(form: Form[_], fieldName: String, nonNumericError: FormError, wholeNumberError: FormError, negativeError: FormError): Unit = {
 
     "must not bind non-numeric numbers" in {
 
@@ -55,6 +55,16 @@ trait IntFieldBehaviours extends FieldBehaviours {
         num: BigInt =>
           val result = form.bind(Map(fieldName -> num.toString)).apply(fieldName)
           result.errors mustEqual Seq(nonNumericError)
+      }
+    }
+
+    "must not bind negative integers" in {
+
+      forAll(negativeInts -> "negativeInt") {
+        num: Int =>
+          val result = form.bind(Map(fieldName -> num.toString)).apply(fieldName)
+          println(result.errors)
+          result.errors mustEqual Seq(negativeError)
       }
     }
   }

@@ -44,7 +44,8 @@ class IntFormProviderSpec extends IntFieldBehaviours {
       form,
       fieldName,
       nonNumericError = FormError(fieldName, s"$prefix.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, s"$prefix.error.wholeNumber")
+      wholeNumberError = FormError(fieldName, s"$prefix.error.wholeNumber"),
+      negativeError = FormError(fieldName, s"$prefix.error.negative", Seq(0))
     )
 
     behave like mandatoryField(
