@@ -23,7 +23,7 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class GoodsItemNumberPage(documentIndex: Index) extends QuestionPage[String] {
+case class GoodsItemNumberPage(documentIndex: Index) extends QuestionPage[Int] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 

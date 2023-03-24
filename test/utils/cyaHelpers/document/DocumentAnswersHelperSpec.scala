@@ -187,7 +187,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       "must return Some(Row)" - {
         "when GoodsItemNumber page is defined" in {
-          forAll(arbitrary[Mode], arbitrary[String]) {
+          forAll(arbitrary[Mode], arbitrary[Int]) {
             (mode, number) =>
               val answers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), number)
 
@@ -195,7 +195,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.goodsItemNumber.get
 
               result.key.value mustBe "Goods item number"
-              result.value.value mustBe number
+              result.value.value mustBe number.toString
 
               val actions = result.actions.get.items
               actions.size mustBe 1

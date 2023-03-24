@@ -78,7 +78,7 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
             .setValue(typePage(index), arbitrary[Document](arbitraryPreviousDocument).sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
-            .setValue(GoodsItemNumberPage(index), nonEmptyString.sample.value)
+            .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
             .setValue(AddTypeOfPackageYesNoPage(index), true)
             .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
             .setValue(AddNumberOfPackagesYesNoPage(index), true)

@@ -17,7 +17,8 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.GoodsItemNumberFormProvider
+import forms.Constants.maxGoodsItemNumber
+import forms.IntFormProvider
 import models.NormalMode
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -33,8 +34,8 @@ import scala.concurrent.Future
 
 class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider              = new GoodsItemNumberFormProvider()
-  private val form                      = formProvider("document.goodsItemNumber")
+  private val formProvider              = new IntFormProvider()
+  private val form                      = formProvider("document.goodsItemNumber", maxGoodsItemNumber)
   private val mode                      = NormalMode
   private lazy val goodsItemNumberRoute = routes.GoodsItemNumberController.onPageLoad(lrn, mode, documentIndex).url
 
@@ -42,6 +43,8 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
+
+  private val validAnswer = 12345
 
   "GoodsItemNumber Controller" - {
 
@@ -63,14 +66,14 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), "12345")
+      val userAnswers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, goodsItemNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "12345"))
+      val filledForm = form.bind(Map("value" -> validAnswer.toString))
 
       val view = injector.instanceOf[GoodsItemNumberView]
 
@@ -87,7 +90,7 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, goodsItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "12345"))
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
@@ -133,7 +136,7 @@ class GoodsItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, goodsItemNumberRoute)
-        .withFormUrlEncodedBody(("value", "12345"))
+        .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(app, request).value
 
