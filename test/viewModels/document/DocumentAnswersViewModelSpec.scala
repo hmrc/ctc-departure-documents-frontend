@@ -81,17 +81,17 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
             .setValue(GoodsItemNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddTypeOfPackageYesNoPage(index), true)
             .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
+            .setValue(AddNumberOfPackagesYesNoPage(index), true)
             .setValue(NumberOfPackagesPage(index), positiveIntsMinMax(0, 99999999).sample.value)
             .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
             .setValue(MetricPage(index), arbitrary[Metric].sample.value)
             .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
-          // TODO - include remaining pages
 
           val result = viewModelProvider.apply(userAnswers, mode, index).sections.head
 
           result.sectionTitle must not be defined
 
-          result.rows.size mustBe 10
+          result.rows.size mustBe 11
 
           result.addAnotherLink must not be defined
       }

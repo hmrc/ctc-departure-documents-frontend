@@ -42,12 +42,13 @@ object DocumentAnswersViewModel {
           helper.packageType,
           helper.goodsItemNumberYesNo,
           helper.goodsItemNumber,
-          helper.lineItemNumberYesNo,
-          helper.lineItemNumber,
-          helper.declareQuantityOfGoodsYesNo,
+          helper.numberOfPackagesYesNo,
           helper.numberOfPackage,
+          helper.declareQuantityOfGoodsYesNo,
           helper.metric,
-          helper.quantity
+          helper.quantity,
+          helper.lineItemNumberYesNo,
+          helper.lineItemNumber
         ).flatten
       )
 

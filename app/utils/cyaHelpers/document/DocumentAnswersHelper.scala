@@ -80,25 +80,11 @@ class DocumentAnswersHelper(
     id = Some("change-package-type")
   )
 
-  def lineItemNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddLineItemNumberYesNoPage(documentIndex),
+  def numberOfPackagesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddNumberOfPackagesYesNoPage(documentIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "document.addLineItemNumberYesNo",
-    id = Some("change-add-line-item-number")
-  )
-
-  def lineItemNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
-    page = LineItemNumberPage(documentIndex),
-    formatAnswer = formatAsText,
-    prefix = "document.lineItemNumber",
-    id = Some("change-line-item-number")
-  )
-
-  def declareQuantityOfGoodsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = DeclareQuantityOfGoodsYesNoPage(documentIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "document.declareQuantityOfGoodsYesNo",
-    id = Some("change-declare-quantity-of-goods")
+    prefix = "document.addNumberOfPackagesYesNo",
+    id = Some("change-add-number-of-packages")
   )
 
   def numberOfPackage: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
@@ -106,6 +92,13 @@ class DocumentAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "document.numberOfPackages",
     id = Some("change-number-of-packages")
+  )
+
+  def declareQuantityOfGoodsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = DeclareQuantityOfGoodsYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.declareQuantityOfGoodsYesNo",
+    id = Some("change-declare-quantity-of-goods")
   )
 
   def metric: Option[SummaryListRow] = getAnswerAndBuildRow[Metric](
@@ -126,4 +119,18 @@ class DocumentAnswersHelper(
           args = metric
         )
     }
+
+  def lineItemNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddLineItemNumberYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.addLineItemNumberYesNo",
+    id = Some("change-add-line-item-number")
+  )
+
+  def lineItemNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
+    page = LineItemNumberPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.lineItemNumber",
+    id = Some("change-line-item-number")
+  )
 }
