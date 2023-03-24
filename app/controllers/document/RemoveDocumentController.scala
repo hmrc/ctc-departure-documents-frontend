@@ -22,7 +22,7 @@ import forms.YesNoFormProvider
 import models.reference.Document
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.document.TypePage
+import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -55,14 +55,14 @@ class RemoveDocumentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TypePage(documentIndex))) {
+    .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex))) {
       implicit request =>
         Ok(view(form(documentType), lrn, mode, documentIndex, documentType))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TypePage(documentIndex)))
+    .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
     .async {
       implicit request =>
         lazy val redirect = Call(POST, "#")
