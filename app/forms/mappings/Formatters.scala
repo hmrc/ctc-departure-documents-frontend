@@ -107,7 +107,7 @@ trait Formatters {
 
       private val invalidCharactersRegex = """^[0-9.]*$"""
       private val invalidFormatRegex     = """^[0-9]*(\.[0-9]{1,6})?$"""
-      private val invalidValueRegex      = """^[0-9]{0,16}(\.[0-9]{1,6})?$"""
+      private val invalidValueRegex      = """^[0-9.]{1,16}$"""
 
       private val baseFormatter = stringFormatter(requiredKey)
 
