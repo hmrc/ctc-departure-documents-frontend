@@ -70,54 +70,27 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherDocument Controller" - {
-    "redirect to type controller when 0 documents added" - {
-      "and declaration type is not GB and Office of Departure is not T2 or T2F" in {
+    "redirect to the correct controller when 0 documents added" in {
+      when(mockViewModelProvider.apply(any(), any())(any()))
+        .thenReturn(emptyViewModel)
 
-        when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(emptyViewModel)
+      val declarationType   = arbitraryDeclarationType.arbitrary.sample.value
+      val officeOfDeparture = arbitraryCustomsOffice.arbitrary.sample.value
 
-        val declarationType     = Gen.oneOf(T1, TIR, T).sample.value
-        val xiOfficeOfDeparture = arbitraryXiCustomsOffice.arbitrary.sample.value
+      val userAnswers = emptyUserAnswers
+        .setValue(TransitOperationDeclarationTypePage, declarationType)
+        .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(TransitOperationDeclarationTypePage, declarationType)
-          .setValue(TransitOperationOfficeOfDeparturePage, xiOfficeOfDeparture)
+      setExistingUserAnswers(userAnswers)
 
-        setExistingUserAnswers(userAnswers)
+      val request = FakeRequest(GET, addAnotherDocumentRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
-        val request = FakeRequest(GET, addAnotherDocumentRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val result = route(app, request).value
 
-        val result = route(app, request).value
+      status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
-
-      "and declaration type is GB and Office of Departure is T2 or T2F" in {
-
-        when(mockViewModelProvider.apply(any(), any())(any()))
-          .thenReturn(emptyViewModel)
-
-        val declarationType     = Gen.oneOf(T2, T2F).sample.value
-        val gbOfficeOfDeparture = arbitraryGbCustomsOffice.arbitrary.sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(TransitOperationDeclarationTypePage, declarationType)
-          .setValue(TransitOperationOfficeOfDeparturePage, gbOfficeOfDeparture)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, addAnotherDocumentRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual onwardRoute.url
-      }
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must return OK and the correct view for a GET" - {
