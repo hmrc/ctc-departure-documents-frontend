@@ -18,6 +18,8 @@ package pages.document
 
 import models.reference.Document
 import pages.behaviours.PageBehaviours
+import pages.sections.DocumentDetailsSection
+import play.api.libs.json.Json
 
 class PreviousDocumentTypePageSpec extends PageBehaviours {
 
@@ -28,5 +30,34 @@ class PreviousDocumentTypePageSpec extends PageBehaviours {
     beSettable[Document](PreviousDocumentTypePage(documentIndex))
 
     beRemovable[Document](PreviousDocumentTypePage(documentIndex))
+
+    "cleanup" - {
+      val document1 = arbitraryDocument.arbitrary.sample.get
+      val document2 = arbitraryDocument.arbitrary.retryUntil(_ != document1).sample.get
+
+      "when answer has changed" - {
+        "must clean up document section at document index" in {
+          val preChange = emptyUserAnswers
+            .setValue(PreviousDocumentTypePage(documentIndex), document1)
+            .setValue(DocumentDetailsSection(documentIndex), Json.obj("foo" -> "bar"))
+
+          val postChange = preChange.setValue(PreviousDocumentTypePage(documentIndex), document2)
+
+          postChange.get(DocumentDetailsSection(documentIndex)) mustNot be(defined)
+        }
+      }
+
+      "when answer has not changed" - {
+        "must do nothing" in {
+          val preChange = emptyUserAnswers
+            .setValue(PreviousDocumentTypePage(documentIndex), document1)
+            .setValue(DocumentDetailsSection(documentIndex), Json.obj("foo" -> "bar"))
+
+          val postChange = preChange.setValue(PreviousDocumentTypePage(documentIndex), document1)
+
+          postChange.get(DocumentDetailsSection(documentIndex)) must be(defined)
+        }
+      }
+    }
   }
 }
