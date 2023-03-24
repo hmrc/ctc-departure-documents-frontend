@@ -92,8 +92,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          controllers.document.routes.TypeController.onPageLoad(lrn, NormalMode, Index(0)).url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
 
       "and declaration type is GB and Office of Departure is T2 or T2F" in {
@@ -117,8 +116,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          controllers.document.routes.PreviousDocumentTypeController.onPageLoad(lrn, NormalMode, Index(0)).url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 

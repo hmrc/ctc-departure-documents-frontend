@@ -22,6 +22,7 @@ import forms.AddAnotherFormProvider
 import models.DeclarationType._
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode, NormalMode}
+import navigation.DocumentsNavigatorProvider
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,6 +39,7 @@ import scala.concurrent.Future
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
+  navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDocumentViewModelProvider,
@@ -55,7 +57,7 @@ class AddAnotherDocumentController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode)
 
       viewModel.count match {
-        case 0 => redirectToNextPage(mode)
+        case 0 => Future.successful(Redirect(navigatorProvider(mode).nextPage(request.userAnswers)))
         case _ => Future.successful(Ok(view(form(viewModel), lrn, viewModel)))
       }
   }
@@ -72,16 +74,5 @@ class AddAnotherDocumentController @Inject() (
             case false => Redirect(config.taskListUrl(lrn))
           }
         )
-  }
-
-  private def redirectToNextPage(mode: Mode)(implicit request: DataRequest[_]): Future[Result] = {
-    val isOfficeOfDepartureGB = request.userAnswers.get(TransitOperationOfficeOfDeparturePage).map(_.isInGB)
-    val declarationType       = request.userAnswers.get(TransitOperationDeclarationTypePage)
-
-    (isOfficeOfDepartureGB, declarationType) match {
-      case (Some(true), Some(T2) | Some(T2F)) =>
-        Future.successful(Redirect(controllers.document.routes.PreviousDocumentTypeController.onPageLoad(request.userAnswers.lrn, mode, Index(0))))
-      case _ => Future.successful(Redirect(controllers.document.routes.TypeController.onPageLoad(request.userAnswers.lrn, mode, Index(0))))
-    }
   }
 }
