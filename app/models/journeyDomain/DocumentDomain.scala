@@ -97,7 +97,7 @@ object TransportDocumentDomain {
 case class PreviousDocumentDomain(
   document: Document,
   referenceNumber: String,
-  goodsItemNumber: Option[String],
+  goodsItemNumber: Option[Int],
   `package`: Option[PackageDomain],
   quantity: Option[QuantityDomain]
 )(override val index: Index)

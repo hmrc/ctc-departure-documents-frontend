@@ -16,9 +16,10 @@
 
 package views.document
 
+import forms.Constants.maxLineItemNumber
 import forms.IntFormProvider
 import models.NormalMode
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
@@ -27,14 +28,14 @@ import views.html.document.LineItemNumberView
 
 class LineItemNumberViewSpec extends InputTextViewBehaviours[Int] {
 
-  override def form: Form[Int] = new IntFormProvider()(prefix, 10)
+  private val maxInt = maxLineItemNumber
+
+  override def form: Form[Int] = new IntFormProvider()(prefix, maxInt)
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
     injector.instanceOf[LineItemNumberView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
 
-  private val maxInt = 99999
-
-  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(maxInt)
+  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(Gen.choose(0, maxInt))
 
   override val prefix: String = "document.lineItemNumber"
 

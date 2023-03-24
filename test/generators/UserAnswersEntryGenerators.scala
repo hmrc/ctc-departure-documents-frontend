@@ -45,7 +45,7 @@ trait UserAnswersEntryGenerators {
       case TypePage(_)                        => arbitrary[Document].map(Json.toJson(_))
       case DocumentReferenceNumberPage(_)     => nonEmptyString.map(JsString)
       case AddGoodsItemNumberYesNoPage(_)     => arbitrary[Boolean].map(JsBoolean)
-      case GoodsItemNumberPage(_)             => nonEmptyString.map(JsString)
+      case GoodsItemNumberPage(_)             => arbitrary[Int].map(Json.toJson(_))
       case AddTypeOfPackageYesNoPage(_)       => arbitrary[Boolean].map(JsBoolean)
       case PackageTypePage(_)                 => arbitrary[PackageType].map(Json.toJson(_))
       case AddNumberOfPackagesYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)

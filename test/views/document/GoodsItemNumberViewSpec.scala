@@ -16,7 +16,8 @@
 
 package views.document
 
-import forms.GoodsItemNumberFormProvider
+import forms.Constants.maxGoodsItemNumber
+import forms.IntFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -25,16 +26,18 @@ import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.document.GoodsItemNumberView
 
-class GoodsItemNumberViewSpec extends InputTextViewBehaviours[String] {
+class GoodsItemNumberViewSpec extends InputTextViewBehaviours[Int] {
+
+  private val maxInt = maxGoodsItemNumber
 
   override val prefix: String = "document.goodsItemNumber"
 
-  override def form: Form[String] = new GoodsItemNumberFormProvider()(prefix)
+  override def form: Form[Int] = new IntFormProvider()(prefix, maxInt)
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+  override def applyView(form: Form[Int]): HtmlFormat.Appendable =
     injector.instanceOf[GoodsItemNumberView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(Gen.choose(0, maxInt))
 
   behave like pageWithTitle()
 

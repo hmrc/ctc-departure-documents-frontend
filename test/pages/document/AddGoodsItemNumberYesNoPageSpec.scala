@@ -16,8 +16,8 @@
 
 package pages.document
 
-import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
+import pages.behaviours.PageBehaviours
 
 class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
 
@@ -32,7 +32,7 @@ class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
     "cleanup" - {
       "when NO selected" - {
         "must clean up goods item number page at document index" in {
-          forAll(arbitrary[String]) {
+          forAll(arbitrary[Int]) {
             goodsItemNumber =>
               val preChange = emptyUserAnswers
                 .setValue(GoodsItemNumberPage(documentIndex), goodsItemNumber)
@@ -46,7 +46,7 @@ class AddGoodsItemNumberYesNoPageSpec extends PageBehaviours {
 
       "when YES selected" - {
         "must do nothing" in {
-          forAll(arbitrary[String]) {
+          forAll(arbitrary[Int]) {
             goodsItemNumber =>
               val preChange = emptyUserAnswers
                 .setValue(GoodsItemNumberPage(documentIndex), goodsItemNumber)

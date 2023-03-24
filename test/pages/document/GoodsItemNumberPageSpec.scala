@@ -22,10 +22,10 @@ class GoodsItemNumberPageSpec extends PageBehaviours {
 
   "GoodsItemNumberPage" - {
 
-    beRetrievable[String](GoodsItemNumberPage(documentIndex))
+    beRetrievable[Int](GoodsItemNumberPage(documentIndex))
 
-    beSettable[String](GoodsItemNumberPage(documentIndex))
+    beSettable[Int](GoodsItemNumberPage(documentIndex))
 
-    beRemovable[String](GoodsItemNumberPage(documentIndex))
+    beRemovable[Int](GoodsItemNumberPage(documentIndex))
   }
 }

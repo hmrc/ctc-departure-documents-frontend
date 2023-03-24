@@ -66,6 +66,11 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       val result = minimumValue(1, "error.min").apply(0)
       result mustEqual Invalid("error.min", 1)
     }
+
+    "must return Invalid for a number below the threshold when number is negative" in {
+      val result = minimumValue(0, "error.min").apply(-1)
+      result mustEqual Invalid("error.min", 0)
+    }
   }
 
   "maximumValue" - {

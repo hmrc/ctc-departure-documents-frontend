@@ -18,7 +18,8 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.GoodsItemNumberFormProvider
+import forms.Constants.maxGoodsItemNumber
+import forms.IntFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.GoodsItemNumberPage
@@ -35,7 +36,7 @@ class GoodsItemNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
-  formProvider: GoodsItemNumberFormProvider,
+  formProvider: IntFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: GoodsItemNumberView
@@ -43,7 +44,7 @@ class GoodsItemNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("document.goodsItemNumber")
+  private val form = formProvider("document.goodsItemNumber", maxGoodsItemNumber)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

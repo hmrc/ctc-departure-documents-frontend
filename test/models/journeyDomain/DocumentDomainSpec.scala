@@ -232,7 +232,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
     "can be read from user answers" in {
-      forAll(documentGen, nonEmptyString, nonEmptyString, arbitrary[PackageType], arbitrary[Metric], arbitrary[BigDecimal]) {
+      forAll(documentGen, nonEmptyString, arbitrary[Int], arbitrary[PackageType], arbitrary[Metric], arbitrary[BigDecimal]) {
         (document, referenceNumber, goodsItemNumber, packageType, metric, quantity) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceNumber)
