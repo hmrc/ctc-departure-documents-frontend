@@ -26,9 +26,8 @@ import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.POST
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.RemoveDocumentView
 
@@ -65,7 +64,7 @@ class RemoveDocumentController @Inject() (
     .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
     .async {
       implicit request =>
-        lazy val redirect = Call(POST, "#")
+        lazy val redirect = controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
         form(documentType)
           .bindFromRequest()
           .fold(
