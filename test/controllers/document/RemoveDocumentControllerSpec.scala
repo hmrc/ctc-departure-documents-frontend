@@ -85,7 +85,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(POST, "#").url
+        redirectLocation(result).value mustEqual controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -113,7 +113,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(POST, "#").url
+        redirectLocation(result).value mustEqual controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }

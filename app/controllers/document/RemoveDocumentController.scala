@@ -65,7 +65,7 @@ class RemoveDocumentController @Inject() (
     .andThen(getMandatoryPage(TypePage(documentIndex)))
     .async {
       implicit request =>
-        lazy val redirect = Call(POST, "#")
+        lazy val redirect = controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
         form(documentType)
           .bindFromRequest()
           .fold(
