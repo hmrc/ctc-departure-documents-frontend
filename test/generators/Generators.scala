@@ -94,6 +94,15 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
   def intsAboveValue(value: Int): Gen[Int] =
     arbitrary[Int] retryUntil (_ > value)
 
+  def decimalsAboveValue(value: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] retryUntil (_ > value)
+
+  def decimalsBelowValue(value: BigDecimal): Gen[BigDecimal] =
+    arbitrary[BigDecimal] retryUntil (_ < value)
+
+  def decimalsWithNOrMoreDecimalPlaces(decimalPlaces: Int): Gen[BigDecimal] =
+    decimalsAboveValue(BigDecimal(10 ^ decimalPlaces)).map(_ / decimalPlaces)
+
   def doublesBelowValue(value: Double): Gen[Double] =
     arbitrary[Double] retryUntil (_ < value)
 
@@ -110,6 +119,8 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
     arbitrary[Int] retryUntil (
       x => x > min && x < max
     )
+
+  def positiveBigDecimals: Gen[BigDecimal] = positiveInts.map(BigDecimal(_))
 
   def nonBooleans: Gen[String] =
     nonEmptyString

@@ -107,12 +107,24 @@ document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quanti
 document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to declare the quantity of goods
 
+document.quantity.title = How many of these do the goods include?
+document.quantity.heading = How many of these do the goods include?
+document.quantity.error.required = Enter the quantity of the goods’ metric
+document.quantity.error.invalidCharacters = The quantity must only include numbers 0 to 9 and a decimal point
+document.quantity.error.invalidFormat = The quantity must have 6 decimal places or less
+document.quantity.error.invalidValue = The quantity must be less than 10,000,000,000,000,000
+
 document.metric.title = What metric do you want to use for the quantity of goods?
 document.metric.heading = What metric do you want to use for the quantity of goods?
 document.metric.placeholder = Select a metric
 document.metric.checkYourAnswersLabel = Metric for quantity of goods
 document.metric.change.hidden = metric for quantity of goods
 document.metric.error.required = Select a metric for the quantity of goods
+
+document.addNumberOfPackagesYesNo.title = Do you want to declare the quantity of this package?
+document.addNumberOfPackagesYesNo.heading = Do you want to declare the quantity of this package?
+document.addNumberOfPackagesYesNo.checkYourAnswersLabel = Do you want to declare the quantity of this package
+document.addNumberOfPackagesYesNo.error.required = Select yes if you want to declare the quantity of the package type
 
 document.numberOfPackages.title = How many of these were there?
 document.numberOfPackages.heading = How many of these were there?
@@ -121,3 +133,8 @@ document.numberOfPackages.error.nonNumeric = The quantity must only include numb
 document.numberOfPackages.error.required = Enter the quantity of the package type
 document.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
 document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
+
+
+document.removeDocument.title = Are you sure you want to remove the {0}?
+document.removeDocument.heading = Are you sure you want to remove the {0}?
+document.removeDocument.error.required = Select yes if you want to remove the {0}

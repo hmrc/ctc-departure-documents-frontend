@@ -16,38 +16,36 @@
 
 @import controllers.document.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText, InsetText}
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputText: InputText,
-    insetText: InsetText,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.numberOfPackages.title"),
+    title = messages("document.addNumberOfPackagesYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.NumberOfPackagesController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddNumberOfPackagesYesNoController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputText(
+        @inputYesNo(
             field = form("value"),
-            inputTextType = TextInputWithHiddenLabel(
-                heading = messages("document.numberOfPackages.heading"),
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("document.addNumberOfPackagesYesNo.heading"),
                 caption = Some(messages("document.caption")),
-                additionalHtml = insetText(packageType)
-            ),
-            inputClass = InputSize.Width20
+                additionalHtml = messages("document.addNumberOfPackagesYesNo.paragraph").toParagraph
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

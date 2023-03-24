@@ -16,42 +16,39 @@
 
 package views.document
 
-import forms.IntFormProvider
+import forms.BigDecimalFormProvider
 import models.NormalMode
-import models.reference.PackageType
+import models.reference.Metric
 import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.document.NumberOfPackagesView
+import views.html.document.QuantityView
 
-class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
+class QuantityViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  private val packageType = Arbitrary.arbitrary[PackageType].sample.get
+  private val metric = arbitrary[Metric].sample.value
 
-  override def form: Form[Int] = new IntFormProvider()(prefix, 10)
+  override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
 
-  override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, documentIndex, packageType.toString)(fakeRequest, messages)
+  override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
+    injector.instanceOf[QuantityView].apply(form, lrn, NormalMode, index, metric)(fakeRequest, messages)
 
-  private val maxInt = 99999999
+  implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
-  implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(maxInt)
-
-  override val prefix: String = "document.numberOfPackages"
+  override val prefix: String = "document.quantity"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Documents")
-
   behave like pageWithHeading()
 
   behave like pageWithoutHint()
 
-  behave like pageWithInsetText(packageType.toString)
+  behave like pageWithInsetText(metric.toString)
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

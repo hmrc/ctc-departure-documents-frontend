@@ -49,12 +49,28 @@ POST       /:documentIndex/previous/quantity/add/:lrn                     contro
 GET        /:documentIndex/previous/quantity/change-add/:lrn              controllers.document.DeclareQuantityOfGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/quantity/change-add/:lrn              controllers.document.DeclareQuantityOfGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 
+GET        /:documentIndex/previous/quantity/:lrn                        controllers.document.QuantityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/quantity/:lrn                        controllers.document.QuantityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/change-quantity/:lrn                 controllers.document.QuantityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/change-quantity/:lrn                 controllers.document.QuantityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
 GET        /:documentIndex/previous/quantity/metric/:lrn                  controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 POST       /:documentIndex/previous/quantity/metric/:lrn                  controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/quantity/change-metric/:lrn           controllers.document.MetricController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/quantity/change-metric/:lrn           controllers.document.MetricController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 
+GET        /:documentIndex/previous/add-package-quantity/:lrn             controllers.document.AddNumberOfPackagesYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/previous/add-package-quantity/:lrn             controllers.document.AddNumberOfPackagesYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/previous/change-add-package-quantity/:lrn      controllers.document.AddNumberOfPackagesYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/previous/change-add-package-quantity/:lrn      controllers.document.AddNumberOfPackagesYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
 GET        /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 POST       /:documentIndex/previous/package-quantity/:lrn                 controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
 GET        /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
 POST       /:documentIndex/previous/change-package-quantity/:lrn          controllers.document.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
+GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+POST       /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, documentIndex: Index)
+GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+POST       /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, documentIndex: Index)
+
