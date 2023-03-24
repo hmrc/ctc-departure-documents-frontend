@@ -25,8 +25,9 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.TypePage
+import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.test.FakeRequest
@@ -45,13 +46,14 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode                     = NormalMode
   private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url
   private val documentType             = arbitrary[Document].sample.value
+  private val typePage                 = Gen.oneOf(TypePage, PreviousDocumentTypePage).sample.value
 
   "RemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(TypePage(documentIndex), documentType)
+        .setValue(typePage(documentIndex), documentType)
 
       setExistingUserAnswers(userAnswers)
 
@@ -73,7 +75,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val userAnswers = emptyUserAnswers
-          .setValue(TypePage(documentIndex), documentType)
+          .setValue(typePage(documentIndex), documentType)
 
         setExistingUserAnswers(userAnswers)
 
@@ -99,7 +101,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val userAnswers = emptyUserAnswers
-          .setValue(TypePage(documentIndex), documentType)
+          .setValue(typePage(documentIndex), documentType)
 
         setExistingUserAnswers(userAnswers)
 
@@ -121,7 +123,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(TypePage(documentIndex), documentType)
+        .setValue(typePage(documentIndex), documentType)
 
       setExistingUserAnswers(userAnswers)
 
