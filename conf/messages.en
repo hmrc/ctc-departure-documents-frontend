@@ -113,6 +113,11 @@ document.metric.checkYourAnswersLabel = Metric for quantity of goods
 document.metric.change.hidden = metric for quantity of goods
 document.metric.error.required = Select a metric for the quantity of goods
 
+document.addNumberOfPackagesYesNo.title = Do you want to declare the quantity of this package?
+document.addNumberOfPackagesYesNo.heading = Do you want to declare the quantity of this package?
+document.addNumberOfPackagesYesNo.checkYourAnswersLabel = Do you want to declare the quantity of this package
+document.addNumberOfPackagesYesNo.error.required = Select yes if you want to declare the quantity of the package type
+
 document.numberOfPackages.title = How many of these were there?
 document.numberOfPackages.heading = How many of these were there?
 document.numberOfPackages.checkYourAnswersLabel = Number of packages
