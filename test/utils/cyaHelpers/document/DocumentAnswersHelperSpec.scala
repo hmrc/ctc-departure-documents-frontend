@@ -65,6 +65,42 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
+    "previousDocumentType" - {
+      "must return None" - {
+        "when previousDocumentType page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, documentIndex)
+              val result = helper.previousDocumentType
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when previousDocumentType page is defined" in {
+          forAll(arbitrary[Mode], arbitrary[Document]) {
+            (mode, document) =>
+              val answers = emptyUserAnswers.setValue(PreviousDocumentTypePage(documentIndex), document)
+
+              val helper = new DocumentAnswersHelper(answers, mode, documentIndex)
+              val result = helper.previousDocumentType.get
+
+              result.key.value mustBe "Document type"
+              result.value.value mustBe document.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PreviousDocumentTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "document type"
+              action.id mustBe "change-previous-document-type"
+          }
+        }
+      }
+    }
+
     "documentReferenceNumber" - {
       "must return None" - {
         "when documentReferenceNumber page is undefined" in {

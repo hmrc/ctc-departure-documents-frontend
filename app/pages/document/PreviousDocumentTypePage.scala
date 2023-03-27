@@ -30,7 +30,7 @@ case class PreviousDocumentTypePage(documentIndex: Index) extends QuestionPage[D
 
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
-  override def toString: String = "type"
+  override def toString: String = "previousDocumentType"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))

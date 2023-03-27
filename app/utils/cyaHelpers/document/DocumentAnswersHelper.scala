@@ -31,12 +31,18 @@ class DocumentAnswersHelper(
 )(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
-  // TypePage and PreviousDocumentTypePage have the same JsPath. This method therefore captures both.
   def documentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
     page = TypePage(documentIndex),
     formatAnswer = formatAsText,
     prefix = "document.type",
     id = Some("change-type")
+  )
+
+  def previousDocumentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
+    page = PreviousDocumentTypePage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.previousDocumentType",
+    id = Some("change-previous-document-type")
   )
 
   def documentReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
