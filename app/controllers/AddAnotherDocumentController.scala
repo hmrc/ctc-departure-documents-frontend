@@ -31,7 +31,6 @@ import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvide
 import views.html.AddAnotherDocumentView
 
 import javax.inject.Inject
-import scala.concurrent.Future
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
@@ -49,13 +48,13 @@ class AddAnotherDocumentController @Inject() (
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode)
 
       viewModel.count match {
-        case 0 => Future.successful(Redirect(navigatorProvider(mode).nextPage(request.userAnswers)))
-        case _ => Future.successful(Ok(view(form(viewModel), lrn, viewModel)))
+        case 0 => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+        case _ => Ok(view(form(viewModel), lrn, viewModel))
       }
   }
 

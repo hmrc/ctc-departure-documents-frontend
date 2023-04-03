@@ -17,6 +17,8 @@ error.summary.title = There is a problem
 
 document.caption = Documents
 
+document.label = {0} - reference number {1}
+
 document.previousDocumentType.title = What previous document do you want to add?
 document.previousDocumentType.heading = What previous document do you want to add?
 document.previousDocumentType.paragraph = You need to provide this as you’re creating a {0} declaration departing from Great Britain.

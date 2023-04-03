@@ -17,11 +17,11 @@
 package utils.cyaHelpers
 
 import base.SpecBase
+import controllers.document.routes
 import generators.Generators
 import models.DeclarationType._
-import controllers.document.routes
 import models.reference.{CustomsOffice, Document}
-import models.{DeclarationType, Index, Mode, NormalMode}
+import models.{DeclarationType, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -51,28 +51,27 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         "when Type page is populated" - {
           "must return list items with remove links" in {
             forAll(
+              arbitrary[Mode],
               arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
               arbitrary[DeclarationType],
               arbitrary[Document](arbitraryTransportDocument),
               nonEmptyString
             ) {
-              (xiCustomsOffice, declarationType, document, referenceNumber) =>
+              (mode, xiCustomsOffice, declarationType, document, referenceNumber) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)
                   .setValue(TypePage(Index(0)), document)
                   .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
 
-                val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
+                val helper = new DocumentsAnswersHelper(userAnswers, mode)
 
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"${document.toString} - $referenceNumber",
-                      changeUrl = routes.DocumentAnswersController
-                        .onPageLoad(userAnswers.lrn, NormalMode, documentIndex)
-                        .url,
-                      removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
+                      name = s"${document.toString} - reference number $referenceNumber",
+                      changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, documentIndex).url,
+                      removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
                     )
                   )
                 )
@@ -82,12 +81,13 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           "when Previous Type page is populated" - {
             "must return list items with remove links" in {
               forAll(
+                arbitrary[Mode],
                 arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
                 Gen.oneOf(T2, T2F),
                 arbitrary[Document](arbitraryPreviousDocument),
                 nonEmptyString
               ) {
-                (gbCustomsOffice, declarationType, previousDocument, referenceNumber) =>
+                (mode, gbCustomsOffice, declarationType, previousDocument, referenceNumber) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
@@ -97,16 +97,14 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     .setValue(AddTypeOfPackageYesNoPage(Index(0)), false)
                     .setValue(DeclareQuantityOfGoodsYesNoPage(Index(0)), false)
 
-                  val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
+                  val helper = new DocumentsAnswersHelper(userAnswers, mode)
 
                   helper.listItems mustBe Seq(
                     Right(
                       ListItem(
-                        name = s"${previousDocument.toString} - $referenceNumber",
-                        changeUrl = routes.DocumentAnswersController
-                          .onPageLoad(userAnswers.lrn, NormalMode, documentIndex)
-                          .url,
-                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
+                        name = s"${previousDocument.toString} - reference number $referenceNumber",
+                        changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, documentIndex).url,
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
                       )
                     )
                   )
@@ -119,24 +117,25 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           "when Type page is populated" - {
             "must return list items with remove links" in {
               forAll(
+                arbitrary[Mode],
                 arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
                 arbitrary[DeclarationType],
                 arbitrary[Document]
               ) {
-                (xiCustomsOffice, declarationType, document) =>
+                (mode, xiCustomsOffice, declarationType, document) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
                     .setValue(TypePage(Index(0)), document)
 
-                  val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
+                  val helper = new DocumentsAnswersHelper(userAnswers, mode)
 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = s"${document.toString}",
-                        changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
-                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
+                        name = document.toString,
+                        changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
                       )
                     )
                   )
@@ -147,24 +146,25 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           "when Previous Type page is populated" - {
             "must return list items with remove links" in {
               forAll(
+                arbitrary[Mode],
                 arbitrary[Document](arbitraryPreviousDocument),
                 Gen.oneOf(T2, T2F),
                 arbitraryGbCustomsOffice
               ) {
-                (previousDocument, declarationType, gbCustomsOffice) =>
+                (mode, previousDocument, declarationType, gbCustomsOffice) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
                     .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice.arbitrary.sample.get)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
 
-                  val helper = new DocumentsAnswersHelper(userAnswers, NormalMode)
+                  val helper = new DocumentsAnswersHelper(userAnswers, mode)
 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = s"${previousDocument.toString}",
-                        changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
-                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, NormalMode, documentIndex).url)
+                        name = previousDocument.toString,
+                        changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
                       )
                     )
                   )

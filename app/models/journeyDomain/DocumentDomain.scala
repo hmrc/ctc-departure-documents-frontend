@@ -17,21 +17,22 @@
 package models.journeyDomain
 
 import cats.implicits._
+import controllers.document.routes
 import models.DeclarationType._
 import models.DocumentType._
 import models.reference.Document
 import models.{Index, Mode, UserAnswers}
 import pages.document._
 import pages.external._
+import play.api.i18n.Messages
 import play.api.mvc.Call
-import controllers.document.routes
 
 sealed trait DocumentDomain extends JourneyDomainModel {
   val index: Index
   val document: Document
   val referenceNumber: String
 
-  def asString: String = DocumentDomain.asString(document, referenceNumber)
+  def label(implicit messages: Messages): String = messages("document.label", document, referenceNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
     routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, index)
@@ -39,8 +40,6 @@ sealed trait DocumentDomain extends JourneyDomainModel {
 }
 
 object DocumentDomain {
-
-  def asString(document: Document, referenceNumber: String) = s"${document.toString} - $referenceNumber"
 
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
     (
