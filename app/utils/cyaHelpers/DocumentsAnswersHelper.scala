@@ -16,7 +16,6 @@
 
 package utils.cyaHelpers
 
-import config.FrontendAppConfig
 import controllers.document.routes
 import models.journeyDomain.DocumentDomain
 import models.{Mode, UserAnswers}
@@ -28,14 +27,14 @@ import viewModels.ListItem
 class DocumentsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection) {
       documentIndex =>
         buildListItem[DocumentDomain](
-          nameWhenComplete = _.asString,
+          nameWhenComplete = _.label,
           nameWhenInProgress = (userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))).map(_.toString),
           removeRoute = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex))
         )(DocumentDomain.userAnswersReader(documentIndex))

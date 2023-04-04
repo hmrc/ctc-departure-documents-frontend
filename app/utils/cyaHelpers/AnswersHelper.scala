@@ -16,10 +16,8 @@
 
 package utils.cyaHelpers
 
-import config.FrontendAppConfig
-import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.Stage.AccessingJourney
+import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
 import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
@@ -29,7 +27,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewModels.ListItem
 
-class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends SummaryListRowHelper {
+class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
 
   protected def lrn: LocalReferenceNumber = userAnswers.lrn
 
