@@ -115,7 +115,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
 
       "must return Some(Row)" - {
         "when documentReferenceNumber page is defined" in {
-          forAll(arbitrary[Mode], arbitrary[String]) {
+          forAll(arbitrary[Mode], nonEmptyString) {
             (mode, reference) =>
               val answers = emptyUserAnswers.setValue(DocumentReferenceNumberPage(documentIndex), reference)
 
