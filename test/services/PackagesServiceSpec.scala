@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.PackageTypeList
+import models.SelectableList
 import models.reference.PackageType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -50,7 +50,7 @@ class PackagesServiceSpec extends SpecBase with BeforeAndAfterEach {
           .thenReturn(Future.successful(Seq(packageType1, packageType2, packageType3)))
 
         service.getPackageTypes().futureValue mustBe
-          PackageTypeList(Seq(packageType1, packageType3, packageType2))
+          SelectableList(Seq(packageType1, packageType3, packageType2))
 
         verify(mockRefDataConnector).getPackageTypes()(any(), any())
       }

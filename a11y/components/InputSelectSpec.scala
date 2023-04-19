@@ -17,8 +17,9 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.DocumentFormProvider
-import models.DocumentList
+import forms.SelectableFormProvider
+import models.SelectableList
+import models.reference.Document
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -35,13 +36,13 @@ class InputSelectSpec extends A11ySpecBase {
     val prefix         = Gen.alphaNumStr.sample.value
     val title          = nonEmptyString.sample.value
     val caption        = Gen.option(nonEmptyString).sample.value
-    val documentList   = arbitrary[DocumentList].sample.value
+    val documentList   = arbitrary[SelectableList[Document]].sample.value
     val hint           = Gen.option(nonEmptyString).sample.value
     val placeholder    = nonEmptyString.sample.value
-    val selectedValue  = Gen.oneOf(None, Some(documentList.documents.head)).sample.value
-    val selectItems    = documentList.documents.toSelectItems(selectedValue)
+    val selectedValue  = Gen.oneOf(None, Some(documentList.values.head)).sample.value
+    val selectItems    = documentList.values.toSelectItems(selectedValue)
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new DocumentFormProvider()(prefix, documentList)
+    val form           = new SelectableFormProvider()(prefix, documentList)
     val preparedForm = selectedValue match {
       case Some(document) => form.fill(document)
       case None           => form

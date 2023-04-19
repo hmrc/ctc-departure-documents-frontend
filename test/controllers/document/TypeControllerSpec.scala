@@ -17,9 +17,9 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.DocumentFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{DocumentList, NormalMode}
+import models.{NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,9 +37,9 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
   private val document1    = arbitraryDocument.arbitrary.sample.get
   private val document2    = arbitraryDocument.arbitrary.sample.get
-  private val documentList = DocumentList(Seq(document1, document2))
+  private val documentList = SelectableList(Seq(document1, document2))
 
-  private val formProvider = new DocumentFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("document.type", documentList)
   private val mode         = NormalMode
 
@@ -68,7 +68,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, documentList.documents, mode, documentIndex)(request, messages).toString
+        view(form, lrn, documentList.values, mode, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, documentList.documents, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, documentList.values, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, documentList.documents, mode, documentIndex)(request, messages).toString
+        view(boundForm, lrn, documentList.values, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

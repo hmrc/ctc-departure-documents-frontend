@@ -16,9 +16,9 @@
 
 package views.document
 
-import forms.DocumentFormProvider
+import forms.SelectableFormProvider
 import models.reference.Document
-import models.{DeclarationType, DocumentList, NormalMode}
+import models.{DeclarationType, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
@@ -30,7 +30,7 @@ class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[Document] {
 
   private val declarationType = arbitrary[DeclarationType].sample.get
 
-  override def form: Form[Document] = new DocumentFormProvider()(prefix, DocumentList(values))
+  override def form: Form[Document] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Document]): HtmlFormat.Appendable =
     injector.instanceOf[PreviousDocumentTypeView].apply(form, lrn, values, NormalMode, declarationType, documentIndex)(fakeRequest, messages)

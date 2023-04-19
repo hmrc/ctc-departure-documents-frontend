@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.DocumentList
-import models.reference.Document
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class DocumentFormProvider @Inject() extends Mappings {
-
-  def apply(prefix: String, documentList: DocumentList): Form[Document] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => documentList.documents.exists(_.code == value))
-        .transform[Document](value => documentList.getDocument(value).get, _.code)
-    )
-}
+case class SelectableList[T <: Selectable](values: Seq[T])

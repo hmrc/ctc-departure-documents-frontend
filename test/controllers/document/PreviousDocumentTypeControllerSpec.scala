@@ -17,9 +17,9 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.DocumentFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{DeclarationType, DocumentList, NormalMode}
+import models.{DeclarationType, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -40,9 +40,9 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   private val declarationType      = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F).sample.get
   private val previousDocument1    = arbitraryPreviousDocument.arbitrary.sample.get
   private val previousDocument2    = arbitraryPreviousDocument.arbitrary.sample.get
-  private val previousDocumentList = DocumentList(Seq(previousDocument1, previousDocument2))
+  private val previousDocumentList = SelectableList(Seq(previousDocument1, previousDocument2))
 
-  private val formProvider = new DocumentFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("document.previousDocumentType", previousDocumentList)
   private val mode         = NormalMode
 
@@ -74,7 +74,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, previousDocumentList.documents, mode, declarationType, documentIndex)(request, messages).toString
+        view(form, lrn, previousDocumentList.values, mode, declarationType, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -96,7 +96,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, previousDocumentList.documents, mode, declarationType, documentIndex)(request, messages).toString
+        view(filledForm, lrn, previousDocumentList.values, mode, declarationType, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -135,7 +135,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, previousDocumentList.documents, mode, declarationType, documentIndex)(request, messages).toString
+        view(boundForm, lrn, previousDocumentList.values, mode, declarationType, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
