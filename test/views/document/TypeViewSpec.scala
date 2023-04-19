@@ -16,9 +16,9 @@
 
 package views.document
 
-import forms.DocumentFormProvider
+import forms.SelectableFormProvider
 import models.reference.Document
-import models.{DocumentList, NormalMode}
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,7 @@ import views.html.document.TypeView
 
 class TypeViewSpec extends InputSelectViewBehaviours[Document] {
 
-  override def form: Form[Document] = new DocumentFormProvider()(prefix, DocumentList(values))
+  override def form: Form[Document] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Document]): HtmlFormat.Appendable =
     injector.instanceOf[TypeView].apply(form, lrn, values, NormalMode, documentIndex)(fakeRequest, messages)

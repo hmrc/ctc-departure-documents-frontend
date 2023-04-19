@@ -140,10 +140,10 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
-  implicit lazy val arbitraryDocumentList: Arbitrary[DocumentList] = Arbitrary {
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
     for {
-      countries <- listWithMaxLength[Document]()
-    } yield DocumentList(countries.distinctBy(_.code))
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
   }
 
   implicit lazy val arbitraryMetric: Arbitrary[Metric] =

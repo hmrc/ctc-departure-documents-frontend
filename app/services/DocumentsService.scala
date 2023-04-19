@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.DocumentList
+import models.SelectableList
 import models.reference.Document
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,17 +26,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getDocuments()(implicit hc: HeaderCarrier): Future[DocumentList] =
+  def getDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
       documents         <- referenceDataConnector.getDocuments()
       previousDocuments <- referenceDataConnector.getPreviousDocuments()
     } yield sort(documents ++ previousDocuments)
 
-  def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[DocumentList] =
+  def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     referenceDataConnector
       .getPreviousDocuments()
       .map(sort)
 
-  private def sort(documents: Seq[Document]): DocumentList =
-    DocumentList(documents.sortBy(_.description.map(_.toLowerCase)))
+  private def sort(documents: Seq[Document]): SelectableList[Document] =
+    SelectableList(documents.sortBy(_.description.map(_.toLowerCase)))
 }

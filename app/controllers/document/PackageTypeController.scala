@@ -18,7 +18,7 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.PackageTypeFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.PackageTypePage
@@ -37,7 +37,7 @@ class PackageTypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
-  formProvider: PackageTypeFormProvider,
+  formProvider: SelectableFormProvider,
   service: PackagesService,
   val controllerComponents: MessagesControllerComponents,
   view: PackageTypeView
@@ -57,7 +57,7 @@ class PackageTypeController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, packageTypeList.packageTypes, mode, documentIndex))
+          Ok(view(preparedForm, lrn, packageTypeList.values, mode, documentIndex))
       }
   }
 
@@ -69,7 +69,7 @@ class PackageTypeController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packageTypes, mode, documentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.values, mode, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
                 PackageTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

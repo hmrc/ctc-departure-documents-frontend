@@ -18,8 +18,8 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.DocumentList
 import models.DocumentType._
+import models.SelectableList
 import models.reference.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -54,7 +54,7 @@ class DocumentsServiceSpec extends SpecBase with BeforeAndAfterEach {
           .thenReturn(Future.successful(Seq(document3)))
 
         service.getDocuments().futureValue mustBe
-          DocumentList(Seq(document2, document3, document1))
+          SelectableList(Seq(document2, document3, document1))
 
         verify(mockRefDataConnector).getDocuments()(any(), any())
         verify(mockRefDataConnector).getPreviousDocuments()(any(), any())

@@ -18,7 +18,7 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.PreviousDocumentTypePage
@@ -39,7 +39,7 @@ class PreviousDocumentTypeController @Inject() (
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: DocumentFormProvider,
+  formProvider: SelectableFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
@@ -62,7 +62,7 @@ class PreviousDocumentTypeController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))
+            Ok(view(preparedForm, lrn, previousDocumentTypeList.values, mode, request.arg, documentIndex))
         }
     }
 
@@ -77,8 +77,7 @@ class PreviousDocumentTypeController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.documents, mode, request.arg, documentIndex))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.values, mode, request.arg, documentIndex))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
                   PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

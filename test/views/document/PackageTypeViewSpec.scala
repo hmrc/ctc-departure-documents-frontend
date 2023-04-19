@@ -16,9 +16,9 @@
 
 package views.document
 
-import forms.PackageTypeFormProvider
+import forms.SelectableFormProvider
 import models.reference.PackageType
-import models.{NormalMode, PackageTypeList}
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,7 @@ import views.html.document.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
-  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values))
+  override def form: Form[PackageType] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, documentIndex)(fakeRequest, messages)

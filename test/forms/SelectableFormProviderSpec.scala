@@ -18,20 +18,23 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
-import models.DocumentList
+import models.SelectableList
+import models.reference.Document
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class DocumentFormProviderSpec extends StringFieldBehaviours with Generators {
+class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
 
-  private val documentType1    = arbitraryDocument.arbitrary.sample.value
-  private val documentType2    = arbitraryDocument.arbitrary.sample.value
-  private val documentTypeList = DocumentList(Seq(documentType1, documentType2))
+  private val selectable1    = arbitrary[Document].sample.value
+  private val selectable2    = arbitrary[Document].sample.value
+  private val selectableList = SelectableList(Seq(selectable1, selectable2))
+  private val arg            = Gen.alphaNumStr.sample.value
 
-  private val form = new DocumentFormProvider()(prefix, documentTypeList)
+  private val form = new SelectableFormProvider()(prefix, selectableList, arg)
 
   ".value" - {
 
@@ -46,17 +49,17 @@ class DocumentFormProviderSpec extends StringFieldBehaviours with Generators {
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(arg))
     )
 
-    "not bind if documentType id does not exist in the documentTypeList" in {
+    "not bind if value does not exist in the list" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a documentType id which is in the list" in {
-      val boundForm = form.bind(Map("value" -> documentType1.code))
+    "bind a value which is in the list" in {
+      val boundForm = form.bind(Map("value" -> selectable1.value))
       val field     = boundForm("value")
       field.errors must be(empty)
     }
