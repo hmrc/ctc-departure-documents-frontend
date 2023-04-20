@@ -103,8 +103,8 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     Right(
                       ListItem(
                         name = s"${previousDocument.toString} - reference number $referenceNumber",
-                        changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, documentIndex).url,
-                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
+                        changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = None
                       )
                     )
                   )
@@ -135,7 +135,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ListItem(
                         name = document.toString,
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, Index(0)).url)
                       )
                     )
                   )
@@ -164,7 +164,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                       ListItem(
                         name = previousDocument.toString,
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url)
+                        removeUrl = None
                       )
                     )
                   )

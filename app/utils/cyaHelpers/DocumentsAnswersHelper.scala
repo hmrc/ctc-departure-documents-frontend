@@ -22,6 +22,7 @@ import models.{Mode, UserAnswers}
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
 import play.api.i18n.Messages
+import play.api.mvc.Call
 import viewModels.ListItem
 
 class DocumentsAnswersHelper(
@@ -33,10 +34,16 @@ class DocumentsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection) {
       documentIndex =>
+        val removeRoute: Option[Call] = if (userAnswers.get(PreviousDocumentTypePage(documentIndex)).isDefined && documentIndex.isFirst) {
+          None
+        } else {
+          Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex))
+        }
+
         buildListItem[DocumentDomain](
           nameWhenComplete = _.label,
           nameWhenInProgress = (userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))).map(_.toString),
-          removeRoute = Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex))
+          removeRoute = removeRoute
         )(DocumentDomain.userAnswersReader(documentIndex))
     }
 }
