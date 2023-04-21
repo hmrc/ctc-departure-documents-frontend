@@ -20,11 +20,15 @@ import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.DocumentType._
 import models.reference.{Document, Metric}
+import org.mockito.Mockito
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import services.UUIDService
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -32,11 +36,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private val baseUrl = "test-only/transit-movements-trader-reference-data"
 
+  private val mockUUIDService = mock[UUIDService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super
     .guiceApplicationBuilder()
     .configure(
       conf = "microservice.services.referenceData.port" -> server.port()
     )
+    .overrides(bind[UUIDService].toInstance(mockUUIDService))
+
+  private val uuid = UUID.fromString("8e5a3f69-7d6d-490a-8071-002b1d35d3c1")
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockUUIDService)
+    Mockito.when(mockUUIDService.randomUUID).thenReturn(uuid)
+  }
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
@@ -92,8 +107,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       )
 
       val expectResult = Seq(
-        Document(Previous, "1", Some("Certificate of quality")),
-        Document(Previous, "4", None)
+        Document(Previous, "1", Some("Certificate of quality"), uuid),
+        Document(Previous, "4", None, uuid)
       )
 
       connector.getPreviousDocuments().futureValue mustEqual expectResult
@@ -115,8 +130,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       )
 
       val expectResult = Seq(
-        Document(Support, "18", Some("Movement certificate A.TR.1")),
-        Document(Transport, "2", Some("Certificate of conformity"))
+        Document(Support, "18", Some("Movement certificate A.TR.1"), uuid),
+        Document(Transport, "2", Some("Certificate of conformity"), uuid)
       )
 
       connector.getDocuments().futureValue mustEqual expectResult

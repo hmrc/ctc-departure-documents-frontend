@@ -20,9 +20,17 @@ import models.DocumentType._
 import models.{DocumentType, Selectable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import services.UUIDService
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-case class Document(`type`: DocumentType, code: String, description: Option[String]) extends Selectable {
+import java.util.UUID
+
+case class Document(
+  `type`: DocumentType,
+  code: String,
+  description: Option[String],
+  uuid: UUID
+) extends Selectable {
 
   override def toString: String = description match {
     case Some(value) if value.trim.nonEmpty => s"($code) $value"
@@ -34,7 +42,7 @@ case class Document(`type`: DocumentType, code: String, description: Option[Stri
 
 object Document {
 
-  val httpReads: HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) =>
+  def httpReads(implicit uuidService: UUIDService): HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) =>
     response.json match {
       case JsArray(values) =>
         values.flatMap(_.validate[Document](referenceDataReads).asOpt).toSeq
@@ -42,7 +50,7 @@ object Document {
         Nil
     }
 
-  val referenceDataReads: Reads[Document] = (
+  def referenceDataReads(implicit uuidService: UUIDService): Reads[Document] = (
     (__ \ "code").read[String] and
       (__ \ "description").readNullable[String] and
       (__ \ "transportDocument").readNullable[Boolean]
@@ -53,7 +61,7 @@ object Document {
         case Some(false) => Support
         case None        => Previous
       }
-      Document(`type`, code, description)
+      Document(`type`, code, description, uuidService.randomUUID)
   }
 
   implicit val format: Format[Document] = Json.format[Document]

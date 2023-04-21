@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.reference.{Document, Metric, PackageType}
+import services.UUIDService
 import sttp.model.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -25,7 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient)(implicit uuidService: UUIDService) {
 
   def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Document]] = {
     val serviceUrl = s"${config.referenceDataUrl}/previous-document-types"

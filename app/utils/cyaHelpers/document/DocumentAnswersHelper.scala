@@ -16,7 +16,6 @@
 
 package utils.cyaHelpers.document
 
-import config.FrontendAppConfig
 import models.reference._
 import models.{Index, Mode, UserAnswers}
 import pages.document._
@@ -28,7 +27,7 @@ class DocumentAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   documentIndex: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, mode) {
 
   def documentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](

@@ -25,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -33,9 +34,9 @@ class DocumentsServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new DocumentsService(mockRefDataConnector)
 
-  private val document1 = Document(Support, "1", Some("CERTIFICATE OF QUALITY"))
-  private val document2 = Document(Support, "2", Some("Bill of lading"))
-  private val document3 = Document(Previous, "3", Some("Certificate of conformity"))
+  private val document1 = Document(Support, "1", Some("CERTIFICATE OF QUALITY"), UUID.randomUUID())
+  private val document2 = Document(Support, "2", Some("Bill of lading"), UUID.randomUUID())
+  private val document3 = Document(Previous, "3", Some("Certificate of conformity"), UUID.randomUUID())
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

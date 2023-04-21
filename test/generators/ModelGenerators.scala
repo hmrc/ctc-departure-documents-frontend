@@ -24,6 +24,8 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
 
+import java.util.UUID
+
 trait ModelGenerators {
   self: Generators =>
 
@@ -72,7 +74,8 @@ trait ModelGenerators {
         documentType <- arbitrary[DocumentType]
         code         <- nonEmptyString
         desc         <- Gen.option(nonEmptyString)
-      } yield Document(documentType, code, desc)
+        uuid         <- arbitrary[UUID]
+      } yield Document(documentType, code, desc, uuid)
     }
 
   lazy val arbitraryTransportDocument: Arbitrary[Document] =
@@ -80,7 +83,8 @@ trait ModelGenerators {
       for {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
-      } yield Document(DocumentType.Transport, code, desc)
+        uuid <- arbitrary[UUID]
+      } yield Document(DocumentType.Transport, code, desc, uuid)
     }
 
   lazy val arbitrarySupportDocument: Arbitrary[Document] =
@@ -88,7 +92,8 @@ trait ModelGenerators {
       for {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
-      } yield Document(DocumentType.Support, code, desc)
+        uuid <- arbitrary[UUID]
+      } yield Document(DocumentType.Support, code, desc, uuid)
     }
 
   lazy val arbitraryPreviousDocument: Arbitrary[Document] =
@@ -96,7 +101,8 @@ trait ModelGenerators {
       for {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
-      } yield Document(DocumentType.Previous, code, desc)
+        uuid <- arbitrary[UUID]
+      } yield Document(DocumentType.Previous, code, desc, uuid)
     }
 
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
