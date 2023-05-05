@@ -16,8 +16,7 @@
 
 package viewModels.document
 
-import config.FrontendAppConfig
-import models.{Index, Mode, UserAnswers}
+import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.document.DocumentAnswersHelper
 import viewModels.Section
@@ -28,10 +27,10 @@ case class DocumentAnswersViewModel(sections: Seq[Section])
 
 object DocumentAnswersViewModel {
 
-  class DocumentAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class DocumentAnswersViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): DocumentAnswersViewModel = {
-      val helper = new DocumentAnswersHelper(userAnswers, mode, index)
+    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages): DocumentAnswersViewModel = {
+      val helper = new DocumentAnswersHelper(userAnswers, index)
 
       val section = Section(
         rows = Seq(

@@ -18,8 +18,7 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.{Index, Mode}
-import org.scalacheck.Arbitrary.arbitrary
+import models.Index
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
@@ -29,30 +28,27 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
   "must get list items" - {
 
     "when there is one document" in {
-      forAll(arbitrary[Mode]) {
-        mode =>
-          val userAnswers = arbitraryDocumentAnswers(emptyUserAnswers, index).sample.value
+      val userAnswers = arbitraryDocumentAnswers(emptyUserAnswers, index).sample.value
 
-          val result = new AddAnotherDocumentViewModelProvider()(userAnswers, mode)
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 document"
-          result.heading mustBe "You have added 1 document"
-          result.legend mustBe "Do you want to add another document?"
-          result.maxLimitLabel mustBe "You cannot add any more documents. To add another, you need to remove one first."
-      }
+      val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
+      result.listItems.length mustBe 1
+      result.title mustBe "You have added 1 document"
+      result.heading mustBe "You have added 1 document"
+      result.legend mustBe "Do you want to add another document?"
+      result.maxLimitLabel mustBe "You cannot add any more documents. To add another, you need to remove one first."
     }
 
     "when there are multiple documents" in {
       val formatter = java.text.NumberFormat.getIntegerInstance
 
-      forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxDocuments)) {
-        (mode, numberOfDocuments) =>
+      forAll(Gen.choose(2, frontendAppConfig.maxDocuments)) {
+        numberOfDocuments =>
           val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers) {
             (acc, i) =>
               arbitraryDocumentAnswers(acc, Index(i)).sample.value
           }
 
-          val result = new AddAnotherDocumentViewModelProvider()(userAnswers, mode)
+          val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
           result.listItems.length mustBe numberOfDocuments
           result.title mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.heading mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"

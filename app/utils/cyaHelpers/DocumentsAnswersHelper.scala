@@ -17,8 +17,8 @@
 package utils.cyaHelpers
 
 import controllers.document.routes
+import models.{NormalMode, UserAnswers}
 import models.journeyDomain.DocumentDomain
-import models.{Mode, UserAnswers}
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
 import play.api.i18n.Messages
@@ -26,10 +26,9 @@ import play.api.mvc.Call
 import viewModels.ListItem
 
 class DocumentsAnswersHelper(
-  userAnswers: UserAnswers,
-  mode: Mode
+  userAnswers: UserAnswers
 )(implicit messages: Messages)
-    extends AnswersHelper(userAnswers, mode) {
+    extends AnswersHelper(userAnswers, NormalMode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection) {
@@ -37,7 +36,7 @@ class DocumentsAnswersHelper(
         val removeRoute: Option[Call] = if (userAnswers.get(PreviousDocumentTypePage(documentIndex)).isDefined && documentIndex.isFirst) {
           None
         } else {
-          Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex))
+          Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex))
         }
 
         buildListItem[DocumentDomain](

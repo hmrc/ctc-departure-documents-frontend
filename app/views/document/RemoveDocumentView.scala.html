@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index, documentType: Document)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, documentIndex: Index, documentType: Document)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.removeDocument.title", documentType),
@@ -36,7 +36,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.RemoveDocumentController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveDocumentController.onSubmit(lrn, documentIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -35,7 +35,7 @@ sealed trait DocumentDomain extends JourneyDomainModel {
   def label(implicit messages: Messages): String = messages("document.label", document, referenceNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
-    routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, mode, index)
+    routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, index)
   )
 }
 

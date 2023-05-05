@@ -16,9 +16,8 @@
 
 package utils.cyaHelpers.document
 
-import config.FrontendAppConfig
 import models.reference._
-import models.{Index, Mode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.document._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,10 +25,9 @@ import utils.cyaHelpers.AnswersHelper
 
 class DocumentAnswersHelper(
   userAnswers: UserAnswers,
-  mode: Mode,
   documentIndex: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+)(implicit messages: Messages)
+    extends AnswersHelper(userAnswers, CheckMode) {
 
   def documentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
     page = TypePage(documentIndex),

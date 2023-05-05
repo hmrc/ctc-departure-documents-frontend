@@ -17,7 +17,6 @@
 package views.document
 
 import generators.Generators
-import models.NormalMode
 import models.reference.Document
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
@@ -32,7 +31,7 @@ class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDocumentView]
-      .apply(form, lrn, NormalMode, documentIndex, documentType)(fakeRequest, messages)
+      .apply(form, lrn, documentIndex, documentType)(fakeRequest, messages)
 
   override val prefix: String = "document.removeDocument"
 

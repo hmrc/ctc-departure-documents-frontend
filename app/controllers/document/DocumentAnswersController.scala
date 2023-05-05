@@ -17,35 +17,31 @@
 package controllers.document
 
 import controllers.actions._
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
+import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.document.DocumentAnswersViewModel.DocumentAnswersViewModelProvider
 import views.html.document.DocumentAnswersView
 
+import javax.inject.Inject
+
 class DocumentAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: DocumentAnswersView,
-  viewModelProvider: DocumentAnswersViewModelProvider,
-  navigatorProvider: DocumentsNavigatorProvider
+  viewModelProvider: DocumentAnswersViewModelProvider
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val sections = viewModelProvider(request.userAnswers, mode, documentIndex).sections
-      Ok(view(lrn, mode, documentIndex, sections))
+      val sections = viewModelProvider(request.userAnswers, documentIndex).sections
+      Ok(view(lrn, documentIndex, sections))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-      Redirect(navigator.nextPage(request.userAnswers))
+  def onSubmit(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+    _ => Redirect(controllers.routes.AddAnotherDocumentController.onPageLoad(lrn))
   }
 }

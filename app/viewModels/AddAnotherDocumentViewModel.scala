@@ -17,7 +17,7 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.{Mode, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.DocumentsAnswersHelper
@@ -37,8 +37,8 @@ object AddAnotherDocumentViewModel {
 
   class AddAnotherDocumentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherDocumentViewModel = {
-      val helper = new DocumentsAnswersHelper(userAnswers, mode)
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages): AddAnotherDocumentViewModel = {
+      val helper = new DocumentsAnswersHelper(userAnswers)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value
