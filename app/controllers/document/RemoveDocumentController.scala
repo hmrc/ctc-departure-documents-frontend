@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.Document
 import models.requests.SpecificDataRequestProvider1
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
@@ -52,14 +52,14 @@ class RemoveDocumentController @Inject() (
 
   private def documentType(implicit request: Request): Document = request.arg
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+  def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex))) {
       implicit request =>
-        Ok(view(form(documentType), lrn, mode, documentIndex, documentType))
+        Ok(view(form(documentType), lrn, documentIndex, documentType))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+  def onSubmit(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
     .async {
@@ -68,7 +68,7 @@ class RemoveDocumentController @Inject() (
         form(documentType)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, documentType))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, documentType))),
             {
               case true =>
                 DocumentSection(documentIndex)

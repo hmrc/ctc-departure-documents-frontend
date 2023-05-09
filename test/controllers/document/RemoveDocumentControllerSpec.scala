@@ -19,8 +19,8 @@ package controllers.document
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
+import models.UserAnswers
 import models.reference.Document
-import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
@@ -43,8 +43,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private def form(documentType: Document): Form[Boolean] =
     formProvider("document.removeDocument", documentType)
 
-  private val mode                     = NormalMode
-  private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, mode, documentIndex).url
+  private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url
   private val documentType             = arbitrary[Document].sample.value
   private val typePage                 = Gen.oneOf(TypePage, PreviousDocumentTypePage).sample.value
 
@@ -65,7 +64,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(documentType), lrn, mode, documentIndex, documentType)(request, messages).toString
+        view(form(documentType), lrn, documentIndex, documentType)(request, messages).toString
     }
 
     "when yes submitted" - {
@@ -137,7 +136,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[RemoveDocumentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, documentIndex, documentType)(request, messages).toString
+        view(boundForm, lrn, documentIndex, documentType)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {

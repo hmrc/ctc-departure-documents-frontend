@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(lrn: LocalReferenceNumber, documentIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.documentAnswers.title"),
@@ -42,7 +42,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = routes.DocumentAnswersController.onSubmit(lrn, mode, documentIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DocumentAnswersController.onSubmit(lrn, documentIndex), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }

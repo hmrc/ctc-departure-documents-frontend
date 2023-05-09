@@ -45,12 +45,14 @@ class AddAnotherDocumentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private val mode: Mode = NormalMode
+
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode)
+      val viewModel = viewModelProvider(request.userAnswers)
 
       viewModel.count match {
         case 0 => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
@@ -58,15 +60,15 @@ class AddAnotherDocumentController @Inject() (
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode)
+      val viewModel = viewModelProvider(request.userAnswers)
       form(viewModel)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
-            case true  => Redirect(controllers.document.routes.TypeController.onPageLoad(lrn, NormalMode, viewModel.nextIndex))
+            case true  => Redirect(controllers.document.routes.TypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
             case false => Redirect(config.taskListUrl(lrn))
           }
         )

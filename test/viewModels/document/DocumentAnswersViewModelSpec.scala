@@ -18,12 +18,11 @@ package viewModels.document
 
 import base.SpecBase
 import generators.Generators
-import models.Mode
 import models.reference.{Document, Metric, PackageType}
-import pages.document._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.document._
 import viewModels.document.DocumentAnswersViewModel.DocumentAnswersViewModelProvider
 
 class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -32,48 +31,42 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "when transport document" - {
     "must render 2 rows" in {
-      forAll(arbitrary[Mode]) {
-        mode =>
-          val userAnswers = emptyUserAnswers
-            .setValue(TypePage(index), arbitrary[Document](arbitraryTransportDocument).sample.value)
-            .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
+      val userAnswers = emptyUserAnswers
+        .setValue(TypePage(index), arbitrary[Document](arbitraryTransportDocument).sample.value)
+        .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
 
-          val result = viewModelProvider.apply(userAnswers, mode, index).sections.head
+      val result = viewModelProvider.apply(userAnswers, index).sections.head
 
-          result.sectionTitle must not be defined
+      result.sectionTitle must not be defined
 
-          result.rows.size mustBe 2
+      result.rows.size mustBe 2
 
-          result.addAnotherLink must not be defined
-      }
+      result.addAnotherLink must not be defined
     }
   }
 
   "when support document" - {
     "must render 4 rows" in {
-      forAll(arbitrary[Mode]) {
-        mode =>
-          val userAnswers = emptyUserAnswers
-            .setValue(TypePage(index), arbitrary[Document](arbitrarySupportDocument).sample.value)
-            .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-            .setValue(AddLineItemNumberYesNoPage(index), true)
-            .setValue(LineItemNumberPage(index), positiveIntsMinMax(0, 99999).sample.value)
+      val userAnswers = emptyUserAnswers
+        .setValue(TypePage(index), arbitrary[Document](arbitrarySupportDocument).sample.value)
+        .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
+        .setValue(AddLineItemNumberYesNoPage(index), true)
+        .setValue(LineItemNumberPage(index), positiveIntsMinMax(0, 99999).sample.value)
 
-          val result = viewModelProvider.apply(userAnswers, mode, index).sections.head
+      val result = viewModelProvider.apply(userAnswers, index).sections.head
 
-          result.sectionTitle must not be defined
+      result.sectionTitle must not be defined
 
-          result.rows.size mustBe 4
+      result.rows.size mustBe 4
 
-          result.addAnotherLink must not be defined
-      }
+      result.addAnotherLink must not be defined
     }
   }
 
   "when previous document" - {
     "must render 11 rows" in {
-      forAll(arbitrary[Mode], Gen.oneOf(TypePage, PreviousDocumentTypePage)) {
-        (mode, typePage) =>
+      forAll(Gen.oneOf(TypePage, PreviousDocumentTypePage)) {
+        typePage =>
           val userAnswers = emptyUserAnswers
             .setValue(typePage(index), arbitrary[Document](arbitraryPreviousDocument).sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
@@ -87,7 +80,7 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
             .setValue(MetricPage(index), arbitrary[Metric].sample.value)
             .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
 
-          val result = viewModelProvider.apply(userAnswers, mode, index).sections.head
+          val result = viewModelProvider.apply(userAnswers, index).sections.head
 
           result.sectionTitle must not be defined
 
