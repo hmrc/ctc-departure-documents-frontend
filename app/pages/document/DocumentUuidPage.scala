@@ -16,12 +16,10 @@
 
 package pages.document
 
-import controllers.document.routes
-import models.{Index, Mode, UserAnswers}
+import models.Index
 import pages.QuestionPage
 import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 import java.util.UUID
 
@@ -30,7 +28,4 @@ case class DocumentUuidPage(documentIndex: Index) extends QuestionPage[UUID] {
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
   override def toString: String = "uuid"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }
