@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.document
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int     = 70
-  lazy val maxGoodsItemNumber: Int             = 99999
-  lazy val maxLineItemNumber: Int              = 99999
-  lazy val maxNumberOfPackages: Int            = 99999999
-  lazy val maxAdditionalInformationLength: Int = 35
+import pages.behaviours.PageBehaviours
+
+class AdditionalInformationPageSpec extends PageBehaviours {
+
+  "AdditionalInformationPageSpec" - {
+
+    beRetrievable[String](AdditionalInformationPage(documentIndex))
+
+    beSettable[String](AdditionalInformationPage(documentIndex))
+
+    beRemovable[String](AdditionalInformationPage(documentIndex))
+  }
 }
