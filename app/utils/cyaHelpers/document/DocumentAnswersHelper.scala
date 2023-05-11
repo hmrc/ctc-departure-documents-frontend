@@ -131,4 +131,11 @@ class DocumentAnswersHelper(
     prefix = "document.lineItemNumber",
     id = Some("change-line-item-number")
   )
+
+  def additionalInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddAdditionalInformationYesNoPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.addAdditionalInformationYesNo",
+    id = Some("change-add-additional-information")
+  )
 }

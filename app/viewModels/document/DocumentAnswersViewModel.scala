@@ -47,7 +47,8 @@ object DocumentAnswersViewModel {
           helper.metric,
           helper.quantity,
           helper.lineItemNumberYesNo,
-          helper.lineItemNumber
+          helper.lineItemNumber,
+          helper.additionalInformationYesNo
         ).flatten
       )
 
