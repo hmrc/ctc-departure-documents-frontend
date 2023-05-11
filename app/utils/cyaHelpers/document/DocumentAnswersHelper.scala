@@ -138,4 +138,11 @@ class DocumentAnswersHelper(
     prefix = "document.addAdditionalInformationYesNo",
     id = Some("change-add-additional-information")
   )
+
+  def additionalInformation: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = AdditionalInformationPage(documentIndex),
+    formatAnswer = formatAsText,
+    prefix = "document.additionalInformation",
+    id = Some("change-additional-information")
+  )
 }

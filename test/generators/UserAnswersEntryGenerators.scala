@@ -56,6 +56,7 @@ trait UserAnswersEntryGenerators {
       case AddLineItemNumberYesNoPage(_)        => arbitrary[Boolean].map(JsBoolean)
       case LineItemNumberPage(_)                => positiveInts.map(Json.toJson(_))
       case AddAdditionalInformationYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case AdditionalInformationPage(_)         => nonEmptyString.map(JsString)
     }
   }
 }
