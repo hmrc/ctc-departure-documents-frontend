@@ -18,11 +18,12 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentReferenceNumberFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.DocumentNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.document.DocumentReferenceNumberPage
+import org.mockito.Mockito.{verify, when}
+import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -95,6 +96,11 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+
+      userAnswersCaptor.getValue.get(DocumentUuidPage(documentIndex)) must be(defined)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
