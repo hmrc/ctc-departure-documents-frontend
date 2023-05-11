@@ -143,3 +143,8 @@ document.documentAnswers.heading = Check your answers
 document.removeDocument.title = Are you sure you want to remove the {0}?
 document.removeDocument.heading = Are you sure you want to remove the {0}?
 document.removeDocument.error.required = Select yes if you want to remove the {0}
+
+document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document
+document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document
+document.addAdditionalInformationYesNo.checkYourAnswersLabel = Do you want to add any additional information for this document
+document.addAdditionalInformationYesNo.error.required = Select yes if Do you want to add any additional information for this document

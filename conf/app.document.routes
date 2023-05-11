@@ -74,3 +74,8 @@ POST       /:documentIndex/check-answers/:lrn                             contro
 
 GET        /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index)
 POST       /:documentIndex/remove-document/:lrn                           controllers.document.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, documentIndex: Index)
+
+GET        /document/do-you-want-to-add-any-additional-information-for-this-document/:lrn                        controllers.document.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /document/do-you-want-to-add-any-additional-information-for-this-document/:lrn                        controllers.document.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /document/change-do-you-want-to-add-any-additional-information-for-this-document/:lrn                 controllers.document.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /document/change-do-you-want-to-add-any-additional-information-for-this-document/:lrn                 controllers.document.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
