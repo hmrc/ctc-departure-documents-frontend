@@ -137,6 +137,14 @@ document.numberOfPackages.error.required = Enter the quantity of the package typ
 document.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
 document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
 
+document.additionalInformation.title = Enter the additional information
+document.additionalInformation.heading = Enter the additional information
+document.additionalInformation.checkYourAnswersLabel = Documents
+document.additionalInformation.change.hidden = additional information
+document.additionalInformation.error.length = The additional information must be 35 characters or less
+document.additionalInformation.error.required = Enter the additional information
+document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
 document.documentAnswers.title = Check your answers
 document.documentAnswers.heading = Check your answers
 

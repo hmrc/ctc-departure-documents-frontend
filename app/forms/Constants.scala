@@ -17,8 +17,9 @@
 package forms
 
 object Constants {
-  lazy val maxDocumentRefNumberLength: Int = 70
-  lazy val maxGoodsItemNumber: Int         = 99999
-  lazy val maxLineItemNumber: Int          = 99999
-  lazy val maxNumberOfPackages: Int        = 99999999
+  lazy val maxDocumentRefNumberLength: Int     = 70
+  lazy val maxGoodsItemNumber: Int             = 99999
+  lazy val maxLineItemNumber: Int              = 99999
+  lazy val maxNumberOfPackages: Int            = 99999999
+  lazy val maxAdditionalInformationLength: Int = 35
 }
