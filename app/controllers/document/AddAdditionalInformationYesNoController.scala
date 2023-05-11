@@ -19,7 +19,7 @@ package controllers.document
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.AddAdditionalInformationYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,25 +45,25 @@ class AddAdditionalInformationYesNoController @Inject() (
 
   private val form = formProvider("document.addAdditionalInformationYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddAdditionalInformationYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddAdditionalInformationYesNoPage(documentIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, mode))
+      Ok(view(preparedForm, lrn, mode, documentIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddAdditionalInformationYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+            AddAdditionalInformationYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

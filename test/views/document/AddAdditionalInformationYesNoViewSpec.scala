@@ -25,7 +25,7 @@ import views.html.document.AddAdditionalInformationYesNoView
 class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddAdditionalInformationYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddAdditionalInformationYesNoView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = "document.addAdditionalInformationYesNo"
 

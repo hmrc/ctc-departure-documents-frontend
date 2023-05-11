@@ -22,10 +22,10 @@ class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
 
   "AddAdditionalInformationYesNoPage" - {
 
-    beRetrievable[Boolean](AddAdditionalInformationYesNoPage)
+    beRetrievable[Boolean](AddAdditionalInformationYesNoPage(documentIndex))
 
-    beSettable[Boolean](AddAdditionalInformationYesNoPage)
+    beSettable[Boolean](AddAdditionalInformationYesNoPage(documentIndex))
 
-    beRemovable[Boolean](AddAdditionalInformationYesNoPage)
+    beRemovable[Boolean](AddAdditionalInformationYesNoPage(documentIndex))
   }
 }

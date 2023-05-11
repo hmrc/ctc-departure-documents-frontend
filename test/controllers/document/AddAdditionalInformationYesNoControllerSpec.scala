@@ -37,7 +37,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
   private val formProvider                            = new YesNoFormProvider()
   private val form                                    = formProvider("document.addAdditionalInformationYesNo")
   private val mode                                    = NormalMode
-  private lazy val addAdditionalInformationYesNoRoute = routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
+  private lazy val addAdditionalInformationYesNoRoute = routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode, documentIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -58,12 +58,12 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(documentIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addAdditionalInformationYesNoRoute)
@@ -77,7 +77,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +110,7 @@ class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithD
       val view = injector.instanceOf[AddAdditionalInformationYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode)(request, messages).toString
+        view(boundForm, lrn, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

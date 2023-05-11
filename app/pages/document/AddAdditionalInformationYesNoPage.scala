@@ -17,18 +17,18 @@
 package pages.document
 
 import controllers.document.routes
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAdditionalInformationYesNoPage extends QuestionPage[Boolean] {
+case class AddAdditionalInformationYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = DocumentDetailsSection.path \ toString
+  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
   override def toString: String = "addAdditionalInformationYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }
