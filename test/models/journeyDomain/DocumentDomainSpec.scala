@@ -141,7 +141,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         }
       }
 
-      "when line item number undefined" in {
+      "when line item number is undefined" in {
         forAll(documentGen, nonEmptyString, nonEmptyString) {
           (document, referenceNumber, additionalInformation) =>
             val userAnswers = emptyUserAnswers
