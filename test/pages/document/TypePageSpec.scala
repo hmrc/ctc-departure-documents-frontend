@@ -16,10 +16,15 @@
 
 package pages.document
 
+import models.Index
 import models.reference.Document
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.external.DocumentPage
 import pages.sections.DocumentDetailsSection
 import play.api.libs.json.Json
+
+import java.util.UUID
 
 class TypePageSpec extends PageBehaviours {
 
@@ -32,18 +37,24 @@ class TypePageSpec extends PageBehaviours {
     beRemovable[Document](TypePage(documentIndex))
 
     "cleanup" - {
-      val document1 = arbitraryDocument.arbitrary.sample.get
-      val document2 = arbitraryDocument.arbitrary.retryUntil(_ != document1).sample.get
+      val document1 = arbitrary[Document].sample.value
+      val document2 = arbitrary[Document].retryUntil(_ != document1).sample.value
+      val uuid      = arbitrary[UUID].sample.value
 
       "when answer has changed" - {
         "must clean up document section at document index" in {
           val preChange = emptyUserAnswers
             .setValue(TypePage(documentIndex), document1)
             .setValue(DocumentDetailsSection(documentIndex), Json.obj("foo" -> "bar"))
+            .setValue(DocumentUuidPage(documentIndex), uuid)
+            .setValue(DocumentPage(Index(0), Index(0)), uuid)
+            .setValue(DocumentPage(Index(1), Index(0)), uuid)
 
           val postChange = preChange.setValue(TypePage(documentIndex), document2)
 
           postChange.get(DocumentDetailsSection(documentIndex)) mustNot be(defined)
+          postChange.get(DocumentPage(Index(0), Index(0))) mustNot be(defined)
+          postChange.get(DocumentPage(Index(1), Index(0))) mustNot be(defined)
         }
       }
 
@@ -52,10 +63,15 @@ class TypePageSpec extends PageBehaviours {
           val preChange = emptyUserAnswers
             .setValue(TypePage(documentIndex), document1)
             .setValue(DocumentDetailsSection(documentIndex), Json.obj("foo" -> "bar"))
+            .setValue(DocumentUuidPage(documentIndex), uuid)
+            .setValue(DocumentPage(Index(0), Index(0)), uuid)
+            .setValue(DocumentPage(Index(1), Index(0)), uuid)
 
           val postChange = preChange.setValue(TypePage(documentIndex), document1)
 
           postChange.get(DocumentDetailsSection(documentIndex)) must be(defined)
+          postChange.get(DocumentPage(Index(0), Index(0))) must be(defined)
+          postChange.get(DocumentPage(Index(1), Index(0))) must be(defined)
         }
       }
     }

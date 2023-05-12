@@ -22,7 +22,7 @@ import forms.YesNoFormProvider
 import models.reference.Document
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber}
-import pages.document.{PreviousDocumentTypePage, TypePage}
+import pages.document.{DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -73,6 +73,7 @@ class RemoveDocumentController @Inject() (
               case true =>
                 DocumentSection(documentIndex)
                   .removeFromUserAnswers()
+                  .removeDocumentFromItems(request.userAnswers.get(DocumentUuidPage(documentIndex)))
                   .updateTask()
                   .writeToSession()
                   .navigateTo(redirect)

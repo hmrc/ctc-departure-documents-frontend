@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages.document
+package pages.external
 
-import controllers.document.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.DocumentSection
+import models.Index
+import pages.ReadOnlyPage
+import pages.sections.external.DocumentsSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class PreviousDocumentTypePage(documentIndex: Index) extends DocumentTypePage {
+import java.util.UUID
 
-  override def path: JsPath = DocumentSection(documentIndex).path \ toString
+case class DocumentPage(itemIndex: Index, documentIndex: Index) extends ReadOnlyPage[UUID] {
 
-  override def toString: String = "previousDocumentType"
+  override def path: JsPath = DocumentsSection(itemIndex).path \ documentIndex.position \ toString
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+  override def toString: String = "document"
 }
