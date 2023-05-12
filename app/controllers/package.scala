@@ -28,6 +28,7 @@ import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -70,6 +71,12 @@ package object controllers {
                 case Failure(exception) => Left(WriterError(page, Some(s"Failed to append value to answer: ${exception.getMessage}")))
               }
           }
+      }
+
+    def removeDocumentFromItems(uuid: Option[UUID]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          Right((page, userAnswers.removeDocumentFromItems(uuid)))
       }
 
     def updateTask(): UserAnswersWriter[Write[A]] =
