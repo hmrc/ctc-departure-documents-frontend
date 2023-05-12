@@ -70,10 +70,10 @@ final case class UserAnswers(
       val numberOfItems = this.get(ItemsSection).map(_.value.size).getOrElse(0)
       (0 until numberOfItems).map(Index(_)).foldLeft(this) {
         (acc1, itemIndex) =>
-          val numberOfDocuments = this.get(DocumentsSection(itemIndex)).map(_.value.size).getOrElse(0)
+          val numberOfDocuments = acc1.get(DocumentsSection(itemIndex)).map(_.value.size).getOrElse(0)
           (numberOfDocuments to 1 by -1).map(_ - 1).map(Index(_)).foldLeft(acc1) {
             (acc2, documentIndex) =>
-              this.get(DocumentPage(itemIndex, documentIndex)) match {
+              acc2.get(DocumentPage(itemIndex, documentIndex)) match {
                 case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid => acc2.remove(DocumentSection(itemIndex, documentIndex)).getOrElse(acc2)
                 case _                                                          => acc2
               }
