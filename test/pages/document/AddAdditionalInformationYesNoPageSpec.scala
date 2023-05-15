@@ -16,6 +16,7 @@
 
 package pages.document
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,35 @@ class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddAdditionalInformationYesNoPage(documentIndex))
 
     beRemovable[Boolean](AddAdditionalInformationYesNoPage(documentIndex))
+
+    "cleanup" - {
+      "when NO selected" - {
+        "must clean up additional information page at document index" in {
+          forAll(arbitrary[String]) {
+            additionalInformation =>
+              val preChange = emptyUserAnswers
+                .setValue(AdditionalInformationPage(documentIndex), additionalInformation)
+
+              val postChange = preChange.setValue(AddAdditionalInformationYesNoPage(documentIndex), false)
+
+              postChange.get(AdditionalInformationPage(documentIndex)) mustNot be(defined)
+          }
+        }
+      }
+
+      "when YES selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            additionalInformation =>
+              val preChange = emptyUserAnswers
+                .setValue(AdditionalInformationPage(documentIndex), additionalInformation)
+
+              val postChange = preChange.setValue(AddAdditionalInformationYesNoPage(documentIndex), true)
+
+              postChange.get(AdditionalInformationPage(documentIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }

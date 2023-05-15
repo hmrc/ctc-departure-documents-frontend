@@ -23,6 +23,8 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class AddAdditionalInformationYesNoPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
@@ -31,4 +33,12 @@ case class AddAdditionalInformationYesNoPage(documentIndex: Index) extends Quest
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) =>
+        userAnswers
+          .remove(AdditionalInformationPage(documentIndex))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }
