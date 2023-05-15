@@ -17,9 +17,12 @@
 package models
 
 import pages.QuestionPage
+import pages.external.DocumentPage
+import pages.sections.external.{DocumentSection, DocumentsSection, ItemsSection}
 import play.api.libs.json._
 import queries.Gettable
 
+import java.util.UUID
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -60,6 +63,24 @@ final case class UserAnswers(
   def updateTask(section: String, status: TaskStatus): UserAnswers = {
     val tasks = this.tasks.updated(section, status)
     this.copy(tasks = tasks)
+  }
+
+  def removeDocumentFromItems(uuid: Option[UUID]): UserAnswers = uuid match {
+    case Some(documentUuid) =>
+      val numberOfItems = this.get(ItemsSection).map(_.value.size).getOrElse(0)
+      (0 until numberOfItems).map(Index(_)).foldLeft(this) {
+        (acc1, itemIndex) =>
+          val numberOfDocuments = acc1.get(DocumentsSection(itemIndex)).map(_.value.size).getOrElse(0)
+          (numberOfDocuments to 1 by -1).map(_ - 1).map(Index(_)).foldLeft(acc1) {
+            (acc2, documentIndex) =>
+              acc2.get(DocumentPage(itemIndex, documentIndex)) match {
+                case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid => acc2.remove(DocumentSection(itemIndex, documentIndex)).getOrElse(acc2)
+                case _                                                          => acc2
+              }
+          }
+      }
+    case None =>
+      this
   }
 }
 

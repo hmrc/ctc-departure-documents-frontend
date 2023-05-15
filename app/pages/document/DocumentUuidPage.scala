@@ -16,18 +16,16 @@
 
 package pages.document
 
-import controllers.document.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.DocumentSection
+import models.Index
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class PreviousDocumentTypePage(documentIndex: Index) extends DocumentTypePage {
+import java.util.UUID
 
-  override def path: JsPath = DocumentSection(documentIndex).path \ toString
+case class DocumentUuidPage(documentIndex: Index) extends QuestionPage[UUID] {
 
-  override def toString: String = "previousDocumentType"
+  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+  override def toString: String = "uuid"
 }

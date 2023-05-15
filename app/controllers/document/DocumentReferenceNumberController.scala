@@ -21,13 +21,14 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.DocumentReferenceNumberPage
+import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.DocumentReferenceNumberView
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -62,7 +63,12 @@ class DocumentReferenceNumberController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            DocumentReferenceNumberPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            DocumentReferenceNumberPage(documentIndex)
+              .writeToUserAnswers(value)
+              .appendValueIfNotPresent(DocumentUuidPage(documentIndex), UUID.randomUUID())
+              .updateTask()
+              .writeToSession()
+              .navigate()
           }
         )
   }
