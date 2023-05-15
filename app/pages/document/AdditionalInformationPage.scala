@@ -18,16 +18,17 @@ package pages.document
 
 import controllers.document.routes
 import models.{Index, Mode, UserAnswers}
-import pages.sections.DocumentSection
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class PreviousDocumentTypePage(documentIndex: Index) extends DocumentTypePage {
+case class AdditionalInformationPage(documentIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = DocumentSection(documentIndex).path \ toString
+  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
 
-  override def toString: String = "previousDocumentType"
+  override def toString: String = "additionalInformation"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+    Some(routes.AdditionalInformationController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 }

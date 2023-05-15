@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.external
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int     = 70
-  lazy val maxGoodsItemNumber: Int             = 99999
-  lazy val maxLineItemNumber: Int              = 99999
-  lazy val maxNumberOfPackages: Int            = 99999999
-  lazy val maxAdditionalInformationLength: Int = 35
+import models.Index
+import pages.ReadOnlyPage
+import pages.sections.external.DocumentsSection
+import play.api.libs.json.JsPath
+
+import java.util.UUID
+
+case class DocumentPage(itemIndex: Index, documentIndex: Index) extends ReadOnlyPage[UUID] {
+
+  override def path: JsPath = DocumentsSection(itemIndex).path \ documentIndex.position \ toString
+
+  override def toString: String = "document"
 }

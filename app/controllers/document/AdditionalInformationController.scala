@@ -18,57 +18,52 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentReferenceNumberFormProvider
+import forms.AdditionalInformationFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage}
+import pages.document.AdditionalInformationPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.document.DocumentReferenceNumberView
+import views.html.document.AdditionalInformationView
 
-import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentReferenceNumberController @Inject() (
+class AdditionalInformationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: DocumentNavigatorProvider,
-  formProvider: DocumentReferenceNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: DocumentReferenceNumberView
+  formProvider: AdditionalInformationFormProvider,
+  navigatorProvider: DocumentNavigatorProvider,
+  view: AdditionalInformationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("document.documentReferenceNumber")
+  private def form(): Form[String] = formProvider("document.additionalInformation")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(documentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val preparedForm = request.userAnswers.get(AdditionalInformationPage(documentIndex)) match {
+        case None        => form()
+        case Some(value) => form().fill(value)
       }
       Ok(view(preparedForm, lrn, mode, documentIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
+      form()
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            DocumentReferenceNumberPage(documentIndex)
-              .writeToUserAnswers(value)
-              .appendValueIfNotPresent(DocumentUuidPage(documentIndex), UUID.randomUUID())
-              .updateTask()
-              .writeToSession()
-              .navigate()
+            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+            AdditionalInformationPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

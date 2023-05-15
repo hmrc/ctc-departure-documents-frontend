@@ -23,11 +23,12 @@ import models.requests.MandatoryDataRequest
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
-import play.api.mvc.{Call, Result}
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -58,6 +59,25 @@ package object controllers {
   }
 
   implicit class SettableOpsRunner[A](userAnswersWriter: UserAnswersWriter[Write[A]]) {
+
+    def appendValueIfNotPresent[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          userAnswers.get(subPage) match {
+            case Some(_) => Right((page, userAnswers))
+            case None =>
+              userAnswers.set(subPage, value) match {
+                case Success(value)     => Right((page, value))
+                case Failure(exception) => Left(WriterError(page, Some(s"Failed to append value to answer: ${exception.getMessage}")))
+              }
+          }
+      }
+
+    def removeDocumentFromItems(uuid: Option[UUID]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          Right((page, userAnswers.removeDocumentFromItems(uuid)))
+      }
 
     def updateTask(): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {

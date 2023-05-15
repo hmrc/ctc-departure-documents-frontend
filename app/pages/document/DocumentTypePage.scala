@@ -16,18 +16,25 @@
 
 package pages.document
 
-import controllers.document.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.DocumentSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.{Index, UserAnswers}
+import models.reference.Document
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
 
-case class PreviousDocumentTypePage(documentIndex: Index) extends DocumentTypePage {
+import scala.util.Try
 
-  override def path: JsPath = DocumentSection(documentIndex).path \ toString
+trait DocumentTypePage extends QuestionPage[Document] {
 
-  override def toString: String = "previousDocumentType"
+  val documentIndex: Index
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+  override def cleanup(value: Option[Document], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers
+          .removeDocumentFromItems(userAnswers.get(DocumentUuidPage(documentIndex)))
+          .remove(DocumentDetailsSection(documentIndex))
+      case None =>
+        super.cleanup(value, userAnswers)
+    }
+
 }

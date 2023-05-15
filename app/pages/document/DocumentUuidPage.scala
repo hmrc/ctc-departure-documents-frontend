@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.document
 
-object Constants {
-  lazy val maxDocumentRefNumberLength: Int     = 70
-  lazy val maxGoodsItemNumber: Int             = 99999
-  lazy val maxLineItemNumber: Int              = 99999
-  lazy val maxNumberOfPackages: Int            = 99999999
-  lazy val maxAdditionalInformationLength: Int = 35
+import models.Index
+import pages.QuestionPage
+import pages.sections.DocumentDetailsSection
+import play.api.libs.json.JsPath
+
+import java.util.UUID
+
+case class DocumentUuidPage(documentIndex: Index) extends QuestionPage[UUID] {
+
+  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
+
+  override def toString: String = "uuid"
 }

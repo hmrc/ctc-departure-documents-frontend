@@ -19,21 +19,23 @@ package controllers.document
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.UserAnswers
 import models.reference.Document
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.{PreviousDocumentTypePage, TypePage}
+import pages.document.{DocumentUuidPage, PreviousDocumentTypePage, TypePage}
+import pages.external.DocumentPage
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.document.RemoveDocumentView
 
+import java.util.UUID
 import scala.concurrent.Future
 
 class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
@@ -46,6 +48,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url
   private val documentType             = arbitrary[Document].sample.value
   private val typePage                 = Gen.oneOf(TypePage, PreviousDocumentTypePage).sample.value
+  private val uuid                     = arbitrary[UUID].sample.value
 
   "RemoveDocument Controller" - {
 
@@ -75,6 +78,9 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         val userAnswers = emptyUserAnswers
           .setValue(typePage(documentIndex), documentType)
+          .setValue(DocumentUuidPage(documentIndex), uuid)
+          .setValue(DocumentPage(Index(0), Index(0)), uuid)
+          .setValue(DocumentPage(Index(1), Index(0)), uuid)
 
         setExistingUserAnswers(userAnswers)
 
@@ -91,6 +97,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
         userAnswersCaptor.getValue.get(DocumentSection(documentIndex)) mustNot be(defined)
+        userAnswersCaptor.getValue.get(DocumentPage(Index(0), Index(0))) mustNot be(defined)
+        userAnswersCaptor.getValue.get(DocumentPage(Index(0), Index(1))) mustNot be(defined)
       }
     }
 
