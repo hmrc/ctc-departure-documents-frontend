@@ -22,7 +22,7 @@ import models.DeclarationType._
 import models.DocumentType._
 import models.reference.Document
 import models.{Index, Mode, UserAnswers}
-import pages.document._
+import pages.document.{AddAdditionalInformationYesNoPage, _}
 import pages.external._
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -64,7 +64,8 @@ object DocumentDomain {
 case class SupportDocumentDomain(
   document: Document,
   referenceNumber: String,
-  lineItemNumber: Option[Int]
+  lineItemNumber: Option[Int],
+  additionalInformation: Option[String]
 )(override val index: Index)
     extends DocumentDomain
 
@@ -74,7 +75,8 @@ object SupportDocumentDomain {
     (
       UserAnswersReader(document),
       DocumentReferenceNumberPage(index).reader,
-      AddLineItemNumberYesNoPage(index).filterOptionalDependent(identity)(LineItemNumberPage(index).reader)
+      AddLineItemNumberYesNoPage(index).filterOptionalDependent(identity)(LineItemNumberPage(index).reader),
+      AddAdditionalInformationYesNoPage(index).filterOptionalDependent(identity)(AdditionalInformationPage(index).reader)
     ).tupled.map((SupportDocumentDomain.apply _).tupled).map(_(index))
 }
 
@@ -98,7 +100,8 @@ case class PreviousDocumentDomain(
   referenceNumber: String,
   goodsItemNumber: Option[Int],
   `package`: Option[PackageDomain],
-  quantity: Option[QuantityDomain]
+  quantity: Option[QuantityDomain],
+  additionalInformation: Option[String]
 )(override val index: Index)
     extends DocumentDomain
 
@@ -110,6 +113,7 @@ object PreviousDocumentDomain {
       DocumentReferenceNumberPage(index).reader,
       AddGoodsItemNumberYesNoPage(index).filterOptionalDependent(identity)(GoodsItemNumberPage(index).reader),
       AddTypeOfPackageYesNoPage(index).filterOptionalDependent(identity)(PackageDomain.userAnswersReader(index)),
-      DeclareQuantityOfGoodsYesNoPage(index).filterOptionalDependent(identity)(QuantityDomain.userAnswersReader(index))
+      DeclareQuantityOfGoodsYesNoPage(index).filterOptionalDependent(identity)(QuantityDomain.userAnswersReader(index)),
+      AddAdditionalInformationYesNoPage(index).filterOptionalDependent(identity)(AdditionalInformationPage(index).reader)
     ).tupled.map((PreviousDocumentDomain.apply _).tupled).map(_(index))
 }

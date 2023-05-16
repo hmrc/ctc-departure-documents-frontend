@@ -150,7 +150,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean]) {
       (`type`, code, description, selected) =>
         val document = Document(`type`, code, description)
-        document.toSelectItem(selected) mustBe SelectItem(Some(code), document.toString, selected)
+        document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.toString, selected)
     }
   }
 

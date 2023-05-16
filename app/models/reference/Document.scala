@@ -29,7 +29,7 @@ case class Document(`type`: DocumentType, code: String, description: Option[Stri
     case _                                  => code
   }
 
-  override val value: String = code
+  override val value: String = toString
 }
 
 object Document {

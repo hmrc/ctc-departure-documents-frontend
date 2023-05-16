@@ -81,7 +81,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> document1.code))
+      val filledForm = form.bind(Map("value" -> document1.toString))
 
       val view = injector.instanceOf[TypeView]
 
@@ -99,7 +99,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, typeRoute)
-        .withFormUrlEncodedBody(("value", document1.code))
+        .withFormUrlEncodedBody(("value", document1.toString))
 
       val result = route(app, request).value
 
