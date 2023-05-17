@@ -63,7 +63,6 @@ trait IntFieldBehaviours extends FieldBehaviours {
       forAll(negativeInts -> "negativeInt") {
         num: Int =>
           val result = form.bind(Map(fieldName -> num.toString)).apply(fieldName)
-          println(result.errors)
           result.errors mustEqual Seq(negativeError)
       }
     }
