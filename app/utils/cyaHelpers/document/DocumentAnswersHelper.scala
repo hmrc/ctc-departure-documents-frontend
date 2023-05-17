@@ -43,6 +43,13 @@ class DocumentAnswersHelper(
     id = Some("change-previous-document-type")
   )
 
+  def attachToAllItems: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AttachToAllItemsPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.attachToAllItems",
+    id = Some("change-attach-to-all-items")
+  )
+
   def documentReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = DocumentReferenceNumberPage(documentIndex),
     formatAnswer = formatAsText,
