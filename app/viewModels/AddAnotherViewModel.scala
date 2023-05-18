@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import models.Index
 import play.api.i18n.Messages
 
-trait AddAnotherViewModel {
-  val listItems: Seq[ListItem]
+trait AddAnotherViewModel[T <: Entity] {
+  val listItems: Seq[ListItem[T]]
   val count: Int = listItems.length
 
   val nextIndex: Index = Index(count)
@@ -35,6 +35,5 @@ trait AddAnotherViewModel {
   def legend(implicit messages: Messages): String        = messages(s"$prefix.label")
   def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
-  def maxCount(implicit config: FrontendAppConfig): Int
-  def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount
+  def allowMore(implicit config: FrontendAppConfig): Boolean
 }

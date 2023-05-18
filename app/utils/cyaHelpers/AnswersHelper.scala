@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsArray, Reads}
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
-import viewModels.ListItem
+import viewModels.{Entity, ListItem}
 
 class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
 
@@ -49,29 +49,29 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
       args = args: _*
     )
 
-  protected def buildListItems(
+  protected def buildListItems[T <: Entity](
     section: Section[JsArray]
-  )(block: Index => Option[Either[ListItem, ListItem]]): Seq[Either[ListItem, ListItem]] =
+  )(block: Index => Option[Either[ListItem[T], ListItem[T]]]): Seq[Either[ListItem[T], ListItem[T]]] =
     userAnswers
       .get(section)
       .mapWithIndex {
         (_, index) => block(index)
       }
 
-  protected def buildListItem[A <: JourneyDomainModel](
-    nameWhenComplete: A => String,
-    nameWhenInProgress: => Option[String],
+  protected def buildListItem[A <: JourneyDomainModel, T <: Entity](
+    entityWhenComplete: A => T,
+    entityWhenInProgress: => Option[T],
     removeRoute: Option[Call]
-  )(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ListItem, ListItem]] =
+  )(implicit userAnswersReader: UserAnswersReader[A]): Option[Either[ListItem[T], ListItem[T]]] =
     userAnswersReader.run(userAnswers) match {
       case Left(readerError) =>
         readerError.page.route(userAnswers, mode).flatMap {
           changeRoute =>
-            nameWhenInProgress
+            entityWhenInProgress
               .map {
-                name =>
+                entity =>
                   ListItem(
-                    name = name,
+                    entity = entity,
                     changeUrl = changeRoute.url,
                     removeUrl = removeRoute.map(_.url)
                   )
@@ -83,7 +83,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
           changeRoute =>
             Right(
               ListItem(
-                name = nameWhenComplete(journeyDomainModel),
+                entity = entityWhenComplete(journeyDomainModel),
                 changeUrl = changeRoute.url,
                 removeUrl = removeRoute.map(_.url)
               )

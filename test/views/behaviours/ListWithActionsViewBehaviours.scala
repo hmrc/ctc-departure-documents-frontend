@@ -20,23 +20,26 @@ import config.FrontendAppConfig
 import generators.Generators
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import viewModels.ListItem
+import viewModels.{Entity, ListItem}
 
 import scala.jdk.CollectionConverters._
 
-trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators {
+trait ListWithActionsViewBehaviours[T <: Entity] extends YesNoViewBehaviours with Generators {
 
   implicit override def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   def maxNumber: Int
 
-  private val listItem = arbitrary[ListItem].sample.value
+  implicit def arbitraryListItem: Arbitrary[ListItem[T]]
 
-  val listItems: Seq[ListItem] = Seq(listItem)
+  private val listItem = arbitrary[ListItem[T]].sample.value
 
-  val maxedOutListItems: Seq[ListItem] = Seq.fill(maxNumber)(listItem)
+  val listItems: Seq[ListItem[T]] = Seq(listItem)
+
+  val maxedOutListItems: Seq[ListItem[T]] = Seq.fill(maxNumber)(listItem)
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
@@ -70,7 +73,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     }
 
   // scalastyle:off method.length
-  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
+  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem[T]]): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")

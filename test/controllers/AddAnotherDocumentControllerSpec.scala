@@ -34,7 +34,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
-import viewModels.{AddAnotherDocumentViewModel, ListItem}
+import viewModels.{AddAnotherDocumentViewModel, Entity, ListItem}
 import views.html.AddAnotherDocumentView
 
 class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -59,7 +59,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     reset(mockViewModelProvider)
   }
 
-  private val listItem          = arbitrary[ListItem].sample.value
+  private val listItem          = arbitrary[ListItem[Entity.Document]].sample.value
   private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDocuments - 1).sample.value)(listItem)
   private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDocuments)(listItem)
 

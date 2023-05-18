@@ -17,16 +17,19 @@
 package views
 
 import forms.AddAnotherFormProvider
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.AddAnotherDocumentViewModel
+import viewModels.{AddAnotherDocumentViewModel, Entity, ListItem}
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.AddAnotherDocumentView
 
-class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
+class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours[Entity.Document] {
 
   override def maxNumber: Int = frontendAppConfig.maxDocuments
+
+  implicit override def arbitraryListItem: Arbitrary[ListItem[Entity.Document]] = arbitraryDocumentListItem
 
   private def formProvider(viewModel: AddAnotherDocumentViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)

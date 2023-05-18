@@ -21,16 +21,17 @@ import models.UserAnswers
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.DocumentsAnswersHelper
+import viewModels.Entity.Document
 
 import javax.inject.Inject
 
 case class AddAnotherDocumentViewModel(
-  override val listItems: Seq[ListItem],
+  override val listItems: Seq[ListItem[Document]],
   onSubmitCall: Call
-) extends AddAnotherViewModel {
+) extends AddAnotherViewModel[Document] {
   override val prefix: String = "addAnotherDocument"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDocuments
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxDocuments
 }
 
 object AddAnotherDocumentViewModel {

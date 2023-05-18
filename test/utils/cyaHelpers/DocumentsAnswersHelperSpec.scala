@@ -27,7 +27,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.document._
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
-import viewModels.ListItem
+import viewModels.{Entity, ListItem}
 
 class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -67,7 +67,11 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"${document.toString} - reference number $referenceNumber",
+                      entity = Entity.Document(
+                        name = s"${document.toString} - reference number $referenceNumber",
+                        attachToAllItems = attachToAllItems,
+                        `type` = Some(document.`type`)
+                      ),
                       changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, documentIndex).url,
                       removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url)
                     )
@@ -102,7 +106,11 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Right(
                       ListItem(
-                        name = s"${previousDocument.toString} - reference number $referenceNumber",
+                        entity = Entity.Document(
+                          name = s"${previousDocument.toString} - reference number $referenceNumber",
+                          attachToAllItems = attachToAllItems,
+                          `type` = Some(previousDocument.`type`)
+                        ),
                         changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
                         removeUrl = None
                       )
@@ -132,7 +140,11 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = "",
+                        entity = Entity.Document(
+                          name = "",
+                          attachToAllItems = attachToAllItems,
+                          `type` = None
+                        ),
                         changeUrl = controllers.document.routes.TypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
                       )
@@ -160,7 +172,11 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = "",
+                        entity = Entity.Document(
+                          name = "",
+                          attachToAllItems = attachToAllItems,
+                          `type` = None
+                        ),
                         changeUrl = controllers.document.routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = None
                       )
@@ -190,7 +206,11 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = document.toString,
+                        entity = Entity.Document(
+                          name = document.toString,
+                          attachToAllItems = attachToAllItems,
+                          `type` = Some(document.`type`)
+                        ),
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
                       )
@@ -220,7 +240,11 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = previousDocument.toString,
+                        entity = Entity.Document(
+                          name = previousDocument.toString,
+                          attachToAllItems = attachToAllItems,
+                          `type` = Some(previousDocument.`type`)
+                        ),
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = None
                       )

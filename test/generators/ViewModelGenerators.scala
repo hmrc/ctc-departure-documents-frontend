@@ -16,6 +16,7 @@
 
 package generators
 
+import models.DocumentType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -23,7 +24,7 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.{AddAnotherDocumentViewModel, Link, ListItem, Section}
+import viewModels.{AddAnotherDocumentViewModel, Entity, Link, ListItem, Section}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -161,17 +162,28 @@ trait ViewModelGenerators {
     }
   }
 
-  implicit lazy val arbitraryListItem: Arbitrary[ListItem] = Arbitrary {
+  implicit val arbitraryDocumentListItem: Arbitrary[ListItem[Entity.Document]] =
+    arbitraryListItem(arbitraryDocumentEntity)
+
+  private def arbitraryListItem[T <: Entity](implicit arbitraryT: Arbitrary[T]): Arbitrary[ListItem[T]] = Arbitrary {
     for {
-      name      <- nonEmptyString
+      entity    <- arbitrary[T]
       changeUrl <- nonEmptyString
       removeUrl <- Gen.option(nonEmptyString)
-    } yield ListItem(name, changeUrl, removeUrl)
+    } yield ListItem(entity, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitraryDocumentEntity: Arbitrary[Entity.Document] = Arbitrary {
+    for {
+      name             <- nonEmptyString
+      attachToAllItems <- arbitrary[Boolean]
+      documentType     <- Gen.option(arbitrary[DocumentType])
+    } yield Entity.Document(name, attachToAllItems, documentType)
   }
 
   implicit lazy val arbitraryAddAnotherDocumentViewModel: Arbitrary[AddAnotherDocumentViewModel] = Arbitrary {
     for {
-      listItems    <- arbitrary[Seq[ListItem]]
+      listItems    <- arbitrary[Seq[ListItem[Entity.Document]]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherDocumentViewModel(listItems, onSubmitCall)
   }

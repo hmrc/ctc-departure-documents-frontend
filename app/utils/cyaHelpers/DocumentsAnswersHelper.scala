@@ -19,10 +19,11 @@ package utils.cyaHelpers
 import controllers.document.routes
 import models.journeyDomain.DocumentDomain
 import models.{NormalMode, UserAnswers}
-import pages.document.{PreviousDocumentTypePage, TypePage}
+import pages.document.{AttachToAllItemsPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import viewModels.Entity.Document
 import viewModels.ListItem
 
 class DocumentsAnswersHelper(
@@ -30,7 +31,7 @@ class DocumentsAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, NormalMode) {
 
-  def listItems: Seq[Either[ListItem, ListItem]] =
+  def listItems: Seq[Either[ListItem[Document], ListItem[Document]]] =
     buildListItems(DocumentsSection) {
       documentIndex =>
         DocumentDomain.isMandatoryPrevious(documentIndex).run(userAnswers).toOption.flatMap {
@@ -41,11 +42,23 @@ class DocumentsAnswersHelper(
               Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex))
             }
 
-            buildListItem[DocumentDomain](
-              nameWhenComplete = _.label,
-              nameWhenInProgress = (
-                userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
-              ).map(_.toString) orElse Some(""),
+            lazy val document = userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
+
+            buildListItem[DocumentDomain, Document](
+              entityWhenComplete = x =>
+                Document(
+                  name = x.label,
+                  attachToAllItems = x.attachToAllItems,
+                  `type` = Some(x.document.`type`)
+                ),
+              entityWhenInProgress = userAnswers.get(AttachToAllItemsPage(documentIndex)).map {
+                attachToAllItems =>
+                  Document(
+                    name = document.map(_.toString).getOrElse(""),
+                    attachToAllItems = attachToAllItems,
+                    `type` = document.map(_.`type`)
+                  )
+              },
               removeRoute = removeRoute
             )(DocumentDomain.userAnswersReader(documentIndex))
         }

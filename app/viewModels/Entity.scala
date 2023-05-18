@@ -16,11 +16,17 @@
 
 package viewModels
 
-case class ListItem[T <: Entity](
-  entity: T,
-  changeUrl: String,
-  removeUrl: Option[String]
-) {
+import models.DocumentType
 
-  val name: String = entity.name
+sealed trait Entity {
+  val name: String
+}
+
+object Entity {
+
+  case class Document(
+    name: String,
+    attachToAllItems: Boolean,
+    `type`: Option[DocumentType]
+  ) extends Entity
 }
