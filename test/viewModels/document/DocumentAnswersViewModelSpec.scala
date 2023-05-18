@@ -30,25 +30,27 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
   private val viewModelProvider = app.injector.instanceOf[DocumentAnswersViewModelProvider]
 
   "when transport document" - {
-    "must render 2 rows" in {
+    "must render 3 rows" in {
       val userAnswers = emptyUserAnswers
         .setValue(TypePage(index), arbitrary[Document](arbitraryTransportDocument).sample.value)
+        .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
         .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
 
       val result = viewModelProvider.apply(userAnswers, index).sections.head
 
       result.sectionTitle must not be defined
 
-      result.rows.size mustBe 2
+      result.rows.size mustBe 3
 
       result.addAnotherLink must not be defined
     }
   }
 
   "when support document" - {
-    "must render 6 rows" in {
+    "must render 7 rows" in {
       val userAnswers = emptyUserAnswers
         .setValue(TypePage(index), arbitrary[Document](arbitrarySupportDocument).sample.value)
+        .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
         .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
         .setValue(AddLineItemNumberYesNoPage(index), true)
         .setValue(LineItemNumberPage(index), positiveIntsMinMax(0, 99999).sample.value)
@@ -59,18 +61,19 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
 
       result.sectionTitle must not be defined
 
-      result.rows.size mustBe 6
+      result.rows.size mustBe 7
 
       result.addAnotherLink must not be defined
     }
   }
 
   "when previous document" - {
-    "must render 13 rows" in {
+    "must render 14 rows" in {
       forAll(Gen.oneOf(TypePage, PreviousDocumentTypePage)) {
         typePage =>
           val userAnswers = emptyUserAnswers
             .setValue(typePage(index), arbitrary[Document](arbitraryPreviousDocument).sample.value)
+            .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
             .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
@@ -88,7 +91,7 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
 
           result.sectionTitle must not be defined
 
-          result.rows.size mustBe 13
+          result.rows.size mustBe 14
 
           result.addAnotherLink must not be defined
       }

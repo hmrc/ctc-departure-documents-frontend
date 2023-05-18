@@ -36,6 +36,7 @@ object DocumentAnswersViewModel {
         rows = Seq(
           helper.documentType,
           helper.previousDocumentType,
+          helper.attachToAllItems,
           helper.documentReferenceNumber,
           helper.goodsItemNumberYesNo,
           helper.goodsItemNumber,

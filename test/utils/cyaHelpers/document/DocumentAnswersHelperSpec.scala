@@ -97,6 +97,36 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
+    "attachToAllItems" - {
+      "must return None" - {
+        "when AttachToAllItems page is undefined" in {
+          val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
+          val result = helper.attachToAllItems
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AttachToAllItems page is defined" in {
+          val answers = emptyUserAnswers.setValue(AttachToAllItemsPage(documentIndex), true)
+
+          val helper = new DocumentAnswersHelper(answers, documentIndex)
+          val result = helper.attachToAllItems.get
+
+          result.key.value mustBe "Do you want to use this document for all items?"
+          result.value.value mustBe "Yes"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AttachToAllItemsController.onPageLoad(answers.lrn, mode, documentIndex).url
+          action.visuallyHiddenText.get mustBe "if you want to use this document for all items"
+          action.id mustBe "change-attach-to-all-items"
+        }
+      }
+    }
+
     "documentReferenceNumber" - {
       "must return None" - {
         "when documentReferenceNumber page is undefined" in {
