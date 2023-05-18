@@ -29,8 +29,8 @@ import play.api.mvc.Call
 
 sealed trait DocumentDomain extends JourneyDomainModel {
   val index: Index
-  val document: Document
   val attachToAllItems: Boolean
+  val document: Document
   val referenceNumber: String
 
   def label(implicit messages: Messages): String = messages("document.label", document, referenceNumber)
@@ -42,29 +42,35 @@ sealed trait DocumentDomain extends JourneyDomainModel {
 
 object DocumentDomain {
 
+  def isMandatoryPrevious(documentIndex: Index): UserAnswersReader[Boolean] =
+    for {
+      officeOfDeparture <- TransitOperationOfficeOfDeparturePage.reader
+      declarationType   <- TransitOperationDeclarationTypePage.reader
+    } yield officeOfDeparture.isInGB && declarationType.isOneOf(T2, T2F) && documentIndex.isFirst
+
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
     (
-      TransitOperationOfficeOfDeparturePage.reader,
-      TransitOperationDeclarationTypePage.reader
+      isMandatoryPrevious(documentIndex),
+      AttachToAllItemsPage(documentIndex).reader
     ).flatMapN {
-      case (customsOffice, T2 | T2F) if documentIndex.isFirst && customsOffice.isInGB =>
+      case (true, attachToAllItems) =>
         PreviousDocumentTypePage(documentIndex).reader
-          .flatMap(PreviousDocumentDomain.userAnswersReader(documentIndex, _).widen[DocumentDomain])
-      case _ =>
+          .flatMap(PreviousDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, _).widen[DocumentDomain])
+      case (false, attachToAllItems) =>
         TypePage(documentIndex).reader.flatMap {
           document =>
             document.`type` match {
-              case Support   => SupportDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
-              case Transport => TransportDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
-              case Previous  => PreviousDocumentDomain.userAnswersReader(documentIndex, document).widen[DocumentDomain]
+              case Support   => SupportDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document).widen[DocumentDomain]
+              case Transport => TransportDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document).widen[DocumentDomain]
+              case Previous  => PreviousDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document).widen[DocumentDomain]
             }
         }
     }
 }
 
 case class SupportDocumentDomain(
-  document: Document,
   attachToAllItems: Boolean,
+  document: Document,
   referenceNumber: String,
   lineItemNumber: Option[Int],
   additionalInformation: Option[String]
@@ -73,10 +79,10 @@ case class SupportDocumentDomain(
 
 object SupportDocumentDomain {
 
-  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[SupportDocumentDomain] =
+  implicit def userAnswersReader(index: Index, attachToAllItems: Boolean, document: Document): UserAnswersReader[SupportDocumentDomain] =
     (
+      UserAnswersReader(attachToAllItems),
       UserAnswersReader(document),
-      AttachToAllItemsPage(index).reader,
       DocumentReferenceNumberPage(index).reader,
       AddLineItemNumberYesNoPage(index).filterOptionalDependent(identity)(LineItemNumberPage(index).reader),
       AddAdditionalInformationYesNoPage(index).filterOptionalDependent(identity)(AdditionalInformationPage(index).reader)
@@ -84,18 +90,18 @@ object SupportDocumentDomain {
 }
 
 case class TransportDocumentDomain(
-  document: Document,
   attachToAllItems: Boolean,
+  document: Document,
   referenceNumber: String
 )(override val index: Index)
     extends DocumentDomain
 
 object TransportDocumentDomain {
 
-  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[TransportDocumentDomain] =
+  implicit def userAnswersReader(index: Index, attachToAllItems: Boolean, document: Document): UserAnswersReader[TransportDocumentDomain] =
     (
+      UserAnswersReader(attachToAllItems),
       UserAnswersReader(document),
-      AttachToAllItemsPage(index).reader,
       DocumentReferenceNumberPage(index).reader
     ).tupled.map((TransportDocumentDomain.apply _).tupled).map(_(index))
 }
@@ -104,10 +110,11 @@ sealed trait PreviousDocumentDomain extends DocumentDomain
 
 object PreviousDocumentDomain {
 
-  implicit def userAnswersReader(index: Index, document: Document): UserAnswersReader[PreviousDocumentDomain] =
-    AttachToAllItemsPage(index).reader.flatMap {
-      case true  => PreviousDocumentConsignmentLevelDomain.userAnswersReader(index, document).widen[PreviousDocumentDomain]
-      case false => PreviousDocumentItemLevelDomain.userAnswersReader(index, document).widen[PreviousDocumentDomain]
+  implicit def userAnswersReader(index: Index, attachToAllItems: Boolean, document: Document): UserAnswersReader[PreviousDocumentDomain] =
+    if (attachToAllItems) {
+      PreviousDocumentConsignmentLevelDomain.userAnswersReader(index, document).widen[PreviousDocumentDomain]
+    } else {
+      PreviousDocumentItemLevelDomain.userAnswersReader(index, document).widen[PreviousDocumentDomain]
     }
 }
 

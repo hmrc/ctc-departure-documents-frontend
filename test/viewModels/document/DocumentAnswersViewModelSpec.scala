@@ -32,8 +32,8 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
   "when transport document" - {
     "must render 3 rows" in {
       val userAnswers = emptyUserAnswers
-        .setValue(TypePage(index), arbitrary[Document](arbitraryTransportDocument).sample.value)
         .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
+        .setValue(TypePage(index), arbitrary[Document](arbitraryTransportDocument).sample.value)
         .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
 
       val result = viewModelProvider.apply(userAnswers, index).sections.head
@@ -49,8 +49,8 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
   "when support document" - {
     "must render 7 rows" in {
       val userAnswers = emptyUserAnswers
-        .setValue(TypePage(index), arbitrary[Document](arbitrarySupportDocument).sample.value)
         .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
+        .setValue(TypePage(index), arbitrary[Document](arbitrarySupportDocument).sample.value)
         .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
         .setValue(AddLineItemNumberYesNoPage(index), true)
         .setValue(LineItemNumberPage(index), positiveIntsMinMax(0, 99999).sample.value)
@@ -72,8 +72,8 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
       forAll(Gen.oneOf(TypePage, PreviousDocumentTypePage)) {
         typePage =>
           val userAnswers = emptyUserAnswers
-            .setValue(typePage(index), arbitrary[Document](arbitraryPreviousDocument).sample.value)
             .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
+            .setValue(typePage(index), arbitrary[Document](arbitraryPreviousDocument).sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
             .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)

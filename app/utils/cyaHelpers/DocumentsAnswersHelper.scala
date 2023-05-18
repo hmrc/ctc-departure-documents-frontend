@@ -17,8 +17,8 @@
 package utils.cyaHelpers
 
 import controllers.document.routes
-import models.{NormalMode, UserAnswers}
 import models.journeyDomain.DocumentDomain
+import models.{NormalMode, UserAnswers}
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
 import play.api.i18n.Messages
@@ -33,16 +33,21 @@ class DocumentsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection) {
       documentIndex =>
-        val removeRoute: Option[Call] = if (userAnswers.get(PreviousDocumentTypePage(documentIndex)).isDefined && documentIndex.isFirst) {
-          None
-        } else {
-          Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex))
-        }
+        DocumentDomain.isMandatoryPrevious(documentIndex).run(userAnswers).toOption.flatMap {
+          isMandatoryPrevious =>
+            val removeRoute: Option[Call] = if (isMandatoryPrevious) {
+              None
+            } else {
+              Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex))
+            }
 
-        buildListItem[DocumentDomain](
-          nameWhenComplete = _.label,
-          nameWhenInProgress = (userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))).map(_.toString),
-          removeRoute = removeRoute
-        )(DocumentDomain.userAnswersReader(documentIndex))
+            buildListItem[DocumentDomain](
+              nameWhenComplete = _.label,
+              nameWhenInProgress = (
+                userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
+              ).map(_.toString) orElse Some(""),
+              removeRoute = removeRoute
+            )(DocumentDomain.userAnswersReader(documentIndex))
+        }
     }
 }
