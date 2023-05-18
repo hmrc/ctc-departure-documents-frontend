@@ -51,13 +51,15 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
               arbitrary[DeclarationType],
               arbitrary[Document](arbitraryTransportDocument),
+              arbitrary[Boolean],
               nonEmptyString
             ) {
-              (xiCustomsOffice, declarationType, document, referenceNumber) =>
+              (xiCustomsOffice, declarationType, document, attachToAllItems, referenceNumber) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)
                   .setValue(TypePage(Index(0)), document)
+                  .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                   .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
 
                 val helper = new DocumentsAnswersHelper(userAnswers)
@@ -80,13 +82,15 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
                 Gen.oneOf(T2, T2F),
                 arbitrary[Document](arbitraryPreviousDocument),
+                arbitrary[Boolean],
                 nonEmptyString
               ) {
-                (gbCustomsOffice, declarationType, previousDocument, referenceNumber) =>
+                (gbCustomsOffice, declarationType, previousDocument, attachToAllItems, referenceNumber) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
+                    .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                     .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
                     .setValue(AddGoodsItemNumberYesNoPage(Index(0)), false)
                     .setValue(AddTypeOfPackageYesNoPage(Index(0)), false)
@@ -129,7 +133,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     Left(
                       ListItem(
                         name = document.toString,
-                        changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
+                        changeUrl = controllers.document.routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
                       )
                     )
@@ -157,7 +161,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     Left(
                       ListItem(
                         name = previousDocument.toString,
-                        changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
+                        changeUrl = controllers.document.routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = None
                       )
                     )
