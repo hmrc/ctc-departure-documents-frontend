@@ -16,7 +16,7 @@
 
 package pages.document
 
-import models.reference.{Metric, PackageType}
+import models.reference.{Document, Metric, PackageType}
 import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
 
@@ -35,6 +35,8 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
       "when YES selected" - {
         "must remove pages" in {
           val userAnswers = emptyUserAnswers
+            .setValue(TypePage(index), arbitrary[Document].sample.value)
+            .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
             .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
@@ -50,8 +52,9 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(AttachToAllItemsPage(index), true)
 
-          result.get(DocumentReferenceNumberPage(index)) must be(defined)
-
+          result.get(TypePage(index)) must not be defined
+          result.get(PreviousDocumentTypePage(index)) must not be defined
+          result.get(DocumentReferenceNumberPage(index)) must not be defined
           result.get(AddGoodsItemNumberYesNoPage(index)) must not be defined
           result.get(GoodsItemNumberPage(index)) must not be defined
           result.get(AddTypeOfPackageYesNoPage(index)) must not be defined
@@ -61,15 +64,16 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
           result.get(DeclareQuantityOfGoodsYesNoPage(index)) must not be defined
           result.get(MetricPage(index)) must not be defined
           result.get(QuantityPage(index)) must not be defined
-
-          result.get(AddAdditionalInformationYesNoPage(index)) must be(defined)
-          result.get(AdditionalInformationPage(index)) must be(defined)
+          result.get(AddAdditionalInformationYesNoPage(index)) must not be defined
+          result.get(AdditionalInformationPage(index)) must not be defined
         }
       }
 
       "when NO selected" - {
         "must not remove pages" in {
           val userAnswers = emptyUserAnswers
+            .setValue(TypePage(index), arbitrary[Document].sample.value)
+            .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
             .setValue(AddGoodsItemNumberYesNoPage(index), true)
             .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
@@ -85,8 +89,9 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(AttachToAllItemsPage(index), false)
 
+          result.get(TypePage(index)) must be(defined)
+          result.get(PreviousDocumentTypePage(index)) must be(defined)
           result.get(DocumentReferenceNumberPage(index)) must be(defined)
-
           result.get(AddGoodsItemNumberYesNoPage(index)) must be(defined)
           result.get(GoodsItemNumberPage(index)) must be(defined)
           result.get(AddTypeOfPackageYesNoPage(index)) must be(defined)
@@ -96,7 +101,6 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
           result.get(DeclareQuantityOfGoodsYesNoPage(index)) must be(defined)
           result.get(MetricPage(index)) must be(defined)
           result.get(QuantityPage(index)) must be(defined)
-
           result.get(AddAdditionalInformationYesNoPage(index)) must be(defined)
           result.get(AdditionalInformationPage(index)) must be(defined)
         }

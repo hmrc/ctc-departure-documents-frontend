@@ -19,7 +19,7 @@ package pages.document
 import controllers.document.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.DocumentDetailsSection
+import pages.sections.{DocumentDetailsSection, DocumentSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -27,7 +27,7 @@ import scala.util.Try
 
 case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
+  override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
   override def toString: String = "attachToAllItems"
 
@@ -37,15 +37,9 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(true) =>
       userAnswers
-        .remove(AddGoodsItemNumberYesNoPage(documentIndex))
-        .flatMap(_.remove(GoodsItemNumberPage(documentIndex)))
-        .flatMap(_.remove(AddTypeOfPackageYesNoPage(documentIndex)))
-        .flatMap(_.remove(PackageTypePage(documentIndex)))
-        .flatMap(_.remove(AddNumberOfPackagesYesNoPage(documentIndex)))
-        .flatMap(_.remove(NumberOfPackagesPage(documentIndex)))
-        .flatMap(_.remove(DeclareQuantityOfGoodsYesNoPage(documentIndex)))
-        .flatMap(_.remove(MetricPage(documentIndex)))
-        .flatMap(_.remove(QuantityPage(documentIndex)))
+        .remove(TypePage(documentIndex))
+        .flatMap(_.remove(PreviousDocumentTypePage(documentIndex)))
+        .flatMap(_.remove(DocumentDetailsSection(documentIndex)))
     case _ =>
       super.cleanup(value, userAnswers)
   }
