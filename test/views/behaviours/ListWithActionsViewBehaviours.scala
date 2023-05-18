@@ -41,7 +41,7 @@ trait ListWithActionsViewBehaviours[T <: Entity] extends YesNoViewBehaviours wit
 
   val maxedOutListItems: Seq[ListItem[T]] = Seq.fill(maxNumber)(listItem)
 
-  def applyMaxedOutView: HtmlFormat.Appendable
+  def applyMaxedOutView: HtmlFormat.Appendable = applyView(form)
 
   def pageWithMoreItemsAllowed(h1Args: Any*)(h2Args: Any*): Unit =
     "page with more items allowed" - {
@@ -56,7 +56,23 @@ trait ListWithActionsViewBehaviours[T <: Entity] extends YesNoViewBehaviours wit
 
     }
 
-  def pageWithItemsMaxedOut(args: Any*): Unit =
+  def pageWithItemsMaxedOutWithoutRadioItems(args: Any*): Unit =
+    "page with items maxed out without radio items" - {
+
+      behave like pageWithItemsMaxedOut(args: _*)
+
+      behave like pageWithoutRadioItems(doc)
+    }
+
+  def pageWithItemsMaxedOutWithRadioItems(h1Args: Any*)(h2Args: Any*): Unit =
+    "page with items maxed out with radio items" - {
+
+      behave like pageWithItemsMaxedOut(h1Args: _*)
+
+      behave like pageWithRadioItems(legendIsHeading = false, args = h2Args)
+    }
+
+  private def pageWithItemsMaxedOut(args: Any*): Unit =
     "page with items maxed out" - {
 
       val doc = parseView(applyMaxedOutView)
@@ -66,8 +82,6 @@ trait ListWithActionsViewBehaviours[T <: Entity] extends YesNoViewBehaviours wit
       behave like pageWithHeading(doc, s"$prefix.plural", args: _*)
 
       behave like pageWithListWithActions(doc, maxedOutListItems)
-
-      behave like pageWithoutRadioItems(doc)
 
       behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label"))
     }

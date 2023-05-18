@@ -19,8 +19,10 @@ package viewModels
 import base.SpecBase
 import generators.Generators
 import models.Index
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.mvc.Call
 import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 
 class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -35,7 +37,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
       result.title mustBe "You have added 1 document"
       result.heading mustBe "You have added 1 document"
       result.legend mustBe "Do you want to add another document?"
-      result.maxLimitLabel mustBe "You cannot add any more documents. To add another, you need to remove one first."
+      result.maxLimitLabel mustBe "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
     }
 
     "when there are multiple documents" in {
@@ -53,7 +55,68 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
           result.title mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.heading mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.legend mustBe "Do you want to add another document?"
-          result.maxLimitLabel mustBe "You cannot add any more documents. To add another, you need to remove one first."
+          result.maxLimitLabel mustBe "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
+      }
+    }
+
+    "allowMore" - {
+
+      val call = arbitrary[Call].sample.value
+
+      "must be false" - {
+        "when max previous AND max supporting AND max transport all at consignment level" in {
+          val previousListItems = Gen.listOfN(
+            frontendAppConfig.maxPreviousDocuments,
+            arbitrary[ListItem[Entity.Document]](arbitraryDocumentListItem(arbitraryPreviousDocumentEntityAtConsignmentLevel))
+          )
+
+          val supportingListItems = Gen.listOfN(
+            frontendAppConfig.maxSupportingDocuments,
+            arbitrary[ListItem[Entity.Document]](arbitraryDocumentListItem(arbitrarySupportingDocumentEntityAtConsignmentLevel))
+          )
+
+          val transportListItems = Gen.listOfN(
+            frontendAppConfig.maxTransportDocuments,
+            arbitrary[ListItem[Entity.Document]](arbitraryDocumentListItem(arbitraryTransportDocumentEntityAtConsignmentLevel))
+          )
+
+          val listItems = previousListItems.sample.value ++ supportingListItems.sample.value ++ transportListItems.sample.value
+
+          val viewModel = AddAnotherDocumentViewModel(listItems, call)
+
+          viewModel.allowMore mustBe false
+        }
+      }
+
+      "must be true" - {
+        "when no documents" in {
+          val viewModel = AddAnotherDocumentViewModel(Nil, call)
+
+          viewModel.allowMore mustBe true
+        }
+
+        "when max previous AND max supporting AND max transport but not at consignment level" in {
+          val previousListItems = Gen.listOfN(
+            frontendAppConfig.maxPreviousDocuments,
+            arbitrary[ListItem[Entity.Document]](arbitraryDocumentListItem(arbitraryPreviousDocumentEntityAtItemLevel))
+          )
+
+          val supportingListItems = Gen.listOfN(
+            frontendAppConfig.maxSupportingDocuments,
+            arbitrary[ListItem[Entity.Document]](arbitraryDocumentListItem(arbitrarySupportingDocumentEntityAtItemLevel))
+          )
+
+          val transportListItems = Gen.listOfN(
+            frontendAppConfig.maxTransportDocuments,
+            arbitrary[ListItem[Entity.Document]](arbitraryDocumentListItem(arbitraryTransportDocumentEntityAtItemLevel))
+          )
+
+          val listItems = previousListItems.sample.value ++ supportingListItems.sample.value ++ transportListItems.sample.value
+
+          val viewModel = AddAnotherDocumentViewModel(listItems, call)
+
+          viewModel.allowMore mustBe true
+        }
       }
     }
   }

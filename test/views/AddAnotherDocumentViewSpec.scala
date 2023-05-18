@@ -56,7 +56,7 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours[Entity.Do
 
   behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+  behave like pageWithItemsMaxedOutWithRadioItems(maxedOutViewModel.count)()
 
   behave like pageWithSubmitButton("Save and continue")
 

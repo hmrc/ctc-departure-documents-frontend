@@ -17,7 +17,7 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import models.{DocumentType, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.DocumentsAnswersHelper
@@ -31,7 +31,18 @@ case class AddAnotherDocumentViewModel(
 ) extends AddAnotherViewModel[Document] {
   override val prefix: String = "addAnotherDocument"
 
-  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxDocuments
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = {
+    def allowMore(`type`: DocumentType, max: Int): Boolean = {
+      val numberOfConsignmentLevelDocuments = listItems.count {
+        li => li.entity.attachToAllItems && li.entity.`type`.contains(`type`)
+      }
+      numberOfConsignmentLevelDocuments < max
+    }
+
+    allowMore(DocumentType.Previous, config.maxPreviousDocuments) &&
+    allowMore(DocumentType.Support, config.maxSupportingDocuments) &&
+    allowMore(DocumentType.Transport, config.maxTransportDocuments)
+  }
 }
 
 object AddAnotherDocumentViewModel {

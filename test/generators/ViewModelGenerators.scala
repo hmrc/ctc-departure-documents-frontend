@@ -165,6 +165,9 @@ trait ViewModelGenerators {
   implicit val arbitraryDocumentListItem: Arbitrary[ListItem[Entity.Document]] =
     arbitraryListItem(arbitraryDocumentEntity)
 
+  def arbitraryDocumentListItem[T <: Entity](implicit arbitraryT: Arbitrary[T]): Arbitrary[ListItem[T]] =
+    arbitraryListItem
+
   private def arbitraryListItem[T <: Entity](implicit arbitraryT: Arbitrary[T]): Arbitrary[ListItem[T]] = Arbitrary {
     for {
       entity    <- arbitrary[T]
@@ -180,6 +183,36 @@ trait ViewModelGenerators {
       documentType     <- Gen.option(arbitrary[DocumentType])
     } yield Entity.Document(name, attachToAllItems, documentType)
   }
+
+  private def arbitraryDocumentEntityAtConsignmentLevel(documentType: DocumentType): Arbitrary[Entity.Document] = Arbitrary {
+    for {
+      name <- nonEmptyString
+    } yield Entity.Document(name, attachToAllItems = true, Some(documentType))
+  }
+
+  val arbitraryPreviousDocumentEntityAtConsignmentLevel: Arbitrary[Entity.Document] =
+    arbitraryDocumentEntityAtConsignmentLevel(DocumentType.Previous)
+
+  val arbitrarySupportingDocumentEntityAtConsignmentLevel: Arbitrary[Entity.Document] =
+    arbitraryDocumentEntityAtConsignmentLevel(DocumentType.Support)
+
+  val arbitraryTransportDocumentEntityAtConsignmentLevel: Arbitrary[Entity.Document] =
+    arbitraryDocumentEntityAtConsignmentLevel(DocumentType.Transport)
+
+  private def arbitraryDocumentEntityAtItemLevel(documentType: DocumentType): Arbitrary[Entity.Document] = Arbitrary {
+    for {
+      name <- nonEmptyString
+    } yield Entity.Document(name, attachToAllItems = false, Some(documentType))
+  }
+
+  val arbitraryPreviousDocumentEntityAtItemLevel: Arbitrary[Entity.Document] =
+    arbitraryDocumentEntityAtItemLevel(DocumentType.Previous)
+
+  val arbitrarySupportingDocumentEntityAtItemLevel: Arbitrary[Entity.Document] =
+    arbitraryDocumentEntityAtItemLevel(DocumentType.Support)
+
+  val arbitraryTransportDocumentEntityAtItemLevel: Arbitrary[Entity.Document] =
+    arbitraryDocumentEntityAtItemLevel(DocumentType.Transport)
 
   implicit lazy val arbitraryAddAnotherDocumentViewModel: Arbitrary[AddAnotherDocumentViewModel] = Arbitrary {
     for {

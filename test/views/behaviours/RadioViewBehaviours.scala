@@ -26,12 +26,20 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
   def radioItems(fieldId: String, checkedValue: Option[T] = None): Seq[RadioItem]
   def values: Seq[T]
 
-  // scalastyle:off method.length
   def pageWithRadioItems(
     legendIsHeading: Boolean = true,
     hintTextPrefix: Option[String] = None,
     args: Seq[Any] = Nil,
     legendIsVisible: Boolean = true
+  ): Unit = pageWithRadioItems(doc, legendIsHeading, hintTextPrefix, args, legendIsVisible)
+
+  // scalastyle:off method.length
+  def pageWithRadioItems(
+    doc: Document,
+    legendIsHeading: Boolean,
+    hintTextPrefix: Option[String],
+    args: Seq[Any],
+    legendIsVisible: Boolean
   ): Unit =
     "page with a radio question" - {
       "when rendered" - {
