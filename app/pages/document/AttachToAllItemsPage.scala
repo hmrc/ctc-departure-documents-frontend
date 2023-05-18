@@ -23,6 +23,8 @@ import pages.sections.DocumentDetailsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
@@ -31,4 +33,20 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(true) =>
+      userAnswers
+        .remove(AddGoodsItemNumberYesNoPage(documentIndex))
+        .flatMap(_.remove(GoodsItemNumberPage(documentIndex)))
+        .flatMap(_.remove(AddTypeOfPackageYesNoPage(documentIndex)))
+        .flatMap(_.remove(PackageTypePage(documentIndex)))
+        .flatMap(_.remove(AddNumberOfPackagesYesNoPage(documentIndex)))
+        .flatMap(_.remove(NumberOfPackagesPage(documentIndex)))
+        .flatMap(_.remove(DeclareQuantityOfGoodsYesNoPage(documentIndex)))
+        .flatMap(_.remove(MetricPage(documentIndex)))
+        .flatMap(_.remove(QuantityPage(documentIndex)))
+    case _ =>
+      super.cleanup(value, userAnswers)
+  }
 }
