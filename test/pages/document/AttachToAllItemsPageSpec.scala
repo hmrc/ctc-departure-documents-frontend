@@ -32,77 +32,85 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
 
     "cleanup" - {
 
-      "when YES selected" - {
+      "when answer changes" - {
         "must remove pages" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(TypePage(index), arbitrary[Document].sample.value)
-            .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
-            .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-            .setValue(AddGoodsItemNumberYesNoPage(index), true)
-            .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
-            .setValue(AddTypeOfPackageYesNoPage(index), true)
-            .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
-            .setValue(AddNumberOfPackagesYesNoPage(index), true)
-            .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
-            .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
-            .setValue(MetricPage(index), arbitrary[Metric].sample.value)
-            .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
-            .setValue(AddAdditionalInformationYesNoPage(index), true)
-            .setValue(AdditionalInformationPage(index), nonEmptyString.sample.value)
+          forAll(arbitrary[Boolean]) {
+            bool =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AttachToAllItemsPage(index), bool)
+                .setValue(TypePage(index), arbitrary[Document].sample.value)
+                .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
+                .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
+                .setValue(AddGoodsItemNumberYesNoPage(index), true)
+                .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
+                .setValue(AddTypeOfPackageYesNoPage(index), true)
+                .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
+                .setValue(AddNumberOfPackagesYesNoPage(index), true)
+                .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
+                .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
+                .setValue(MetricPage(index), arbitrary[Metric].sample.value)
+                .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
+                .setValue(AddAdditionalInformationYesNoPage(index), true)
+                .setValue(AdditionalInformationPage(index), nonEmptyString.sample.value)
 
-          val result = userAnswers.setValue(AttachToAllItemsPage(index), true)
+              val result = userAnswers.setValue(AttachToAllItemsPage(index), !bool)
 
-          result.get(TypePage(index)) must not be defined
-          result.get(PreviousDocumentTypePage(index)) must not be defined
-          result.get(DocumentReferenceNumberPage(index)) must not be defined
-          result.get(AddGoodsItemNumberYesNoPage(index)) must not be defined
-          result.get(GoodsItemNumberPage(index)) must not be defined
-          result.get(AddTypeOfPackageYesNoPage(index)) must not be defined
-          result.get(PackageTypePage(index)) must not be defined
-          result.get(AddNumberOfPackagesYesNoPage(index)) must not be defined
-          result.get(NumberOfPackagesPage(index)) must not be defined
-          result.get(DeclareQuantityOfGoodsYesNoPage(index)) must not be defined
-          result.get(MetricPage(index)) must not be defined
-          result.get(QuantityPage(index)) must not be defined
-          result.get(AddAdditionalInformationYesNoPage(index)) must not be defined
-          result.get(AdditionalInformationPage(index)) must not be defined
+              result.get(TypePage(index)) must not be defined
+              result.get(PreviousDocumentTypePage(index)) must not be defined
+              result.get(DocumentReferenceNumberPage(index)) must not be defined
+              result.get(AddGoodsItemNumberYesNoPage(index)) must not be defined
+              result.get(GoodsItemNumberPage(index)) must not be defined
+              result.get(AddTypeOfPackageYesNoPage(index)) must not be defined
+              result.get(PackageTypePage(index)) must not be defined
+              result.get(AddNumberOfPackagesYesNoPage(index)) must not be defined
+              result.get(NumberOfPackagesPage(index)) must not be defined
+              result.get(DeclareQuantityOfGoodsYesNoPage(index)) must not be defined
+              result.get(MetricPage(index)) must not be defined
+              result.get(QuantityPage(index)) must not be defined
+              result.get(AddAdditionalInformationYesNoPage(index)) must not be defined
+              result.get(AdditionalInformationPage(index)) must not be defined
+          }
         }
       }
 
-      "when NO selected" - {
+      "when answer does not change" - {
         "must not remove pages" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(TypePage(index), arbitrary[Document].sample.value)
-            .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
-            .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-            .setValue(AddGoodsItemNumberYesNoPage(index), true)
-            .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
-            .setValue(AddTypeOfPackageYesNoPage(index), true)
-            .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
-            .setValue(AddNumberOfPackagesYesNoPage(index), true)
-            .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
-            .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
-            .setValue(MetricPage(index), arbitrary[Metric].sample.value)
-            .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
-            .setValue(AddAdditionalInformationYesNoPage(index), true)
-            .setValue(AdditionalInformationPage(index), nonEmptyString.sample.value)
+          forAll(arbitrary[Boolean]) {
+            bool =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AttachToAllItemsPage(index), bool)
+                .setValue(TypePage(index), arbitrary[Document].sample.value)
+                .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
+                .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
+                .setValue(AddGoodsItemNumberYesNoPage(index), true)
+                .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
+                .setValue(AddTypeOfPackageYesNoPage(index), true)
+                .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
+                .setValue(AddNumberOfPackagesYesNoPage(index), true)
+                .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
+                .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
+                .setValue(MetricPage(index), arbitrary[Metric].sample.value)
+                .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
+                .setValue(AddAdditionalInformationYesNoPage(index), true)
+                .setValue(AdditionalInformationPage(index), nonEmptyString.sample.value)
 
-          val result = userAnswers.setValue(AttachToAllItemsPage(index), false)
+              val result = userAnswers.setValue(AttachToAllItemsPage(index), bool)
 
-          result.get(TypePage(index)) must be(defined)
-          result.get(PreviousDocumentTypePage(index)) must be(defined)
-          result.get(DocumentReferenceNumberPage(index)) must be(defined)
-          result.get(AddGoodsItemNumberYesNoPage(index)) must be(defined)
-          result.get(GoodsItemNumberPage(index)) must be(defined)
-          result.get(AddTypeOfPackageYesNoPage(index)) must be(defined)
-          result.get(PackageTypePage(index)) must be(defined)
-          result.get(AddNumberOfPackagesYesNoPage(index)) must be(defined)
-          result.get(NumberOfPackagesPage(index)) must be(defined)
-          result.get(DeclareQuantityOfGoodsYesNoPage(index)) must be(defined)
-          result.get(MetricPage(index)) must be(defined)
-          result.get(QuantityPage(index)) must be(defined)
-          result.get(AddAdditionalInformationYesNoPage(index)) must be(defined)
-          result.get(AdditionalInformationPage(index)) must be(defined)
+              result.get(TypePage(index)) must be(defined)
+              result.get(PreviousDocumentTypePage(index)) must be(defined)
+              result.get(DocumentReferenceNumberPage(index)) must be(defined)
+              result.get(AddGoodsItemNumberYesNoPage(index)) must be(defined)
+              result.get(GoodsItemNumberPage(index)) must be(defined)
+              result.get(AddTypeOfPackageYesNoPage(index)) must be(defined)
+              result.get(PackageTypePage(index)) must be(defined)
+              result.get(AddNumberOfPackagesYesNoPage(index)) must be(defined)
+              result.get(NumberOfPackagesPage(index)) must be(defined)
+              result.get(DeclareQuantityOfGoodsYesNoPage(index)) must be(defined)
+              result.get(MetricPage(index)) must be(defined)
+              result.get(QuantityPage(index)) must be(defined)
+              result.get(AddAdditionalInformationYesNoPage(index)) must be(defined)
+              result.get(AdditionalInformationPage(index)) must be(defined)
+          }
         }
       }
     }

@@ -35,7 +35,7 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(true) =>
+    case Some(_) =>
       userAnswers
         .remove(TypePage(documentIndex))
         .flatMap(_.remove(PreviousDocumentTypePage(documentIndex)))
