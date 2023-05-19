@@ -57,7 +57,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val maxPreviousDocuments: Int   = configuration.get[Int]("limits.maxPreviousDocuments")
   lazy val maxSupportingDocuments: Int = configuration.get[Int]("limits.maxSupportingDocuments")
   lazy val maxTransportDocuments: Int  = configuration.get[Int]("limits.maxTransportDocuments")
-  lazy val maxDocuments: Int           = maxPreviousDocuments + maxSupportingDocuments + maxTransportDocuments // TODO - remove?
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
 

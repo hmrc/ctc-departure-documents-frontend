@@ -41,7 +41,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
     "when there are multiple documents" in {
       val formatter = java.text.NumberFormat.getIntegerInstance
 
-      forAll(Gen.choose(2, frontendAppConfig.maxDocuments)) {
+      forAll(Gen.choose(2, 3)) {
         numberOfDocuments =>
           val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers) {
             (acc, i) =>
