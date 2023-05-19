@@ -16,10 +16,12 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import forms.DocumentFormProvider
+import models.requests.DataRequest
+import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.TypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,21 +39,24 @@ class TypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: DocumentFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix: String = "document.type"
 
+  private def consignmentLevelDocuments(implicit request: DataRequest[_]): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(request.userAnswers)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getDocuments().map {
         documentList =>
-          val form = formProvider(prefix, documentList)
+          val form = formProvider(prefix, documentList, consignmentLevelDocuments)
           val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -65,7 +70,7 @@ class TypeController @Inject() (
     implicit request =>
       service.getDocuments().flatMap {
         documentList =>
-          val form = formProvider(prefix, documentList)
+          val form = formProvider(prefix, documentList, consignmentLevelDocuments)
           form
             .bindFromRequest()
             .fold(

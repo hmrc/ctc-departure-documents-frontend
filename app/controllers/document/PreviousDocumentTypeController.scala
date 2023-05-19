@@ -16,10 +16,12 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import forms.DocumentFormProvider
+import models.requests.SpecificDataRequestProvider1
+import models.{ConsignmentLevelDocuments, DeclarationType, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.PreviousDocumentTypePage
 import pages.external.TransitOperationDeclarationTypePage
@@ -39,15 +41,20 @@ class PreviousDocumentTypeController @Inject() (
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: SelectableFormProvider,
+  formProvider: DocumentFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix: String = "document.previousDocumentType"
+
+  private type Request = SpecificDataRequestProvider1[DeclarationType]#SpecificDataRequest[_]
+
+  private def consignmentLevelDocuments(implicit request: Request): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(request.userAnswers)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
@@ -56,7 +63,7 @@ class PreviousDocumentTypeController @Inject() (
       implicit request =>
         service.getPreviousDocuments().map {
           previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList)
+            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments)
             val preparedForm = request.userAnswers.get(PreviousDocumentTypePage(documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
@@ -73,7 +80,7 @@ class PreviousDocumentTypeController @Inject() (
       implicit request =>
         service.getPreviousDocuments().flatMap {
           previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList)
+            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments)
             form
               .bindFromRequest()
               .fold(

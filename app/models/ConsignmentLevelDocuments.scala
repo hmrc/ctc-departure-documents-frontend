@@ -16,6 +16,8 @@
 
 package models
 
+import config.FrontendAppConfig
+import models.reference.Document
 import pages.document._
 import pages.sections.DocumentsSection
 
@@ -23,7 +25,14 @@ case class ConsignmentLevelDocuments(
   previous: Int,
   supporting: Int,
   transport: Int
-)
+) {
+
+  def canAdd(document: Document)(implicit config: FrontendAppConfig): Boolean = document.`type` match {
+    case DocumentType.Previous  => previous < config.maxPreviousDocuments
+    case DocumentType.Support   => supporting < config.maxSupportingDocuments
+    case DocumentType.Transport => transport < config.maxTransportDocuments
+  }
+}
 
 object ConsignmentLevelDocuments {
 
