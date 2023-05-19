@@ -173,6 +173,7 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall)
+      allowMore    <- arbitrary[Boolean]
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, allowMore)
   }
 }

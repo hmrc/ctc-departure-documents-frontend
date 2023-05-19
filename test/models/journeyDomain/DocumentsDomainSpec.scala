@@ -27,7 +27,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" in {
 
-      val numberOfItems = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
+      val numberOfItems = Gen.choose(1, 3).sample.value
 
       val userAnswers = (0 until numberOfItems).foldLeft(emptyUserAnswers)({
         case (updatedUserAnswers, index) =>

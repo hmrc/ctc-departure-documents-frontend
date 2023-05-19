@@ -16,7 +16,6 @@
 
 package viewModels
 
-import config.FrontendAppConfig
 import models.Index
 import play.api.i18n.Messages
 
@@ -35,6 +34,5 @@ trait AddAnotherViewModel {
   def legend(implicit messages: Messages): String        = messages(s"$prefix.label")
   def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
 
-  def maxCount(implicit config: FrontendAppConfig): Int
-  def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount
+  def allowMore: Boolean
 }

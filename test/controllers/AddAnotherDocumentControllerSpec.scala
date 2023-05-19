@@ -25,7 +25,6 @@ import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import play.api.data.Form
@@ -33,8 +32,8 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.AddAnotherDocumentViewModel
 import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
-import viewModels.{AddAnotherDocumentViewModel, ListItem}
 import views.html.AddAnotherDocumentView
 
 class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
@@ -42,7 +41,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val formProvider = new AddAnotherFormProvider()
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig))
+    formProvider(viewModel.prefix)
 
   private lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn).url
 
@@ -59,19 +58,15 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     reset(mockViewModelProvider)
   }
 
-  private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDocuments - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDocuments)(listItem)
-
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
   private val emptyViewModel       = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val notMaxedOutViewModel = viewModel.copy(allowMore = true)
+  private val maxedOutViewModel    = viewModel.copy(allowMore = false)
 
   "AddAnotherDocument Controller" - {
     "redirect to the correct controller when 0 documents added" in {
-      when(mockViewModelProvider.apply(any())(any()))
+      when(mockViewModelProvider.apply(any())(any(), any()))
         .thenReturn(emptyViewModel)
 
       val declarationType   = arbitraryDeclarationType.arbitrary.sample.value
@@ -96,7 +91,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -110,12 +105,12 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel)(request, messages).toString
       }
 
       "when max limit reached" in {
 
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -129,14 +124,14 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), lrn, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel), lrn, maxedOutViewModel)(request, messages).toString
       }
     }
 
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to type page at next index" in {
-          when(mockViewModelProvider.apply(any())(any()))
+          when(mockViewModelProvider.apply(any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -149,13 +144,13 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.document.routes.TypeController.onPageLoad(lrn, NormalMode, Index(listItems.length)).url
+            controllers.document.routes.TypeController.onPageLoad(lrn, NormalMode, Index(viewModel.count)).url
         }
       }
 
       "when no submitted" - {
         "must redirect to task list" in {
-          when(mockViewModelProvider.apply(any())(any()))
+          when(mockViewModelProvider.apply(any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -172,27 +167,9 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       }
     }
 
-    "when max limit reached" - {
-      "must redirect to task list" in {
-        when(mockViewModelProvider.apply(any())(any()))
-          .thenReturn(maxedOutViewModel)
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, addAnotherDocumentRoute)
-          .withFormUrlEncodedBody(("value", ""))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
-      }
-    }
-
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any())(any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -209,7 +186,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, lrn, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+          view(boundForm, lrn, notMaxedOutViewModel)(request, messages).toString
       }
     }
 

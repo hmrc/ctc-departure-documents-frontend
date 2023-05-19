@@ -98,23 +98,31 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   def pageWithTitle(args: Any*): Unit =
     pageWithTitle(doc, prefix, args: _*)
 
-  def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit =
+  def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit = {
+    val messageKey = s"$prefix.title"
+    pageWithTitle(doc, messages(messageKey, args: _*))
+    assert(messages.isDefinedAt(messageKey))
+  }
+
+  def pageWithTitle(doc: Document, expectedTitle: String): Unit =
     "must render title" in {
-      val title      = doc.title()
-      val messageKey = s"$prefix.title"
-      title mustBe s"${messages(messageKey, args: _*)} - Manage your transit movements - GOV.UK"
-      assert(messages.isDefinedAt(messageKey))
+      val title = doc.title()
+      title mustBe s"$expectedTitle - Manage your transit movements - GOV.UK"
     }
 
   def pageWithHeading(args: Any*): Unit =
     pageWithHeading(doc, prefix, args: _*)
 
-  def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit =
+  def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit = {
+    val messageKey = s"$prefix.heading"
+    pageWithHeading(doc, messages(messageKey, args: _*))
+    assert(messages.isDefinedAt(messageKey))
+  }
+
+  def pageWithHeading(doc: Document, expectedHeading: String): Unit =
     "must render heading" in {
-      val heading    = getElementByTag(doc, "h1")
-      val messageKey = s"$prefix.heading"
-      assertElementIncludesText(heading, messages(messageKey, args: _*))
-      assert(messages.isDefinedAt(messageKey))
+      val heading = getElementByTag(doc, "h1")
+      assertElementIncludesText(heading, expectedHeading)
     }
 
   def pageWithCaption(expectedText: String): Unit =
