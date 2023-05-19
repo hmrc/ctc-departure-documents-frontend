@@ -48,7 +48,7 @@ class AddAnotherDocumentController @Inject() (
   private val mode: Mode = NormalMode
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore)
+    formProvider(viewModel.prefix)
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

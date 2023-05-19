@@ -17,7 +17,7 @@
 package viewModels
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import models.{ConsignmentLevelDocuments, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.DocumentsAnswersHelper
@@ -26,18 +26,17 @@ import javax.inject.Inject
 
 case class AddAnotherDocumentViewModel(
   override val listItems: Seq[ListItem],
-  onSubmitCall: Call
+  onSubmitCall: Call,
+  allowMore: Boolean
 ) extends AddAnotherViewModel {
   override val prefix: String = "addAnotherDocument"
-
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDocuments
 }
 
 object AddAnotherDocumentViewModel {
 
   class AddAnotherDocumentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages): AddAnotherDocumentViewModel = {
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherDocumentViewModel = {
       val helper = new DocumentsAnswersHelper(userAnswers)
 
       val listItems = helper.listItems.collect {
@@ -45,9 +44,12 @@ object AddAnotherDocumentViewModel {
         case Right(value) => value
       }
 
+      val ConsignmentLevelDocuments(previous, supporting, transport) = ConsignmentLevelDocuments(userAnswers)
+
       new AddAnotherDocumentViewModel(
         listItems,
-        onSubmitCall = controllers.routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn)
+        onSubmitCall = controllers.routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn),
+        allowMore = previous < config.maxPreviousDocuments && supporting < config.maxSupportingDocuments && transport < config.maxTransportDocuments
       )
     }
   }

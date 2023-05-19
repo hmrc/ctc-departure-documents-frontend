@@ -35,6 +35,8 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
+  def getArraySize(array: Gettable[JsArray]): Int = get(array).map(_.value.size).getOrElse(0)
+
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
     lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
@@ -67,10 +69,10 @@ final case class UserAnswers(
 
   def removeDocumentFromItems(uuid: Option[UUID]): UserAnswers = uuid match {
     case Some(documentUuid) =>
-      val numberOfItems = this.get(ItemsSection).map(_.value.size).getOrElse(0)
+      val numberOfItems = this.getArraySize(ItemsSection)
       (0 until numberOfItems).map(Index(_)).foldLeft(this) {
         (acc1, itemIndex) =>
-          val numberOfDocuments = acc1.get(DocumentsSection(itemIndex)).map(_.value.size).getOrElse(0)
+          val numberOfDocuments = acc1.getArraySize(DocumentsSection(itemIndex))
           (numberOfDocuments to 1 by -1).map(_ - 1).map(Index(_)).foldLeft(acc1) {
             (acc2, documentIndex) =>
               acc2.get(DocumentPage(itemIndex, documentIndex)) match {
