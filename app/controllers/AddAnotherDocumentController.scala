@@ -68,7 +68,7 @@ class AddAnotherDocumentController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
-            case true  => Redirect(controllers.document.routes.TypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
+            case true  => Redirect(controllers.document.routes.AttachToAllItemsController.onPageLoad(lrn, mode, viewModel.nextIndex))
             case false => Redirect(config.taskListUrl(lrn))
           }
         )

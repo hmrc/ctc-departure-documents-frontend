@@ -144,7 +144,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.document.routes.TypeController.onPageLoad(lrn, NormalMode, Index(viewModel.count)).url
+            controllers.document.routes.AttachToAllItemsController.onPageLoad(lrn, NormalMode, Index(viewModel.count)).url
         }
       }
 
