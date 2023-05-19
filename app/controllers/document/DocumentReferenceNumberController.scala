@@ -16,6 +16,7 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentReferenceNumberFormProvider
@@ -40,7 +41,7 @@ class DocumentReferenceNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: DocumentReferenceNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

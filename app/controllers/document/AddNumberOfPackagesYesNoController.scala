@@ -16,6 +16,7 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
 import forms.YesNoFormProvider
@@ -39,7 +40,7 @@ class AddNumberOfPackagesYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddNumberOfPackagesYesNoView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

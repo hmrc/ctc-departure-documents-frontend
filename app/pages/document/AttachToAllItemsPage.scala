@@ -16,8 +16,10 @@
 
 package pages.document
 
+import config.FrontendAppConfig
 import controllers.document.routes
-import models.{Index, Mode, UserAnswers}
+import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
+import models.{ConsignmentLevelDocuments, Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.{DocumentDetailsSection, DocumentSection}
 import play.api.libs.json.JsPath
@@ -42,5 +44,15 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
         .flatMap(_.remove(DocumentDetailsSection(documentIndex)))
     case _ =>
       super.cleanup(value, userAnswers)
+  }
+
+  def inferredReader(implicit config: FrontendAppConfig): UserAnswersReader[Boolean] = {
+    val fn: UserAnswers => EitherType[Boolean] = ua => {
+      Right(ConsignmentLevelDocuments(ua).cannotAddAnyMore)
+    }
+    UserAnswersReader(fn).flatMap {
+      case true  => UserAnswersReader(false)
+      case false => this.reader
+    }
   }
 }

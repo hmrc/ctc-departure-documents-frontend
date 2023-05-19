@@ -16,6 +16,7 @@
 
 package models.journeyDomain
 
+import config.FrontendAppConfig
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.DocumentsSection
 import play.api.mvc.Call
@@ -29,7 +30,7 @@ case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainM
 
 object DocumentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] = {
+  implicit def userAnswersReader(implicit config: FrontendAppConfig): UserAnswersReader[DocumentsDomain] = {
     val documentReader: UserAnswersReader[Seq[DocumentDomain]] =
       DocumentsSection.arrayReader.flatMap {
         case x if x.isEmpty =>

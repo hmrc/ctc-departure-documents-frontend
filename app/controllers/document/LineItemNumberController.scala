@@ -16,6 +16,7 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.Constants.maxLineItemNumber
@@ -40,7 +41,7 @@ class LineItemNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: LineItemNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

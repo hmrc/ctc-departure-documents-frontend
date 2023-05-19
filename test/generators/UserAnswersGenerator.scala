@@ -16,6 +16,7 @@
 
 package generators
 
+import base.SpecBase
 import models.journeyDomain.{DocumentDomain, DocumentsDomain, UserAnswersReader}
 import models.journeyDomain.OpsError.ReaderError
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
@@ -23,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
-  self: Generators =>
+  self: Generators with SpecBase =>
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {

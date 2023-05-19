@@ -122,7 +122,7 @@ trait Constraints {
 
   protected def maxLimit(consignmentLevelDocuments: ConsignmentLevelDocuments, errorKey: String)(implicit config: FrontendAppConfig): Constraint[Document] =
     Constraint {
-      case document if consignmentLevelDocuments.canAdd(document) =>
+      case document if consignmentLevelDocuments.canAdd(document.`type`) =>
         Valid
       case _ =>
         Invalid(errorKey)

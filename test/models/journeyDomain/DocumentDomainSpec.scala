@@ -49,6 +49,38 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           result.left.value.page mustBe AttachToAllItemsPage(index)
         }
 
+        "when attach to all items is inferred as false because we cannot add any more consignment level documents" in {
+          val initialAnswers = emptyUserAnswers
+            .setValue(TransitOperationOfficeOfDeparturePage, arbitrary[CustomsOffice].sample.value)
+            .setValue(TransitOperationDeclarationTypePage, arbitrary[DeclarationType].sample.value)
+
+          val numberOfPreviousAndSupportingDocuments = frontendAppConfig.maxPreviousDocuments + frontendAppConfig.maxSupportingDocuments
+          val numberOfDocuments                      = numberOfPreviousAndSupportingDocuments + frontendAppConfig.maxTransportDocuments
+
+          val userAnswers = (0 until numberOfDocuments).foldLeft(initialAnswers) {
+            (acc, i) =>
+              val ua = acc.setValue(AttachToAllItemsPage(Index(i)), true)
+              i match {
+                case it if 0 until frontendAppConfig.maxPreviousDocuments contains it =>
+                  ua
+                    .setValue(TypePage(Index(i)), arbitrary[Document](arbitraryPreviousDocument).sample.value)
+                    .setValue(PreviousDocumentTypePage(Index(i)), arbitrary[Document](arbitraryPreviousDocument).sample.value)
+                case it if frontendAppConfig.maxPreviousDocuments until numberOfPreviousAndSupportingDocuments contains it =>
+                  ua.setValue(TypePage(Index(i)), arbitrary[Document](arbitrarySupportDocument).sample.value)
+                case it if numberOfPreviousAndSupportingDocuments until numberOfDocuments contains it =>
+                  ua.setValue(TypePage(Index(i)), arbitrary[Document](arbitraryTransportDocument).sample.value)
+              }
+          }
+
+          val nextIndex = Index(numberOfDocuments)
+
+          val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
+            DocumentDomain.userAnswersReader(nextIndex)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe TypePage(nextIndex)
+        }
+
         "when index is 0" - {
           val index = Index(0)
           "and Declaration Type is in set T2/T2F and Office of Departure is in GB" in {
