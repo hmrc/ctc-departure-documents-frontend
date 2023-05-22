@@ -17,9 +17,9 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.DocumentFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.{ConsignmentLevelDocuments, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -39,9 +39,9 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
   private val document2    = arbitraryDocument.arbitrary.sample.get
   private val documentList = SelectableList(Seq(document1, document2))
 
-  private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("document.type", documentList)
-  private val mode         = NormalMode
+  private lazy val formProvider = new DocumentFormProvider()
+  private lazy val form         = formProvider("document.type", documentList, ConsignmentLevelDocuments())
+  private val mode              = NormalMode
 
   private val mockDocumentTypesService: DocumentsService = mock[DocumentsService]
   private lazy val typeRoute                             = routes.TypeController.onPageLoad(lrn, mode, documentIndex).url

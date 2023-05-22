@@ -25,11 +25,9 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
+abstract class BaseAttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
-
-  override def toString: String = "attachToAllItems"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
@@ -43,4 +41,12 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
     case _ =>
       super.cleanup(value, userAnswers)
   }
+}
+
+case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "attachToAllItems"
+}
+
+case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "inferredAttachToAllItems"
 }

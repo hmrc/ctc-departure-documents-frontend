@@ -29,7 +29,7 @@ case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainM
 
 object DocumentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[DocumentsDomain] = {
+  implicit def userAnswersReader: UserAnswersReader[DocumentsDomain] = {
     val documentReader: UserAnswersReader[Seq[DocumentDomain]] =
       DocumentsSection.arrayReader.flatMap {
         case x if x.isEmpty =>

@@ -16,8 +16,8 @@
 
 package controllers.document
 
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}

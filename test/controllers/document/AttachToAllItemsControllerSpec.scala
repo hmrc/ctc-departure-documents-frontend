@@ -18,12 +18,13 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.NormalMode
+import generators.{ConsignmentLevelDocumentsGenerator, Generators}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.DocumentNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.document.AttachToAllItemsPage
+import org.mockito.Mockito.{verify, when}
+import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -32,7 +33,7 @@ import views.html.document.AttachToAllItemsView
 
 import scala.concurrent.Future
 
-class AttachToAllItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AttachToAllItemsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ConsignmentLevelDocumentsGenerator {
 
   private val formProvider               = new YesNoFormProvider()
   private val form                       = formProvider("document.attachToAllItems")
@@ -45,6 +46,23 @@ class AttachToAllItemsControllerSpec extends SpecBase with AppWithDefaultMockFix
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
   "AttachToAllItems Controller" - {
+
+    "must set inferred value to false if cannot add any more consignment level documents" in {
+
+      val documentIndex = Index(numberOfDocuments)
+      setExistingUserAnswers(userAnswersWithConsignmentLevelDocumentsMaxedOut)
+
+      lazy val attachToAllItemsRoute = routes.AttachToAllItemsController.onPageLoad(lrn, mode, documentIndex).url
+
+      val request = FakeRequest(GET, attachToAllItemsRoute)
+      val result  = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(documentIndex)).value mustBe false
+    }
 
     "must return OK and the correct view for a GET" in {
 

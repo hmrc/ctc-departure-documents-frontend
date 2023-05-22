@@ -51,7 +51,7 @@ object DocumentDomain {
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
     (
       isMandatoryPrevious(documentIndex),
-      AttachToAllItemsPage(documentIndex).reader
+      InferredAttachToAllItemsPage(documentIndex).reader orElse AttachToAllItemsPage(documentIndex).reader
     ).flatMapN {
       case (true, attachToAllItems) =>
         PreviousDocumentTypePage(documentIndex).reader

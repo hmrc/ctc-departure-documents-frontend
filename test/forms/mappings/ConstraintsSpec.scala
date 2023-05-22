@@ -16,16 +16,18 @@
 
 package forms.mappings
 
+import base.SpecBase
 import generators.Generators
+import models.ConsignmentLevelDocuments
+import models.reference.Document
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
 
 import java.time.LocalDate
 
-class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
+class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with Constraints {
 
   "firstError" - {
 
@@ -185,6 +187,82 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
         case (min, date) =>
           val result = minDate(min, "error.past", "foo")(date)
           result mustEqual Invalid("error.past", "foo")
+      }
+    }
+  }
+
+  "maxLimit" - {
+
+    "must return Valid" - {
+      "when adding a previous document won't take me over the limit" in {
+        forAll(
+          Gen.choose(0, frontendAppConfig.maxPreviousDocuments - 1),
+          arbitrary[Document](arbitraryPreviousDocument)
+        ) {
+          (numberOfPreviousDocuments, document) =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(numberOfPreviousDocuments, 0, 0)
+            val result                    = maxLimit(consignmentLevelDocuments, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Valid
+        }
+      }
+
+      "when adding a supporting document won't take me over the limit" in {
+        forAll(
+          Gen.choose(0, frontendAppConfig.maxSupportingDocuments - 1),
+          arbitrary[Document](arbitrarySupportDocument)
+        ) {
+          (numberOfSupportingDocuments, document) =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, numberOfSupportingDocuments, 0)
+            val result                    = maxLimit(consignmentLevelDocuments, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Valid
+        }
+      }
+
+      "when adding a transport document won't take me over the limit" in {
+        forAll(
+          Gen.choose(0, frontendAppConfig.maxTransportDocuments - 1),
+          arbitrary[Document](arbitraryTransportDocument)
+        ) {
+          (numberOfTransportDocuments, document) =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, numberOfTransportDocuments)
+            val result                    = maxLimit(consignmentLevelDocuments, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Valid
+        }
+      }
+    }
+
+    "must return Invalid" - {
+      "when adding a previous document will take me over the limit" in {
+        forAll(
+          arbitrary[Document](arbitraryPreviousDocument)
+        ) {
+          document =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
+            val result                    = maxLimit(consignmentLevelDocuments, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Invalid("error.maxLimitReached")
+        }
+      }
+
+      "when adding a supporting document will take me over the limit" in {
+        forAll(
+          arbitrary[Document](arbitrarySupportDocument)
+        ) {
+          document =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0)
+            val result                    = maxLimit(consignmentLevelDocuments, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Invalid("error.maxLimitReached")
+        }
+      }
+
+      "when adding a transport document will take me over the limit" in {
+        forAll(
+          arbitrary[Document](arbitraryTransportDocument)
+        ) {
+          document =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments)
+            val result                    = maxLimit(consignmentLevelDocuments, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Invalid("error.maxLimitReached")
+        }
       }
     }
   }

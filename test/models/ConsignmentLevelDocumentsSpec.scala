@@ -48,17 +48,33 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
           }
         }
 
-        "at consignment level" in {
-          forAll(pageGen, arbitrary[Document](arbitraryPreviousDocument)) {
-            (typePage, document) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AttachToAllItemsPage(index), true)
-                .setValue(typePage(index), document)
+        "at consignment level" - {
+          "when index not provided" in {
+            forAll(pageGen, arbitrary[Document](arbitraryPreviousDocument)) {
+              (typePage, document) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AttachToAllItemsPage(index), true)
+                  .setValue(typePage(index), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.previous mustBe 1
-              result.supporting mustBe 0
-              result.transport mustBe 0
+                val result = ConsignmentLevelDocuments.apply(userAnswers)
+                result.previous mustBe 1
+                result.supporting mustBe 0
+                result.transport mustBe 0
+            }
+          }
+
+          "when filtering out current index (to allow an amend)" in {
+            forAll(pageGen, arbitrary[Document](arbitraryPreviousDocument)) {
+              (typePage, document) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AttachToAllItemsPage(index), true)
+                  .setValue(typePage(index), document)
+
+                val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
+                result.previous mustBe 0
+                result.supporting mustBe 0
+                result.transport mustBe 0
+            }
           }
         }
       }
@@ -79,17 +95,33 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
           }
         }
 
-        "at consignment level" in {
-          forAll(arbitrary[Document](arbitrarySupportDocument)) {
-            document =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AttachToAllItemsPage(index), true)
-                .setValue(TypePage(index), document)
+        "at consignment level" - {
+          "when index not provided" in {
+            forAll(arbitrary[Document](arbitrarySupportDocument)) {
+              document =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AttachToAllItemsPage(index), true)
+                  .setValue(TypePage(index), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.previous mustBe 0
-              result.supporting mustBe 1
-              result.transport mustBe 0
+                val result = ConsignmentLevelDocuments.apply(userAnswers)
+                result.previous mustBe 0
+                result.supporting mustBe 1
+                result.transport mustBe 0
+            }
+          }
+
+          "when filtering out current index (to allow an amend)" in {
+            forAll(arbitrary[Document](arbitrarySupportDocument)) {
+              document =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AttachToAllItemsPage(index), true)
+                  .setValue(TypePage(index), document)
+
+                val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
+                result.previous mustBe 0
+                result.supporting mustBe 0
+                result.transport mustBe 0
+            }
           }
         }
       }
@@ -110,17 +142,33 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
           }
         }
 
-        "at consignment level" in {
-          forAll(arbitrary[Document](arbitraryTransportDocument)) {
-            document =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AttachToAllItemsPage(index), true)
-                .setValue(TypePage(index), document)
+        "at consignment level" - {
+          "when index not provided" in {
+            forAll(arbitrary[Document](arbitraryTransportDocument)) {
+              document =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AttachToAllItemsPage(index), true)
+                  .setValue(TypePage(index), document)
 
-              val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.previous mustBe 0
-              result.supporting mustBe 0
-              result.transport mustBe 1
+                val result = ConsignmentLevelDocuments.apply(userAnswers)
+                result.previous mustBe 0
+                result.supporting mustBe 0
+                result.transport mustBe 1
+            }
+          }
+
+          "when filtering out current index (to allow an amend)" in {
+            forAll(arbitrary[Document](arbitraryTransportDocument)) {
+              document =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AttachToAllItemsPage(index), true)
+                  .setValue(TypePage(index), document)
+
+                val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
+                result.previous mustBe 0
+                result.supporting mustBe 0
+                result.transport mustBe 0
+            }
           }
         }
       }

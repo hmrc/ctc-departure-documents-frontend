@@ -17,9 +17,9 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.DocumentFormProvider
 import generators.Generators
-import models.{DeclarationType, NormalMode, SelectableList}
+import models.{ConsignmentLevelDocuments, DeclarationType, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -42,9 +42,9 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   private val previousDocument2    = arbitraryPreviousDocument.arbitrary.sample.get
   private val previousDocumentList = SelectableList(Seq(previousDocument1, previousDocument2))
 
-  private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("document.previousDocumentType", previousDocumentList)
-  private val mode         = NormalMode
+  private lazy val formProvider = new DocumentFormProvider()
+  private lazy val form         = formProvider("document.previousDocumentType", previousDocumentList, ConsignmentLevelDocuments())
+  private val mode              = NormalMode
 
   private val mockDocumentService: DocumentsService = mock[DocumentsService]
 

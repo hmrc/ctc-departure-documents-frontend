@@ -26,6 +26,7 @@ document.previousDocumentType.placeholder = Select a previous document type
 document.previousDocumentType.change.hidden = document type
 document.previousDocumentType.checkYourAnswersLabel = Document type
 document.previousDocumentType.error.required = Select the previous document you want to add
+document.previousDocumentType.error.maxLimitReached = You cannot add any more documents of this type. To add another, you need to remove one first
 
 document.type.title = What type of document do you want to add?
 document.type.heading = What type of document do you want to add?
@@ -33,6 +34,7 @@ document.type.hint = Enter the document name or code.
 document.type.change.hidden = document type
 document.type.checkYourAnswersLabel = Document type
 document.type.error.required = Select the type of document you want to add
+document.type.error.maxLimitReached = You cannot add any more documents of this type. To add another, you need to remove one first
 
 document.documentReferenceNumber.title = What is the document’s reference number?
 document.documentReferenceNumber.heading = What is the document’s reference number?

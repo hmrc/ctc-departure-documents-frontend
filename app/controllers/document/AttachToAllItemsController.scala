@@ -16,14 +16,17 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.requests.DataRequest
+import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.AttachToAllItemsPage
+import pages.QuestionPage
+import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.AttachToAllItemsView
@@ -39,20 +42,24 @@ class AttachToAllItemsController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AttachToAllItemsView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider("document.attachToAllItems")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AttachToAllItemsPage(documentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      if (ConsignmentLevelDocuments(request.userAnswers, documentIndex).cannotAddAnyMore) {
+        redirect(mode, documentIndex, InferredAttachToAllItemsPage, value = false)
+      } else {
+        val preparedForm = request.userAnswers.get(AttachToAllItemsPage(documentIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, lrn, mode, documentIndex))
+        Future.successful(Ok(view(preparedForm, lrn, mode, documentIndex)))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -61,10 +68,21 @@ class AttachToAllItemsController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            AttachToAllItemsPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
+          value => redirect(mode, documentIndex, AttachToAllItemsPage, value)
         )
+  }
+
+  private def redirect(
+    mode: Mode,
+    index: Index,
+    page: Index => QuestionPage[Boolean],
+    value: Boolean
+  )(implicit request: DataRequest[_]): Future[Result] = {
+    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    page(index)
+      .writeToUserAnswers(value)
+      .updateTask()
+      .writeToSession()
+      .navigate()
   }
 }
