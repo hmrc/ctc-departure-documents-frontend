@@ -20,10 +20,10 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
-import models.requests.DataRequest
+import models.requests.SpecificDataRequestProvider1
 import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.TypePage
+import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage, TypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -39,6 +39,7 @@ class TypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: DocumentFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
@@ -49,37 +50,45 @@ class TypeController @Inject() (
 
   private val prefix: String = "document.type"
 
-  private def consignmentLevelDocuments(documentIndex: Index)(implicit request: DataRequest[_]): ConsignmentLevelDocuments =
+  private type Request = SpecificDataRequestProvider1[Boolean]#SpecificDataRequest[_]
+
+  private def consignmentLevelDocuments(documentIndex: Index)(implicit request: Request): ConsignmentLevelDocuments =
     ConsignmentLevelDocuments(request.userAnswers, documentIndex)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      service.getDocuments().map {
-        documentList =>
-          val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex))
-          val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)))
+    .async {
+      implicit request =>
+        service.getDocuments().map {
+          documentList =>
+            val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex), request.arg)
+            val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
 
-          Ok(view(preparedForm, lrn, documentList.values, mode, documentIndex))
-      }
-  }
+            Ok(view(preparedForm, lrn, documentList.values, mode, documentIndex))
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      service.getDocuments().flatMap {
-        documentList =>
-          val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex))
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, documentIndex))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                TypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-              }
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)))
+    .async {
+      implicit request =>
+        service.getDocuments().flatMap {
+          documentList =>
+            val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex), request.arg)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, documentIndex))),
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+                  TypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                }
+              )
+        }
+    }
 }

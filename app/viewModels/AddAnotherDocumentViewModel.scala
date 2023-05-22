@@ -44,12 +44,12 @@ object AddAnotherDocumentViewModel {
         case Right(value) => value
       }
 
-      val ConsignmentLevelDocuments(previous, supporting, transport) = ConsignmentLevelDocuments(userAnswers)
+      val consignmentLevelDocuments = ConsignmentLevelDocuments(userAnswers)
 
       new AddAnotherDocumentViewModel(
         listItems,
         onSubmitCall = controllers.routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn),
-        allowMore = previous < config.maxPreviousDocuments && supporting < config.maxSupportingDocuments && transport < config.maxTransportDocuments
+        allowMore = !consignmentLevelDocuments.cannotAddAnyMore
       )
     }
   }

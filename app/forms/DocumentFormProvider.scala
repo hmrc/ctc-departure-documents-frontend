@@ -18,21 +18,25 @@ package forms
 
 import config.FrontendAppConfig
 import forms.mappings.Mappings
-import models.{ConsignmentLevelDocuments, SelectableList}
 import models.reference.Document
+import models.{ConsignmentLevelDocuments, SelectableList}
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class DocumentFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, selectableList: SelectableList[Document], consignmentLevelDocuments: ConsignmentLevelDocuments, args: Any*)(implicit
-    config: FrontendAppConfig
-  ): Form[Document] =
+  def apply(
+    prefix: String,
+    selectableList: SelectableList[Document],
+    consignmentLevelDocuments: ConsignmentLevelDocuments,
+    attachedToAllItems: Boolean,
+    args: Any*
+  )(implicit config: FrontendAppConfig): Form[Document] =
     Form(
       "value" -> selectable[Document](selectableList, s"$prefix.error.required", args)
         .verifying(
-          maxLimit(consignmentLevelDocuments, s"$prefix.error.maxLimitReached")
+          maxLimit(consignmentLevelDocuments, attachedToAllItems, s"$prefix.error.maxLimitReached")
         )
     )
 }
