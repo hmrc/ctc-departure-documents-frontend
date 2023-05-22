@@ -31,20 +31,21 @@ abstract class BaseAttachToAllItemsPage(documentIndex: Index) extends QuestionPa
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+}
+
+case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "attachToAllItems"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(_) =>
       userAnswers
-        .remove(TypePage(documentIndex))
+        .remove(InferredAttachToAllItemsPage(documentIndex))
+        .flatMap(_.remove(TypePage(documentIndex)))
         .flatMap(_.remove(PreviousDocumentTypePage(documentIndex)))
         .flatMap(_.remove(DocumentDetailsSection(documentIndex)))
     case _ =>
       super.cleanup(value, userAnswers)
   }
-}
-
-case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
-  override def toString: String = "attachToAllItems"
 }
 
 case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {

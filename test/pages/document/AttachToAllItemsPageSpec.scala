@@ -38,6 +38,7 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
             bool =>
               val userAnswers = emptyUserAnswers
                 .setValue(AttachToAllItemsPage(index), bool)
+                .setValue(InferredAttachToAllItemsPage(index), false)
                 .setValue(TypePage(index), arbitrary[Document].sample.value)
                 .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
                 .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
@@ -55,6 +56,7 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AttachToAllItemsPage(index), !bool)
 
+              result.get(InferredAttachToAllItemsPage(index)) must not be defined
               result.get(TypePage(index)) must not be defined
               result.get(PreviousDocumentTypePage(index)) must not be defined
               result.get(DocumentReferenceNumberPage(index)) must not be defined
