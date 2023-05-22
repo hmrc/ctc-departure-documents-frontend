@@ -48,7 +48,7 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
 
   def inferredReader(implicit config: FrontendAppConfig): UserAnswersReader[Boolean] = {
     val fn: UserAnswers => EitherType[Boolean] = ua => {
-      Right(ConsignmentLevelDocuments(ua).cannotAddAnyMore)
+      Right(ConsignmentLevelDocuments(ua, documentIndex).cannotAddAnyMore)
     }
     UserAnswersReader(fn).flatMap {
       case true  => UserAnswersReader(false)

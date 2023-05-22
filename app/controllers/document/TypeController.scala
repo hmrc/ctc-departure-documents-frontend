@@ -49,14 +49,14 @@ class TypeController @Inject() (
 
   private val prefix: String = "document.type"
 
-  private def consignmentLevelDocuments(implicit request: DataRequest[_]): ConsignmentLevelDocuments =
-    ConsignmentLevelDocuments(request.userAnswers)
+  private def consignmentLevelDocuments(documentIndex: Index)(implicit request: DataRequest[_]): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(request.userAnswers, documentIndex)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getDocuments().map {
         documentList =>
-          val form = formProvider(prefix, documentList, consignmentLevelDocuments)
+          val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex))
           val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -70,7 +70,7 @@ class TypeController @Inject() (
     implicit request =>
       service.getDocuments().flatMap {
         documentList =>
-          val form = formProvider(prefix, documentList, consignmentLevelDocuments)
+          val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex))
           form
             .bindFromRequest()
             .fold(

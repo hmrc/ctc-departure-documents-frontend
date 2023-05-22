@@ -40,13 +40,16 @@ object ConsignmentLevelDocuments {
 
   def apply(): ConsignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, 0)
 
-  def apply(values: (Int, Int, Int)): ConsignmentLevelDocuments = ConsignmentLevelDocuments(values._1, values._2, values._3)
+  private def apply(values: (Int, Int, Int)): ConsignmentLevelDocuments = ConsignmentLevelDocuments(values._1, values._2, values._3)
 
-  def apply(userAnswers: UserAnswers): ConsignmentLevelDocuments = {
+  def apply(userAnswers: UserAnswers, documentIndex: Index): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(userAnswers, Some(documentIndex))
+
+  def apply(userAnswers: UserAnswers, documentIndex: Option[Index] = None): ConsignmentLevelDocuments = {
     val numberOfDocuments = userAnswers.getArraySize(DocumentsSection)
 
     (0 until numberOfDocuments).map(Index(_)).foldLeft(ConsignmentLevelDocuments()) {
-      case (ConsignmentLevelDocuments(previous, supporting, transport), index) =>
+      case (ConsignmentLevelDocuments(previous, supporting, transport), index) if !documentIndex.contains(index) =>
         lazy val documentType = (userAnswers.get(TypePage(index)) orElse userAnswers.get(PreviousDocumentTypePage(index))).map(_.`type`)
         val values = userAnswers.get(AttachToAllItemsPage(index)) match {
           case Some(true) if documentType.contains(DocumentType.Previous)  => (previous + 1, supporting, transport)
@@ -55,6 +58,7 @@ object ConsignmentLevelDocuments {
           case _                                                           => (previous, supporting, transport)
         }
         ConsignmentLevelDocuments(values)
+      case (consignmentLevelDocuments, _) => consignmentLevelDocuments
     }
   }
 }

@@ -53,8 +53,8 @@ class PreviousDocumentTypeController @Inject() (
 
   private type Request = SpecificDataRequestProvider1[DeclarationType]#SpecificDataRequest[_]
 
-  private def consignmentLevelDocuments(implicit request: Request): ConsignmentLevelDocuments =
-    ConsignmentLevelDocuments(request.userAnswers)
+  private def consignmentLevelDocuments(documentIndex: Index)(implicit request: Request): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(request.userAnswers, documentIndex)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
@@ -63,7 +63,7 @@ class PreviousDocumentTypeController @Inject() (
       implicit request =>
         service.getPreviousDocuments().map {
           previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments)
+            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments(documentIndex))
             val preparedForm = request.userAnswers.get(PreviousDocumentTypePage(documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
@@ -80,7 +80,7 @@ class PreviousDocumentTypeController @Inject() (
       implicit request =>
         service.getPreviousDocuments().flatMap {
           previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments)
+            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments(documentIndex))
             form
               .bindFromRequest()
               .fold(
