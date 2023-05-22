@@ -16,7 +16,6 @@
 
 package utils.cyaHelpers
 
-import config.FrontendAppConfig
 import controllers.document.routes
 import models.journeyDomain.DocumentDomain
 import models.{NormalMode, UserAnswers}
@@ -28,7 +27,7 @@ import viewModels.ListItem
 
 class DocumentsAnswersHelper(
   userAnswers: UserAnswers
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages)
     extends AnswersHelper(userAnswers, NormalMode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =

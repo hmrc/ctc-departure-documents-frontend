@@ -16,7 +16,6 @@
 
 package generators
 
-import config.FrontendAppConfig
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.{DocumentDomain, DocumentsDomain, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
@@ -26,7 +25,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit def arbitraryUserAnswers(implicit config: FrontendAppConfig): Arbitrary[UserAnswers] =
+  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
@@ -57,9 +56,9 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryDocumentsAnswers(userAnswers: UserAnswers)(implicit config: FrontendAppConfig): Gen[UserAnswers] =
+  def arbitraryDocumentsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[DocumentsDomain](userAnswers)
 
-  def arbitraryDocumentAnswers(userAnswers: UserAnswers, index: Index)(implicit config: FrontendAppConfig): Gen[UserAnswers] =
+  def arbitraryDocumentAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
     buildUserAnswers[DocumentDomain](userAnswers)(DocumentDomain.userAnswersReader(index))
 }

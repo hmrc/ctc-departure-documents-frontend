@@ -17,7 +17,6 @@
 package models.journeyDomain
 
 import cats.implicits._
-import config.FrontendAppConfig
 import controllers.document.routes
 import models.DeclarationType._
 import models.DocumentType._
@@ -49,10 +48,10 @@ object DocumentDomain {
       declarationType   <- TransitOperationDeclarationTypePage.reader
     } yield officeOfDeparture.isInGB && declarationType.isOneOf(T2, T2F) && documentIndex.isFirst
 
-  implicit def userAnswersReader(documentIndex: Index)(implicit config: FrontendAppConfig): UserAnswersReader[DocumentDomain] =
+  implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
     (
       isMandatoryPrevious(documentIndex),
-      AttachToAllItemsPage(documentIndex).inferredReader
+      InferredAttachToAllItemsPage(documentIndex).reader orElse AttachToAllItemsPage(documentIndex).reader
     ).flatMapN {
       case (true, attachToAllItems) =>
         PreviousDocumentTypePage(documentIndex).reader

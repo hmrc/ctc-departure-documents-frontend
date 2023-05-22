@@ -15,7 +15,6 @@
  */
 
 import cats.data.ReaderT
-import config.FrontendAppConfig
 import models.TaskStatus.{Completed, InProgress}
 import models.UserAnswers
 import models.journeyDomain.OpsError.WriterError
@@ -80,7 +79,7 @@ package object controllers {
           Right((page, userAnswers.removeDocumentFromItems(uuid)))
       }
 
-    def updateTask()(implicit config: FrontendAppConfig): UserAnswersWriter[Write[A]] =
+    def updateTask(): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
           page.path.path.headOption.map(_.toJsonString) match {

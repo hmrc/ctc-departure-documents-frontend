@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
-import generators.Generators
+import generators.{ConsignmentLevelDocumentsGenerator, Generators}
 import models.DeclarationType._
 import models.DocumentType._
 import models.reference.{CustomsOffice, Document, Metric, PackageType}
@@ -30,7 +30,7 @@ import pages.external._
 import pages.sections.DocumentSection
 import play.api.libs.json.Json
 
-class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ConsignmentLevelDocumentsGenerator {
 
   "Document Domain" - {
 
@@ -50,29 +50,10 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         }
 
         "when attach to all items is inferred as false because we cannot add any more consignment level documents" in {
-          val initialAnswers = emptyUserAnswers
-            .setValue(TransitOperationOfficeOfDeparturePage, arbitrary[CustomsOffice].sample.value)
-            .setValue(TransitOperationDeclarationTypePage, arbitrary[DeclarationType].sample.value)
-
-          val numberOfPreviousAndSupportingDocuments = frontendAppConfig.maxPreviousDocuments + frontendAppConfig.maxSupportingDocuments
-          val numberOfDocuments                      = numberOfPreviousAndSupportingDocuments + frontendAppConfig.maxTransportDocuments
-
-          val userAnswers = (0 until numberOfDocuments).foldLeft(initialAnswers) {
-            (acc, i) =>
-              val ua = acc.setValue(AttachToAllItemsPage(Index(i)), true)
-              i match {
-                case it if 0 until frontendAppConfig.maxPreviousDocuments contains it =>
-                  ua
-                    .setValue(TypePage(Index(i)), arbitrary[Document](arbitraryPreviousDocument).sample.value)
-                    .setValue(PreviousDocumentTypePage(Index(i)), arbitrary[Document](arbitraryPreviousDocument).sample.value)
-                case it if frontendAppConfig.maxPreviousDocuments until numberOfPreviousAndSupportingDocuments contains it =>
-                  ua.setValue(TypePage(Index(i)), arbitrary[Document](arbitrarySupportDocument).sample.value)
-                case it if numberOfPreviousAndSupportingDocuments until numberOfDocuments contains it =>
-                  ua.setValue(TypePage(Index(i)), arbitrary[Document](arbitraryTransportDocument).sample.value)
-              }
-          }
-
           val nextIndex = Index(numberOfDocuments)
+
+          val userAnswers = userAnswersWithConsignmentLevelDocumentsMaxedOut
+            .setValue(InferredAttachToAllItemsPage(nextIndex), false)
 
           val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
             DocumentDomain.userAnswersReader(nextIndex)

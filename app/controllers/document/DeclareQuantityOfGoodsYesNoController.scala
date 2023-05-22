@@ -16,7 +16,6 @@
 
 package controllers.document
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -40,7 +39,7 @@ class DeclareQuantityOfGoodsYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: DeclareQuantityOfGoodsYesNoView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

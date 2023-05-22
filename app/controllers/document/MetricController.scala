@@ -16,7 +16,6 @@
 
 package controllers.document
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.MetricFormProvider
@@ -42,7 +41,7 @@ class MetricController @Inject() (
   service: MetricsService,
   val controllerComponents: MessagesControllerComponents,
   view: MetricView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

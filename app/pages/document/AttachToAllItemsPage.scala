@@ -16,10 +16,8 @@
 
 package pages.document
 
-import config.FrontendAppConfig
 import controllers.document.routes
-import models.journeyDomain.{EitherType, GettableAsReaderOps, UserAnswersReader}
-import models.{ConsignmentLevelDocuments, Index, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.{DocumentDetailsSection, DocumentSection}
 import play.api.libs.json.JsPath
@@ -27,11 +25,9 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
+abstract class BaseAttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = DocumentSection(documentIndex).path \ toString
-
-  override def toString: String = "attachToAllItems"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
@@ -45,14 +41,12 @@ case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boole
     case _ =>
       super.cleanup(value, userAnswers)
   }
+}
 
-  def inferredReader(implicit config: FrontendAppConfig): UserAnswersReader[Boolean] = {
-    val fn: UserAnswers => EitherType[Boolean] = ua => {
-      Right(ConsignmentLevelDocuments(ua, documentIndex).cannotAddAnyMore)
-    }
-    UserAnswersReader(fn).flatMap {
-      case true  => UserAnswersReader(false)
-      case false => this.reader
-    }
-  }
+case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "attachToAllItems"
+}
+
+case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "inferredAttachToAllItems"
 }
