@@ -16,10 +16,12 @@
 
 package forms
 
-import base.SpecBase
+import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.data.{Form, FormError}
 
-trait FormSpec extends SpecBase {
+trait FormSpec extends AnyFreeSpec with OptionValues with Matchers {
 
   def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) =
     form

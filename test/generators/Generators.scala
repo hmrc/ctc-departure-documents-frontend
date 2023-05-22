@@ -16,7 +16,6 @@
 
 package generators
 
-import base.SpecBase
 import cats.data.NonEmptyList
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
@@ -28,7 +27,6 @@ import scala.util.matching.Regex
 
 // scalastyle:off number.of.methods
 trait Generators extends UserAnswersGenerator with ModelGenerators with ViewModelGenerators {
-  self: SpecBase =>
 
   lazy val stringMaxLength = 36
 
