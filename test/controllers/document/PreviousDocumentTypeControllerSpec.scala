@@ -17,14 +17,15 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.DocumentFormProvider
 import generators.Generators
-import models.{DeclarationType, NormalMode, SelectableList}
+import models.{ConsignmentLevelDocuments, DeclarationType, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.document.PreviousDocumentTypePage
+import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage, PreviousDocumentTypePage}
 import pages.external.TransitOperationDeclarationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -42,9 +43,16 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   private val previousDocument2    = arbitraryPreviousDocument.arbitrary.sample.get
   private val previousDocumentList = SelectableList(Seq(previousDocument1, previousDocument2))
 
-  private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("document.previousDocumentType", previousDocumentList)
-  private val mode         = NormalMode
+  private val attachedToAllItems = arbitrary[Boolean].sample.value
+
+  private val baseAnswers = {
+    val page = Gen.oneOf(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)).sample.value
+    emptyUserAnswers.setValue(page, attachedToAllItems)
+  }
+
+  private lazy val formProvider = new DocumentFormProvider()
+  private lazy val form         = formProvider("document.previousDocumentType", previousDocumentList, ConsignmentLevelDocuments(), attachedToAllItems)
+  private val mode              = NormalMode
 
   private val mockDocumentService: DocumentsService = mock[DocumentsService]
 
@@ -60,7 +68,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
+      val userAnswers = baseAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
       when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentList))
       setExistingUserAnswers(userAnswers)
@@ -80,7 +88,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentList))
-      val userAnswers = emptyUserAnswers
+      val userAnswers = baseAnswers
         .setValue(TransitOperationDeclarationTypePage, declarationType)
         .setValue(PreviousDocumentTypePage(documentIndex), previousDocument1)
       setExistingUserAnswers(userAnswers)
@@ -101,7 +109,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
+      val userAnswers = baseAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
       when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -120,7 +128,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
+      val userAnswers = baseAnswers.setValue(TransitOperationDeclarationTypePage, declarationType)
 
       when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentList))
       setExistingUserAnswers(userAnswers)

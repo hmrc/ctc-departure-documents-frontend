@@ -26,24 +26,21 @@ import views.html.AddAnotherDocumentView
 
 class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
-  override def maxNumber: Int = frontendAppConfig.maxDocuments
-
-  private def formProvider(viewModel: AddAnotherDocumentViewModel) =
-    new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
-
-  private val viewModel            = arbitrary[AddAnotherDocumentViewModel].sample.value
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val viewModel                                          = arbitrary[AddAnotherDocumentViewModel].sample.value
+  override val notMaxedOutViewModel: AddAnotherDocumentViewModel = viewModel.copy(allowMore = true)
+  override val maxedOutViewModel: AddAnotherDocumentViewModel    = viewModel.copy(allowMore = false)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(form, lrn, notMaxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
+      .apply(form, lrn, notMaxedOutViewModel)(fakeRequest, messages)
 
-  override def applyMaxedOutView: HtmlFormat.Appendable =
+  override def applyMaxedOutView: HtmlFormat.Appendable = {
+    val form = new AddAnotherFormProvider()(prefix)
     injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel)(fakeRequest, messages, frontendAppConfig)
+      .apply(form, lrn, maxedOutViewModel)(fakeRequest, messages)
+  }
 
   override val prefix: String = "addAnotherDocument"
 
@@ -51,9 +48,9 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithSectionCaption("Documents")
 
-  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel)
 
-  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+  behave like pageWithItemsMaxedOutWithRadioItems(maxedOutViewModel)
 
   behave like pageWithSubmitButton("Save and continue")
 

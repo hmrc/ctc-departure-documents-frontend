@@ -29,6 +29,13 @@ class DocumentAnswersHelper(
 )(implicit messages: Messages)
     extends AnswersHelper(userAnswers, CheckMode) {
 
+  def attachToAllItems: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AttachToAllItemsPage(documentIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "document.attachToAllItems",
+    id = Some("change-attach-to-all-items")
+  )
+
   def documentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
     page = TypePage(documentIndex),
     formatAnswer = formatAsText,

@@ -20,9 +20,8 @@ import config.FrontendAppConfig
 import generators.Generators
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
-import viewModels.ListItem
+import viewModels.{AddAnotherViewModel, ListItem}
 
 import scala.jdk.CollectionConverters._
 
@@ -30,43 +29,51 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
 
   implicit override def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
-  def maxNumber: Int
-
-  private val listItem = arbitrary[ListItem].sample.value
-
-  val listItems: Seq[ListItem] = Seq(listItem)
-
-  val maxedOutListItems: Seq[ListItem] = Seq.fill(maxNumber)(listItem)
+  val notMaxedOutViewModel: AddAnotherViewModel
+  val maxedOutViewModel: AddAnotherViewModel
 
   def applyMaxedOutView: HtmlFormat.Appendable
 
-  def pageWithMoreItemsAllowed(h1Args: Any*)(h2Args: Any*): Unit =
+  def pageWithMoreItemsAllowed(viewModel: AddAnotherViewModel): Unit =
     "page with more items allowed" - {
 
-      behave like pageWithTitle(doc, s"$prefix.singular", h1Args: _*)
+      behave like pageWithTitle(doc, viewModel.title)
 
-      behave like pageWithHeading(doc, s"$prefix.singular", h1Args: _*)
+      behave like pageWithHeading(doc, viewModel.heading)
 
-      behave like pageWithListWithActions(doc, listItems)
+      behave like pageWithListWithActions(doc, notMaxedOutViewModel.listItems)
 
-      behave like pageWithRadioItems(legendIsHeading = false, args = h2Args)
-
+      behave like pageWithRadioItems(legendIsHeading = false, args = viewModel.count.toString)
     }
 
-  def pageWithItemsMaxedOut(args: Any*): Unit =
+  def pageWithItemsMaxedOutWithoutRadioItems(viewModel: AddAnotherViewModel): Unit =
+    "page with items maxed out without radio items" - {
+
+      behave like pageWithItemsMaxedOut(viewModel)
+
+      behave like pageWithoutRadioItems(doc)
+    }
+
+  def pageWithItemsMaxedOutWithRadioItems(viewModel: AddAnotherViewModel): Unit =
+    "page with items maxed out with radio items" - {
+
+      behave like pageWithItemsMaxedOut(viewModel)
+
+      behave like pageWithRadioItems(legendIsHeading = false, args = viewModel.count.toString)
+    }
+
+  private def pageWithItemsMaxedOut(viewModel: AddAnotherViewModel): Unit =
     "page with items maxed out" - {
 
       val doc = parseView(applyMaxedOutView)
 
-      behave like pageWithTitle(doc, s"$prefix.plural", args: _*)
+      behave like pageWithTitle(doc, viewModel.title)
 
-      behave like pageWithHeading(doc, s"$prefix.plural", args: _*)
+      behave like pageWithHeading(doc, viewModel.heading)
 
-      behave like pageWithListWithActions(doc, maxedOutListItems)
+      behave like pageWithListWithActions(doc, viewModel.listItems)
 
-      behave like pageWithoutRadioItems(doc)
-
-      behave like pageWithContent(doc, "p", messages(s"$prefix.maxLimit.label"))
+      behave like pageWithContent(doc, "p", viewModel.maxLimitLabel)
     }
 
   // scalastyle:off method.length

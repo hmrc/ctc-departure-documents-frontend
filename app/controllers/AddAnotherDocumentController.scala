@@ -48,7 +48,7 @@ class AddAnotherDocumentController @Inject() (
   private val mode: Mode = NormalMode
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore)
+    formProvider(viewModel.prefix)
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -68,7 +68,7 @@ class AddAnotherDocumentController @Inject() (
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
-            case true  => Redirect(controllers.document.routes.TypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
+            case true  => Redirect(controllers.document.routes.AttachToAllItemsController.onPageLoad(lrn, mode, viewModel.nextIndex))
             case false => Redirect(config.taskListUrl(lrn))
           }
         )

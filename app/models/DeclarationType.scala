@@ -16,7 +16,10 @@
 
 package models
 
-sealed trait DeclarationType
+sealed trait DeclarationType {
+
+  def isOneOf(declarationTypes: DeclarationType*): Boolean = declarationTypes.contains(this)
+}
 
 object DeclarationType extends EnumerableType[DeclarationType] {
 

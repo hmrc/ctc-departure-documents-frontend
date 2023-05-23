@@ -31,17 +31,17 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
       val userAnswers = arbitraryDocumentAnswers(emptyUserAnswers, index).sample.value
 
       val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
-      result.listItems.length mustBe 1
+      result.count mustBe 1
       result.title mustBe "You have added 1 document"
       result.heading mustBe "You have added 1 document"
       result.legend mustBe "Do you want to add another document?"
-      result.maxLimitLabel mustBe "You cannot add any more documents. To add another, you need to remove one first."
+      result.maxLimitLabel mustBe "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
     }
 
     "when there are multiple documents" in {
       val formatter = java.text.NumberFormat.getIntegerInstance
 
-      forAll(Gen.choose(2, frontendAppConfig.maxDocuments)) {
+      forAll(Gen.choose(2, 3)) {
         numberOfDocuments =>
           val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers) {
             (acc, i) =>
@@ -49,11 +49,11 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
           }
 
           val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
-          result.listItems.length mustBe numberOfDocuments
+          result.count mustBe numberOfDocuments
           result.title mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.heading mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.legend mustBe "Do you want to add another document?"
-          result.maxLimitLabel mustBe "You cannot add any more documents. To add another, you need to remove one first."
+          result.maxLimitLabel mustBe "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
       }
     }
   }

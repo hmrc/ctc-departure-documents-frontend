@@ -50,13 +50,15 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             forAll(
               arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
               arbitrary[DeclarationType],
+              arbitrary[Boolean],
               arbitrary[Document](arbitraryTransportDocument),
               nonEmptyString
             ) {
-              (xiCustomsOffice, declarationType, document, referenceNumber) =>
+              (xiCustomsOffice, declarationType, attachToAllItems, document, referenceNumber) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)
+                  .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                   .setValue(TypePage(Index(0)), document)
                   .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
 
@@ -79,13 +81,15 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               forAll(
                 arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
                 Gen.oneOf(T2, T2F),
+                arbitrary[Boolean],
                 arbitrary[Document](arbitraryPreviousDocument),
                 nonEmptyString
               ) {
-                (gbCustomsOffice, declarationType, previousDocument, referenceNumber) =>
+                (gbCustomsOffice, declarationType, attachToAllItems, previousDocument, referenceNumber) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
                     .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
                     .setValue(AddGoodsItemNumberYesNoPage(Index(0)), false)
@@ -110,17 +114,75 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         }
 
         "when user answers populated with an in progress document" - {
+          "when Type page is unpopulated" - {
+            "must return list items with remove links" in {
+              forAll(
+                arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
+                arbitrary[DeclarationType],
+                arbitrary[Boolean]
+              ) {
+                (xiCustomsOffice, declarationType, attachToAllItems) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
+
+                  val helper = new DocumentsAnswersHelper(userAnswers)
+
+                  helper.listItems mustBe Seq(
+                    Left(
+                      ListItem(
+                        name = "",
+                        changeUrl = controllers.document.routes.TypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
+                        removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
+                      )
+                    )
+                  )
+              }
+            }
+          }
+
+          "when Previous Type page is unpopulated" - {
+            "must return list items with remove links" in {
+              forAll(
+                arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
+                Gen.oneOf(T2, T2F),
+                arbitrary[Boolean]
+              ) {
+                (gbCustomsOffice, declarationType, attachToAllItems) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice)
+                    .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
+
+                  val helper = new DocumentsAnswersHelper(userAnswers)
+
+                  helper.listItems mustBe Seq(
+                    Left(
+                      ListItem(
+                        name = "",
+                        changeUrl = controllers.document.routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
+                        removeUrl = None
+                      )
+                    )
+                  )
+              }
+            }
+          }
+
           "when Type page is populated" - {
             "must return list items with remove links" in {
               forAll(
                 arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
                 arbitrary[DeclarationType],
+                arbitrary[Boolean],
                 arbitrary[Document]
               ) {
-                (xiCustomsOffice, declarationType, document) =>
+                (xiCustomsOffice, declarationType, attachToAllItems, document) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationOfficeOfDeparturePage, xiCustomsOffice)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                     .setValue(TypePage(Index(0)), document)
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
@@ -141,14 +203,16 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           "when Previous Type page is populated" - {
             "must return list items with remove links" in {
               forAll(
-                arbitrary[Document](arbitraryPreviousDocument),
+                arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
                 Gen.oneOf(T2, T2F),
-                arbitraryGbCustomsOffice
+                arbitrary[Boolean],
+                arbitrary[Document](arbitraryPreviousDocument)
               ) {
-                (previousDocument, declarationType, gbCustomsOffice) =>
+                (gbCustomsOffice, declarationType, attachToAllItems, previousDocument) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
-                    .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice.arbitrary.sample.get)
+                    .setValue(TransitOperationOfficeOfDeparturePage, gbCustomsOffice)
+                    .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
 
                   val helper = new DocumentsAnswersHelper(userAnswers)

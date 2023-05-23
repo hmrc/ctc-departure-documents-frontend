@@ -19,16 +19,35 @@ package pages.document
 import controllers.document.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.DocumentDetailsSection
+import pages.sections.{DocumentDetailsSection, DocumentSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = DocumentDetailsSection(documentIndex).path \ toString
+abstract class BaseAttachToAllItemsPage(documentIndex: Index) extends QuestionPage[Boolean] {
 
-  override def toString: String = "attachToAllItems"
+  override def path: JsPath = DocumentSection(documentIndex).path \ toString
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
+}
+
+case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "attachToAllItems"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(_) =>
+      userAnswers
+        .remove(InferredAttachToAllItemsPage(documentIndex))
+        .flatMap(_.remove(TypePage(documentIndex)))
+        .flatMap(_.remove(PreviousDocumentTypePage(documentIndex)))
+        .flatMap(_.remove(DocumentDetailsSection(documentIndex)))
+    case _ =>
+      super.cleanup(value, userAnswers)
+  }
+}
+
+case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "inferredAttachToAllItems"
 }

@@ -16,12 +16,14 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import forms.DocumentFormProvider
+import models.requests.SpecificDataRequestProvider2
+import models.{ConsignmentLevelDocuments, DeclarationType, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.PreviousDocumentTypePage
+import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage, PreviousDocumentTypePage}
 import pages.external.TransitOperationDeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,45 +41,53 @@ class PreviousDocumentTypeController @Inject() (
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: SelectableFormProvider,
+  formProvider: DocumentFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val prefix: String = "document.previousDocumentType"
 
+  private type Request = SpecificDataRequestProvider2[Boolean, DeclarationType]#SpecificDataRequest[_]
+
+  private def consignmentLevelDocuments(documentIndex: Index)(implicit request: Request): ConsignmentLevelDocuments =
+    ConsignmentLevelDocuments(request.userAnswers, documentIndex)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TransitOperationDeclarationTypePage))
+    .andThen(getMandatoryPage.getFirst(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)))
+    .andThen(getMandatoryPage.getSecond(TransitOperationDeclarationTypePage))
     .async {
       implicit request =>
         service.getPreviousDocuments().map {
           previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList)
+            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments(documentIndex), request.arg._1)
             val preparedForm = request.userAnswers.get(PreviousDocumentTypePage(documentIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, previousDocumentTypeList.values, mode, request.arg, documentIndex))
+            Ok(view(preparedForm, lrn, previousDocumentTypeList.values, mode, request.arg._2, documentIndex))
         }
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TransitOperationDeclarationTypePage))
+    .andThen(getMandatoryPage.getFirst(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)))
+    .andThen(getMandatoryPage.getSecond(TransitOperationDeclarationTypePage))
     .async {
       implicit request =>
         service.getPreviousDocuments().flatMap {
           previousDocumentTypeList =>
-            val form = formProvider(prefix, previousDocumentTypeList)
+            val form = formProvider(prefix, previousDocumentTypeList, consignmentLevelDocuments(documentIndex), request.arg._1)
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.values, mode, request.arg, documentIndex))),
+                formWithErrors =>
+                  Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.values, mode, request.arg._2, documentIndex))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
                   PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

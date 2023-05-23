@@ -26,6 +26,7 @@ document.previousDocumentType.placeholder = Select a previous document type
 document.previousDocumentType.change.hidden = document type
 document.previousDocumentType.checkYourAnswersLabel = Document type
 document.previousDocumentType.error.required = Select the previous document you want to add
+document.previousDocumentType.error.maxLimitReached = You cannot add any more documents of this type. To add another, you need to remove one first
 
 document.type.title = What type of document do you want to add?
 document.type.heading = What type of document do you want to add?
@@ -33,6 +34,7 @@ document.type.hint = Enter the document name or code.
 document.type.change.hidden = document type
 document.type.checkYourAnswersLabel = Document type
 document.type.error.required = Select the type of document you want to add
+document.type.error.maxLimitReached = You cannot add any more documents of this type. To add another, you need to remove one first
 
 document.documentReferenceNumber.title = What is the document’s reference number?
 document.documentReferenceNumber.heading = What is the document’s reference number?
@@ -98,7 +100,7 @@ addAnotherDocument.plural.title = You have added {0} documents
 addAnotherDocument.plural.heading = You have added {0} documents
 addAnotherDocument.error.required =  Select yes if you want to add another document
 addAnotherDocument.label = Do you want to add another document?
-addAnotherDocument.maxLimit.label = You cannot add any more documents. To add another, you need to remove one first.
+addAnotherDocument.maxLimit.label = You cannot attach any more documents to all items. You can still add documents and attach them to individual items.
 
 document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of goods?
@@ -161,5 +163,6 @@ document.removeDocument.error.required = Select yes if you want to remove the {0
 
 document.attachToAllItems.title = Do you want to use this document for all items?
 document.attachToAllItems.heading = Do you want to use this document for all items?
-document.attachToAllItems.checkYourAnswersLabel = Attach To All Items
+document.attachToAllItems.checkYourAnswersLabel = Do you want to use this document for all items?
+document.attachToAllItems.change.hidden = if you want to use this document for all items
 document.attachToAllItems.error.required = Select yes if you want to use this document for all items
