@@ -24,10 +24,10 @@ import play.api.data.FormError
 
 class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix = Gen.alphaNumStr.sample.value
-  val requiredKey    = s"$prefix.error.required"
-  val lengthKey      = s"$prefix.error.length"
-  val invalidKey     = s"$prefix.error.invalidCharacters"
+  private val prefix    = Gen.alphaNumStr.sample.value
+  val requiredKey       = s"$prefix.error.required"
+  val lengthKey         = s"$prefix.error.length"
+  val invalidKey        = s"$prefix.error.invalidCharacters"
   private val uniqueKey = s"$prefix.error.unique"
 
   private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
