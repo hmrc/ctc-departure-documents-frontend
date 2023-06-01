@@ -33,7 +33,13 @@ class AddDocumentsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption("Documents")
+
   behave like pageWithHeading()
+
+  behave like pageWithHint(
+    "To include one or more documents in your declaration, first you need to add them here. Once you’ve added all your documents, you can then attach them to the relevant items in your Items section."
+  )
 
   behave like pageWithRadioItems()
 

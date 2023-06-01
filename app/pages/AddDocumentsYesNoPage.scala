@@ -18,13 +18,12 @@ package pages
 
 import controllers.routes
 import models.{Mode, UserAnswers}
-import pages.sections.DocumentsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object AddDocumentsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = DocumentsSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addDocumentsYesNo"
 

@@ -29,6 +29,11 @@
 
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
+@hintText = {
+    <p class="govuk-body">@messages("addDocumentsYesNo.hint.paragraph1")</p>
+    <p class="govuk-body">@messages("addDocumentsYesNo.hint.paragraph2")</p>
+}
+
 @mainTemplate(
     title = messages("addDocumentsYesNo.title"),
     showBackLink = true,
@@ -42,8 +47,10 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("addDocumentsYesNo.heading")
-            )
+                heading = messages("addDocumentsYesNo.heading"),
+                caption = Some(messages("document.caption"))
+            ),
+            hint = Some(HtmlContent(hintText))
         )
 
         @button(attributes = Map("id" -> "submit"))

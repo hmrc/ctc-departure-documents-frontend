@@ -7,10 +7,10 @@ GET        /assets/*file                                controllers.Assets.versi
 
 GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 
-GET        /do-you-want-to-add-any-documents?/:lrn                        controllers.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /do-you-want-to-add-any-documents?/:lrn                        controllers.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /change-do-you-want-to-add-any-documents?/:lrn                 controllers.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /change-do-you-want-to-add-any-documents?/:lrn                 controllers.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /add/:lrn                                    controllers.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /add/:lrn                                    controllers.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /change-add/:lrn                             controllers.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /change-add/:lrn                             controllers.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /add-another/:lrn                            controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /add-another/:lrn                            controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber)

@@ -169,5 +169,7 @@ document.attachToAllItems.error.required = Select yes if you want to use this do
 
 addDocumentsYesNo.title = Do you want to add any documents?
 addDocumentsYesNo.heading = Do you want to add any documents?
+addDocumentsYesNo.hint.paragraph1 = To include one or more documents in your declaration, first you need to add them here.
+addDocumentsYesNo.hint.paragraph2 = Once you’ve added all your documents, you can then attach them to the relevant items in your Items section.
 addDocumentsYesNo.checkYourAnswersLabel = Do you want to add any documents?
-addDocumentsYesNo.error.required = Select yes if Do you want to add any documents?
+addDocumentsYesNo.error.required = Select yes if you want to add any documents
