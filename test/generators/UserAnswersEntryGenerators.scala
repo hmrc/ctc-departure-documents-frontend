@@ -28,6 +28,7 @@ trait UserAnswersEntryGenerators {
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
     generateExternalAnswer orElse
+      generateDocumentsAnswer orElse
       generateDocumentAnswer
 
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -35,6 +36,13 @@ trait UserAnswersEntryGenerators {
     {
       case TransitOperationOfficeOfDeparturePage => arbitrary[CustomsOffice].map(Json.toJson(_))
       case TransitOperationDeclarationTypePage   => arbitrary[DeclarationType].map(Json.toJson(_))
+    }
+  }
+
+  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages._
+    {
+      case AddDocumentsYesNoPage => arbitrary[Boolean].map(JsBoolean)
     }
   }
 
