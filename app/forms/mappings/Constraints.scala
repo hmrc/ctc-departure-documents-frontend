@@ -129,4 +129,12 @@ trait Constraints {
       case _ =>
         Invalid(errorKey)
     }
+
+  protected def notInList[A](list: Seq[A], errorKey: String): Constraint[A] =
+    Constraint {
+      case value if !list.contains(value) =>
+        Valid
+      case _ =>
+        Invalid(errorKey)
+    }
 }

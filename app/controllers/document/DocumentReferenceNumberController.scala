@@ -44,7 +44,7 @@ class DocumentReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("document.documentReferenceNumber")
+  private val form = formProvider("document.documentReferenceNumber", Nil)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

@@ -25,13 +25,14 @@ import play.api.data.Form
 
 class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(prefix: String, otherReferenceNumbers: Seq[String]): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxDocumentRefNumberLength, s"$prefix.error.length"),
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters")
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            notInList(otherReferenceNumbers, s"$prefix.error.unique")
           )
         )
     )

@@ -278,4 +278,22 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       }
     }
   }
+
+  "notInList" - {
+    "must return Valid for a value not in the list" in {
+
+      val values = Seq("foo", "bar")
+
+      val result = notInList(values, "error.unique")("baz")
+      result mustEqual Valid
+    }
+
+    "must return Invalid for a value in the list" in {
+
+      val values = Seq("foo", "bar")
+
+      val result = notInList(values, "error.unique")("foo")
+      result mustEqual Invalid("error.unique")
+    }
+  }
 }

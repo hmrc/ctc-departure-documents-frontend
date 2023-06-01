@@ -19,7 +19,7 @@ package forms
 import forms.Constants.maxDocumentRefNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
-import org.scalacheck.Gen
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
 
 class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
@@ -28,8 +28,11 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
   val invalidKey     = s"$prefix.error.invalidCharacters"
+  private val uniqueKey = s"$prefix.error.unique"
 
-  val form = new DocumentReferenceNumberFormProvider()(prefix)
+  private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
+
+  val form = new DocumentReferenceNumberFormProvider()(prefix, values)
 
   ".value" - {
 
@@ -59,6 +62,13 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
       maxDocumentRefNumberLength
+    )
+
+    behave like fieldThatBindsUniqueData(
+      form = form,
+      fieldName = fieldName,
+      uniqueError = FormError(fieldName, uniqueKey),
+      values = values
     )
   }
 }

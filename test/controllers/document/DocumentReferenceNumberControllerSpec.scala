@@ -37,7 +37,7 @@ import scala.concurrent.Future
 class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider                      = new DocumentReferenceNumberFormProvider()
-  private val form                              = formProvider("document.documentReferenceNumber")
+  private val form                              = formProvider("document.documentReferenceNumber", Nil)
   private val mode                              = NormalMode
   private val validAnswer                       = "testString123"
   private lazy val documentReferenceNumberRoute = routes.DocumentReferenceNumberController.onPageLoad(lrn, mode, documentIndex).url
