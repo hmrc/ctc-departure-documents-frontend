@@ -16,14 +16,16 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.AddDocumentsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddDocumentsYesNoView
 
@@ -37,7 +39,8 @@ class AddDocumentsYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddDocumentsYesNoView
+  view: AddDocumentsYesNoView,
+  frontendAppConfig: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -62,7 +65,12 @@ class AddDocumentsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddDocumentsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            lazy val writes                              = AddDocumentsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession()
+            if (value) {
+              writes.navigate()
+            } else {
+              writes.navigateTo(Call(GET, frontendAppConfig.taskListUrl(lrn)))
+            }
           }
         )
   }

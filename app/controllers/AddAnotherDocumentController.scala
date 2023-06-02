@@ -55,7 +55,7 @@ class AddAnotherDocumentController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers)
 
       viewModel.count match {
-        case 0 => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+        case 0 => Redirect(routes.AddDocumentsYesNoController.onPageLoad(lrn, mode))
         case _ => Ok(view(form(viewModel), lrn, viewModel))
       }
   }
