@@ -35,7 +35,9 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def getArraySize(array: Gettable[JsArray]): Int = get(array).map(_.value.size).getOrElse(0)
+  def getArray(array: Gettable[JsArray]): JsArray = get(array).getOrElse(JsArray())
+
+  def getArraySize(array: Gettable[JsArray]): Int = getArray(array).value.size
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
     lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {

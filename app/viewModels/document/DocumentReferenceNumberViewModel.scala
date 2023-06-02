@@ -17,15 +17,23 @@
 package viewModels.document
 
 import models.reference.Document
-import models.{Index, UserAnswers}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.document.{DocumentReferenceNumberPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
+
+import javax.inject.Inject
 
 case class DocumentReferenceNumberViewModel(
   otherReferenceNumbers: Seq[String]
 )
 
 object DocumentReferenceNumberViewModel {
+
+  class DocumentReferenceNumberViewModelProvider @Inject() () {
+
+    def apply(userAnswers: UserAnswers, index: Index): DocumentReferenceNumberViewModel =
+      DocumentReferenceNumberViewModel.apply(userAnswers, index)
+  }
 
   def apply(userAnswers: UserAnswers, index: Index): DocumentReferenceNumberViewModel = {
     def getDocument(index: Index): Option[Document] = userAnswers.get(TypePage(index)) orElse
@@ -34,13 +42,8 @@ object DocumentReferenceNumberViewModel {
     val otherReferenceNumbers = getDocument(index) match {
       case Some(documentAtIndex) =>
         userAnswers
-          .get(DocumentsSection)
-          .map(_.value.toSeq)
-          .getOrElse(Nil)
+          .getArray(DocumentsSection)
           .zipWithIndex
-          .map {
-            case (value, i) => (value, Index(i))
-          }
           .filterNot(_._2 == index)
           .flatMap {
             case (_, index) =>
