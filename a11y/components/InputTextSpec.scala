@@ -17,7 +17,7 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.DocumentReferenceNumberFormProvider
+import forms.AdditionalInformationFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -48,7 +48,7 @@ class InputTextSpec extends A11ySpecBase {
       .sample
       .value
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new DocumentReferenceNumberFormProvider()(messageKeyPrefix)
+    val form           = new AdditionalInformationFormProvider()(messageKeyPrefix)
 
     "pass accessibility checks" when {
 
