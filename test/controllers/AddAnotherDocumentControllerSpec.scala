@@ -21,7 +21,6 @@ import forms.AddAnotherFormProvider
 import generators.Generators
 import models.DeclarationType._
 import models.{Index, NormalMode}
-import navigation.DocumentsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,7 +49,6 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
       .overrides(bind(classOf[AddAnotherDocumentViewModelProvider]).toInstance(mockViewModelProvider))
 
   override def beforeEach(): Unit = {
@@ -85,7 +83,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual routes.AddDocumentsYesNoController.onPageLoad(lrn, NormalMode).url
     }
 
     "must return OK and the correct view for a GET" - {
