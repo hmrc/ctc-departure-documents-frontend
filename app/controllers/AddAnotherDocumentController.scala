@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode, NormalMode}
-import navigation.DocumentsNavigatorProvider
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +34,6 @@ import javax.inject.Inject
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDocumentViewModelProvider,
@@ -55,7 +53,7 @@ class AddAnotherDocumentController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers)
 
       viewModel.count match {
-        case 0 => Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+        case 0 => Redirect(routes.AddDocumentsYesNoController.onPageLoad(lrn, mode))
         case _ => Ok(view(form(viewModel), lrn, viewModel))
       }
   }

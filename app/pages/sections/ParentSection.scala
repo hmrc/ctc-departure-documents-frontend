@@ -16,11 +16,11 @@
 
 package pages.sections
 
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{JsObject, JsPath}
 
-case object DocumentsSection extends Section[JsArray] {
+case object ParentSection extends Section[JsObject] {
 
-  override def path: JsPath = ParentSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "documents"
 }

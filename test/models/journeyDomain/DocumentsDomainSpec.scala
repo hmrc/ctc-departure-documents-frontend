@@ -18,26 +18,125 @@ package models.journeyDomain
 
 import base.SpecBase
 import generators.Generators
+import models.DeclarationType.{T, T1, T2, T2F, TIR}
 import models.Index
+import models.reference.CustomsOffice
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.AddDocumentsYesNoPage
+import pages.document.AttachToAllItemsPage
+import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 
-class DocumentsDomainSpec extends SpecBase with Generators {
+class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "Documents" - {
 
-    "can be parsed from UserAnswers" in {
+    "can be parsed from UserAnswers" - {
 
-      val numberOfItems = Gen.choose(1, 3).sample.value
+      "when there are documents" in {
 
-      val userAnswers = (0 until numberOfItems).foldLeft(emptyUserAnswers)({
-        case (updatedUserAnswers, index) =>
-          arbitraryDocumentAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+        val initialAnswers = emptyUserAnswers.setValue(AddDocumentsYesNoPage, true)
 
-      val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+        val numberOfItems = Gen.choose(1, 3).sample.value
 
-      result.value.document.length mustBe numberOfItems
+        val userAnswers = (0 until numberOfItems).foldLeft(initialAnswers)({
+          case (updatedUserAnswers, index) =>
+            arbitraryDocumentAnswers(updatedUserAnswers, Index(index)).sample.value
+        })
 
+        val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+
+        result.value.documents.length mustBe numberOfItems
+      }
+
+      "when there are no documents" - {
+        "and Declaration Type is not in set T2 or T2F" in {
+          val declarationTypeGen   = Gen.oneOf(T1, TIR, T)
+          val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
+          forAll(declarationTypeGen, officeOfDepartureGen) {
+            (declarationType, officeOfDeparture) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(AddDocumentsYesNoPage, false)
+
+              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+
+              result.value.documents mustBe Nil
+          }
+        }
+
+        "and Office of Departure is not in GB" in {
+          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryXiCustomsOffice)
+          forAll(declarationTypeGen, officeOfDepartureGen) {
+            (declarationType, officeOfDeparture) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(AddDocumentsYesNoPage, false)
+
+              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+
+              result.value.documents mustBe Nil
+          }
+        }
+      }
+    }
+
+    "cannot be parsed from user answers" - {
+
+      "when add documents yes/no is unanswered" - {
+
+        "and Declaration Type is not in set T2 or T2F" in {
+          val declarationTypeGen   = Gen.oneOf(T1, TIR, T)
+          val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
+          forAll(declarationTypeGen, officeOfDepartureGen) {
+            (declarationType, officeOfDeparture) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+
+              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+
+              result.left.value.page mustBe AddDocumentsYesNoPage
+          }
+        }
+
+        "and Office of Departure is not in GB" in {
+          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryXiCustomsOffice)
+          forAll(declarationTypeGen, officeOfDepartureGen) {
+            (declarationType, officeOfDeparture) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+
+              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+
+              result.left.value.page mustBe AddDocumentsYesNoPage
+          }
+        }
+      }
+
+      "when Declaration Type is in set T2/T2F and Office of Departure is in GB" - {
+        "and attach to all items is unanswered at index 0" in {
+          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
+          forAll(declarationTypeGen, officeOfDepartureGen) {
+            (declarationType, officeOfDeparture) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
+                .setValue(AddDocumentsYesNoPage, true)
+
+              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+
+              result.left.value.page mustBe AttachToAllItemsPage(Index(0))
+          }
+        }
+      }
     }
   }
 }

@@ -16,11 +16,14 @@
 
 package models.journeyDomain
 
+import models.DeclarationType.{T2, T2F}
 import models.{Index, Mode, RichJsArray, UserAnswers}
+import pages.AddDocumentsYesNoPage
+import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import pages.sections.DocumentsSection
 import play.api.mvc.Call
 
-case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainModel {
+case class DocumentsDomain(documents: Seq[DocumentDomain]) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
     controllers.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn)
@@ -29,20 +32,34 @@ case class DocumentsDomain(document: Seq[DocumentDomain]) extends JourneyDomainM
 
 object DocumentsDomain {
 
-  implicit def userAnswersReader: UserAnswersReader[DocumentsDomain] = {
-    val documentReader: UserAnswersReader[Seq[DocumentDomain]] =
-      DocumentsSection.arrayReader.flatMap {
-        case x if x.isEmpty =>
-          UserAnswersReader[DocumentDomain](
-            DocumentDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
+  def isMandatoryPrevious: UserAnswersReader[Boolean] =
+    for {
+      officeOfDeparture <- TransitOperationOfficeOfDeparturePage.reader
+      declarationType   <- TransitOperationDeclarationTypePage.reader
+    } yield officeOfDeparture.isInGB && declarationType.isOneOf(T2, T2F)
 
-        case x =>
-          x.traverse[DocumentDomain](
-            DocumentDomain.userAnswersReader
-          ).map(_.toSeq)
+  implicit def userAnswersReader: UserAnswersReader[DocumentsDomain] = {
+    def arrayReader: UserAnswersReader[Seq[DocumentDomain]] = DocumentsSection.arrayReader.flatMap {
+      case x if x.isEmpty =>
+        UserAnswersReader[DocumentDomain](
+          DocumentDomain.userAnswersReader(Index(0))
+        ).map(Seq(_))
+      case x =>
+        x.traverse[DocumentDomain](
+          DocumentDomain.userAnswersReader
+        ).map(_.toSeq)
+    }
+
+    implicit val documentsReader: UserAnswersReader[Seq[DocumentDomain]] =
+      isMandatoryPrevious.flatMap {
+        case true => arrayReader
+        case false =>
+          AddDocumentsYesNoPage.reader.flatMap {
+            case true  => arrayReader
+            case false => UserAnswersReader(Nil)
+          }
       }
 
-    UserAnswersReader[Seq[DocumentDomain]](documentReader).map(DocumentsDomain(_))
+    UserAnswersReader[Seq[DocumentDomain]].map(DocumentsDomain(_))
   }
 }

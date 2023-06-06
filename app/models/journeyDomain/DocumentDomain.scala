@@ -18,12 +18,10 @@ package models.journeyDomain
 
 import cats.implicits._
 import controllers.document.routes
-import models.DeclarationType._
 import models.DocumentType._
 import models.reference.Document
 import models.{Index, Mode, UserAnswers}
 import pages.document._
-import pages.external._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -43,10 +41,7 @@ sealed trait DocumentDomain extends JourneyDomainModel {
 object DocumentDomain {
 
   def isMandatoryPrevious(documentIndex: Index): UserAnswersReader[Boolean] =
-    for {
-      officeOfDeparture <- TransitOperationOfficeOfDeparturePage.reader
-      declarationType   <- TransitOperationDeclarationTypePage.reader
-    } yield officeOfDeparture.isInGB && declarationType.isOneOf(T2, T2F) && documentIndex.isFirst
+    DocumentsDomain.isMandatoryPrevious.map(_ && documentIndex.isFirst)
 
   implicit def userAnswersReader(documentIndex: Index): UserAnswersReader[DocumentDomain] =
     (

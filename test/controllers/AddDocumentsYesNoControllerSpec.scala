@@ -80,7 +80,7 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
         view(filledForm, lrn, mode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when yes is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -94,6 +94,22 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+    }
+
+    "must redirect to the task list page when no is submitted" in {
+
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addDocumentsYesNoRoute)
+        .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
