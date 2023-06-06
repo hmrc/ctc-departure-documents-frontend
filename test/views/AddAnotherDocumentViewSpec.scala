@@ -52,6 +52,8 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
   behave like pageWithItemsMaxedOutWithRadioItems(maxedOutViewModel)
 
+  behave like pageWithContent("p", "Once you’ve added all your documents here, you can then attach them to the relevant items in your Items section.")
+
   behave like pageWithSubmitButton("Save and continue")
 
 }
