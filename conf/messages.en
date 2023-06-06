@@ -21,7 +21,8 @@ document.label = {0} - reference number {1}
 
 document.previousDocumentType.title = What previous document do you want to add?
 document.previousDocumentType.heading = What previous document do you want to add?
-document.previousDocumentType.paragraph = You need to provide this as you’re creating a {0} declaration departing from Great Britain.
+document.previousDocumentType.paragraph1 = You need to provide this as you’re creating a {0} declaration departing from Great Britain.
+document.previousDocumentType.paragraph2 = You will be able to attach this document to the relevant item in your Items section.
 document.previousDocumentType.placeholder = Select a previous document type
 document.previousDocumentType.change.hidden = document type
 document.previousDocumentType.checkYourAnswersLabel = Document type
@@ -31,6 +32,7 @@ document.previousDocumentType.error.maxLimitReached = You cannot add any more do
 document.type.title = What type of document do you want to add?
 document.type.heading = What type of document do you want to add?
 document.type.hint = Enter the document name or code.
+document.type.paragraph = You will be able to attach this document to the relevant item in your Items section.
 document.type.change.hidden = document type
 document.type.checkYourAnswersLabel = Document type
 document.type.error.required = Select the type of document you want to add
@@ -52,12 +54,12 @@ document.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a go
 document.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
 document.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
 
-document.addTypeOfPackageYesNo.title = Do you want to declare the package the goods arrived in?
-document.addTypeOfPackageYesNo.heading = Do you want to declare the package the goods arrived in?
-document.addTypeOfPackageYesNo.paragraph = This means the packaging used to ship this document’s goods into the UK.
-document.addTypeOfPackageYesNo.checkYourAnswersLabel = Do you want to declare the package the goods arrived in?
-document.addTypeOfPackageYesNo.change.hidden = if you want to declare the package the goods arrived in
-document.addTypeOfPackageYesNo.error.required = Select yes if you want to declare the package the goods arrived in
+document.addTypeOfPackageYesNo.title = Do you want to declare the package used to transport the goods into the UK?
+document.addTypeOfPackageYesNo.heading = Do you want to declare the package used to transport the goods into the UK?
+document.addTypeOfPackageYesNo.paragraph = This means the packaging used to import this document’s goods - not the package for exporting your items.
+document.addTypeOfPackageYesNo.checkYourAnswersLabel = Do you want to declare the package used to transport the goods into the UK?
+document.addTypeOfPackageYesNo.change.hidden = if you want to declare the package used to transport the goods into the UK
+document.addTypeOfPackageYesNo.error.required = Select yes if you want to declare the package used to transport the goods into the UK
 
 document.goodsItemNumber.title = What is the goods item number?
 document.goodsItemNumber.heading = What is the goods item number?
@@ -70,12 +72,12 @@ document.goodsItemNumber.error.wholeNumber = The goods item number must only inc
 document.goodsItemNumber.error.negative = The goods item number must only include numbers 0 to 9
 document.goodsItemNumber.error.maximum = The goods item number must be 5 characters or less
 
-document.packageType.title = What type of package did the goods arrive in?
-document.packageType.heading = What type of package did the goods arrive in?
+document.packageType.title = What type of package was used to transport the goods into the UK?
+document.packageType.heading = What type of package was used to transport the goods into the UK?
 document.packageType.placeholder = Select a package type
 document.packageType.checkYourAnswersLabel = Package type
 document.packageType.change.hidden = package type
-document.packageType.error.required = Select the type of package the goods arrived in
+document.packageType.error.required = Select the type of package used to transport the goods into the UK
 
 document.addLineItemNumberYesNo.title = Do you want to add a line item number?
 document.addLineItemNumberYesNo.heading = Do you want to add a line item number?
@@ -100,6 +102,7 @@ addAnotherDocument.plural.title = You have added {0} documents
 addAnotherDocument.plural.heading = You have added {0} documents
 addAnotherDocument.error.required =  Select yes if you want to add another document
 addAnotherDocument.label = Do you want to add another document?
+addAnotherDocument.paragraph = Once you’ve added all your documents here, you can then attach them to the relevant items in your Items section.
 addAnotherDocument.maxLimit.label = You cannot attach any more documents to all items. You can still add documents and attach them to individual items.
 
 document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of goods?

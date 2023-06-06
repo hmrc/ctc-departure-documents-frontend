@@ -45,9 +45,10 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
+            selectType = SelectWithAdditionalHtml(
                 heading = messages("document.type.heading"),
-                caption = Some(messages("document.caption"))
+                caption = Some(messages("document.caption")),
+                additionalHtml = messages("document.type.paragraph").toParagraph
             ),
             hint = Some(messages("document.type.hint")),
             selectItems = documents.toSelectItems(form.value),

@@ -33,6 +33,12 @@
 
 @(form: Form[Document], lrn: LocalReferenceNumber, previousDocumentTypes: Seq[Document], mode: Mode, declarationType: DeclarationType, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
+@additionalHtml = {
+    @messages("document.previousDocumentType.paragraph1", declarationType).toParagraph
+
+    @messages("document.previousDocumentType.paragraph2").toParagraph
+}
+
 @mainTemplate(
     title = messages("document.previousDocumentType.title"),
     showBackLink = true,
@@ -48,7 +54,7 @@
             selectType = SelectWithAdditionalHtml(
                 heading = messages("document.previousDocumentType.heading"),
                 caption = Some(messages("document.caption")),
-                additionalHtml = messages("document.previousDocumentType.paragraph", declarationType).toParagraph
+                additionalHtml = additionalHtml
             ),
             selectItems = previousDocumentTypes.toSelectItems(form.value),
             placeholder = messages("document.previousDocumentType.placeholder")

@@ -239,7 +239,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           val helper = new DocumentAnswersHelper(answers, documentIndex)
           val result = helper.typeOfPackageYesNo.get
 
-          result.key.value mustBe "Do you want to declare the package the goods arrived in?"
+          result.key.value mustBe "Do you want to declare the package used to transport the goods into the UK?"
           result.value.value mustBe "Yes"
 
           val actions = result.actions.get.items
@@ -247,7 +247,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           val action = actions.head
           action.content.value mustBe "Change"
           action.href mustBe AddTypeOfPackageYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to declare the package the goods arrived in"
+          action.visuallyHiddenText.get mustBe "if you want to declare the package used to transport the goods into the UK"
           action.id mustBe "change-add-type-of-package"
         }
       }

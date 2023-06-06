@@ -51,5 +51,7 @@ class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[Document] {
 
   behave like pageWithContent("p", s"You need to provide this as you’re creating a $declarationType declaration departing from Great Britain.")
 
+  behave like pageWithContent("p", "You will be able to attach this document to the relevant item in your Items section.")
+
   behave like pageWithSubmitButton("Save and continue")
 }
