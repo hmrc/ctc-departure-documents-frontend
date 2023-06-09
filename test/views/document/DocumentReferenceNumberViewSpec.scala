@@ -29,7 +29,7 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "document.documentReferenceNumber"
 
-  override def form: Form[String] = new DocumentReferenceNumberFormProvider()(prefix)
+  override def form: Form[String] = new DocumentReferenceNumberFormProvider()(prefix, Nil)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[DocumentReferenceNumberView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)

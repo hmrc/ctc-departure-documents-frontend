@@ -18,34 +18,49 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentReferenceNumberFormProvider
+import generators.Generators
 import models.{NormalMode, UserAnswers}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.document.DocumentReferenceNumberViewModel
+import viewModels.document.DocumentReferenceNumberViewModel.DocumentReferenceNumberViewModelProvider
 import views.html.document.DocumentReferenceNumberView
 
 import java.util.UUID
 import scala.concurrent.Future
 
-class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val otherReferenceNumbers = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
 
   private val formProvider                      = new DocumentReferenceNumberFormProvider()
-  private val form                              = formProvider("document.documentReferenceNumber")
+  private val form                              = formProvider("document.documentReferenceNumber", otherReferenceNumbers)
   private val mode                              = NormalMode
   private val validAnswer                       = "testString123"
   private lazy val documentReferenceNumberRoute = routes.DocumentReferenceNumberController.onPageLoad(lrn, mode, documentIndex).url
+
+  private val mockViewModelProvider: DocumentReferenceNumberViewModelProvider = mock[DocumentReferenceNumberViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
+      .overrides(bind(classOf[DocumentReferenceNumberViewModelProvider]).toInstance(mockViewModelProvider))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+    when(mockViewModelProvider.apply(any(), any())).thenReturn(DocumentReferenceNumberViewModel(otherReferenceNumbers))
+  }
 
   "DocumentReferenceNumber Controller" - {
 
@@ -136,6 +151,25 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       val invalidAnswer = ""
 
       val request    = FakeRequest(POST, documentReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[DocumentReferenceNumberView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when non-unique reference number is submitted" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val invalidAnswer = otherReferenceNumbers.head
+
+      val request    = FakeRequest(POST, documentReferenceNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value

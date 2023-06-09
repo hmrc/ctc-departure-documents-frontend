@@ -22,10 +22,13 @@ import forms.DocumentReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.document.DocumentReferenceNumberViewModel
+import viewModels.document.DocumentReferenceNumberViewModel.DocumentReferenceNumberViewModelProvider
 import views.html.document.DocumentReferenceNumberView
 
 import java.util.UUID
@@ -39,25 +42,29 @@ class DocumentReferenceNumberController @Inject() (
   formProvider: DocumentReferenceNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: DocumentReferenceNumberView
+  view: DocumentReferenceNumberView,
+  viewModelProvider: DocumentReferenceNumberViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("document.documentReferenceNumber")
+  private def form(viewModel: DocumentReferenceNumberViewModel): Form[String] =
+    formProvider("document.documentReferenceNumber", viewModel.otherReferenceNumbers)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
+      val viewModel = viewModelProvider.apply(request.userAnswers, documentIndex)
       val preparedForm = request.userAnswers.get(DocumentReferenceNumberPage(documentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => form(viewModel)
+        case Some(value) => form(viewModel).fill(value)
       }
       Ok(view(preparedForm, lrn, mode, documentIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
+      val viewModel = viewModelProvider.apply(request.userAnswers, documentIndex)
+      form(viewModel)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
