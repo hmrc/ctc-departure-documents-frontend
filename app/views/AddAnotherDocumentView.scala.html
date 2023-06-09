@@ -49,6 +49,8 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
+        <p class="govuk-body">@messages("addAnotherDocument.paragraph")</p>
+
         @if(!viewModel.allowMore) {
             <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
         }

@@ -46,6 +46,8 @@ class TypeViewSpec extends InputSelectViewBehaviours[Document] {
 
   behave like pageWithSelect()
 
+  behave like pageWithContent("p", "You will be able to attach this document to the relevant item in your Items section.")
+
   behave like pageWithHint("Enter the document name or code.")
 
   behave like pageWithSubmitButton("Save and continue")
