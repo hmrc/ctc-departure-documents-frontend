@@ -60,7 +60,7 @@ class TypeController @Inject() (
     .andThen(getMandatoryPage(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)))
     .async {
       implicit request =>
-        service.getDocuments().map {
+        service.getDocuments(request.arg).map {
           documentList =>
             val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex), request.arg)
             val preparedForm = request.userAnswers.get(TypePage(documentIndex)) match {
@@ -77,7 +77,7 @@ class TypeController @Inject() (
     .andThen(getMandatoryPage(AttachToAllItemsPage(documentIndex), InferredAttachToAllItemsPage(documentIndex)))
     .async {
       implicit request =>
-        service.getDocuments().flatMap {
+        service.getDocuments(request.arg).flatMap {
           documentList =>
             val form = formProvider(prefix, documentList, consignmentLevelDocuments(documentIndex), request.arg)
             form

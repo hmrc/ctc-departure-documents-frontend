@@ -23,7 +23,7 @@ class PostTransitionModule extends Module {
   override def configure(): Unit = {
     super.configure()
 
-    bind(classOf[DocumentsService]).to(classOf[PostTransitionDocumentsService])
     bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
+    bind(classOf[DocumentsService]).to(classOf[PostTransitionDocumentsService])
   }
 }

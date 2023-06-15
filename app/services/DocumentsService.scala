@@ -31,12 +31,12 @@ sealed trait DocumentsService {
 
   implicit val ec: ExecutionContext
 
-  def filterDocuments(documents: Seq[Document]): Seq[Document]
+  def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document]
 
-  def getDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
+  def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
       documents <- referenceDataConnector.getDocuments()
-      filteredDocuments = filterDocuments(documents)
+      filteredDocuments = filterDocuments(documents, attachToAllItems)
       previousDocuments <- referenceDataConnector.getPreviousDocuments()
     } yield sort(filteredDocuments ++ previousDocuments)
 
@@ -54,7 +54,8 @@ class TransitionDocumentsService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends DocumentsService {
 
-  override def filterDocuments(documents: Seq[Document]): Seq[Document] = documents
+  override def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document] =
+    documents
 }
 
 class PostTransitionDocumentsService @Inject() (
@@ -62,5 +63,6 @@ class PostTransitionDocumentsService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends DocumentsService {
 
-  override def filterDocuments(documents: Seq[Document]): Seq[Document] = documents.filterNot(_.`type` == Transport)
+  override def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document] =
+    if (attachToAllItems) documents else documents.filterNot(_.`type` == Transport)
 }

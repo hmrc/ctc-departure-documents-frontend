@@ -23,7 +23,7 @@ class TransitionModule extends Module {
   override def configure(): Unit = {
     super.configure()
 
-    bind(classOf[DocumentsService]).to(classOf[TransitionDocumentsService])
     bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
+    bind(classOf[DocumentsService]).to(classOf[TransitionDocumentsService])
   }
 }

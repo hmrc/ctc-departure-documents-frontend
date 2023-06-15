@@ -23,12 +23,14 @@ import models.SelectableList
 import models.reference.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
@@ -52,37 +54,60 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "getDocuments" - {
       "when post-transition" - {
-        "must return a list of sorted document types with transport documents removed" in {
-          val app = postTransitionApplicationBuilder()
-            .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-            .build()
 
-          running(app) {
-            val service = app.injector.instanceOf[DocumentsService]
+        val app = postTransitionApplicationBuilder()
+          .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+          .build()
 
-            service.getDocuments().futureValue mustBe
-              SelectableList(Seq(document2, document3))
+        "and adding document at consignment level" - {
+          "must return a list of sorted document types" in {
+            running(app) {
+              val service = app.injector.instanceOf[DocumentsService]
 
-            verify(mockRefDataConnector).getDocuments()(any(), any())
-            verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+              service.getDocuments(attachToAllItems = true).futureValue mustBe
+                SelectableList(Seq(document2, document3, document1))
+
+              verify(mockRefDataConnector).getDocuments()(any(), any())
+              verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+            }
+          }
+        }
+
+        "and adding document at item level" - {
+          "must return a list of sorted document types with transport documents removed" in {
+            running(app) {
+              val service = app.injector.instanceOf[DocumentsService]
+
+              service.getDocuments(attachToAllItems = false).futureValue mustBe
+                SelectableList(Seq(document2, document3))
+
+              verify(mockRefDataConnector).getDocuments()(any(), any())
+              verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+            }
           }
         }
       }
 
       "when not post-transition" - {
+
+        val app = transitionApplicationBuilder()
+          .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
+          .build()
+
         "must return a list of sorted document types" in {
-          val app = transitionApplicationBuilder()
-            .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-            .build()
+          forAll(arbitrary[Boolean]) {
+            attachToAllItems =>
+              beforeEach()
 
-          running(app) {
-            val service = app.injector.instanceOf[DocumentsService]
+              running(app) {
+                val service = app.injector.instanceOf[DocumentsService]
 
-            service.getDocuments().futureValue mustBe
-              SelectableList(Seq(document2, document3, document1))
+                service.getDocuments(attachToAllItems).futureValue mustBe
+                  SelectableList(Seq(document2, document3, document1))
 
-            verify(mockRefDataConnector).getDocuments()(any(), any())
-            verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+                verify(mockRefDataConnector).getDocuments()(any(), any())
+                verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+              }
           }
         }
       }
