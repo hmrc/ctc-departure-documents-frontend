@@ -24,5 +24,6 @@ class TransitionModule extends Module {
     super.configure()
 
     bind(classOf[DocumentsService]).to(classOf[TransitionDocumentsService])
+    bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
   }
 }

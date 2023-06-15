@@ -16,14 +16,18 @@
 
 package config
 
-import services.{DocumentsService, PostTransitionDocumentsService}
+import models.Phase
+import models.Phase.{PostTransition, Transition}
 
-class PostTransitionModule extends Module {
+trait PhaseConfig {
+  // we can put things like form validation values in here (regex, length etc.)
+  val phase: Phase
+}
 
-  override def configure(): Unit = {
-    super.configure()
+class TransitionConfig() extends PhaseConfig {
+  override val phase: Phase = Transition
+}
 
-    bind(classOf[DocumentsService]).to(classOf[PostTransitionDocumentsService])
-    bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
-  }
+class PostTransitionConfig() extends PhaseConfig {
+  override val phase: Phase = PostTransition
 }

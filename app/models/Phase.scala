@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-import services.{DocumentsService, PostTransitionDocumentsService}
+sealed trait Phase
 
-class PostTransitionModule extends Module {
+object Phase {
 
-  override def configure(): Unit = {
-    super.configure()
-
-    bind(classOf[DocumentsService]).to(classOf[PostTransitionDocumentsService])
-    bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
-  }
+  case object Transition extends Phase
+  case object PostTransition extends Phase
 }
