@@ -40,7 +40,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val previousDocumentJson: String =
+  private val documentsJson: String =
     """
       |[
       |  {
@@ -49,22 +49,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |  },
       |  {
       |    "code": "4"
-      |  }
-      |]
-      |""".stripMargin
-
-  private val documentJson: String =
-    """
-      |[
-      | {
-      |    "code": "18",
-      |    "transportDocument": false,
-      |    "description": "Movement certificate A.TR.1"
-      |  },
-      |  {
-      |    "code": "2",
-      |    "transportDocument": true,
-      |    "description": "Certificate of conformity"
       |  }
       |]
       |""".stripMargin
@@ -85,10 +69,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   "getPreviousDocuments" - {
 
+    val url = s"/$baseUrl/previous-document-types"
+
     "must return list of previous documents when successful" in {
       server.stubFor(
-        get(urlEqualTo(s"/$baseUrl/previous-document-types"))
-          .willReturn(okJson(previousDocumentJson))
+        get(urlEqualTo(url))
+          .willReturn(okJson(documentsJson))
       )
 
       val expectResult = Seq(
@@ -101,32 +87,56 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must return an exception when an error response is returned" in {
 
-      checkErrorResponse(s"/$baseUrl/previous-document-types", connector.getPreviousDocuments())
+      checkErrorResponse(url, connector.getPreviousDocuments())
     }
-
   }
 
-  "getDocuments" - {
+  "getTransportDocuments" - {
+
+    val url = s"/$baseUrl/transport-document-types"
 
     "must return list of documents when successful" in {
       server.stubFor(
-        get(urlEqualTo(s"/$baseUrl/document-types"))
-          .willReturn(okJson(documentJson))
+        get(urlEqualTo(url))
+          .willReturn(okJson(documentsJson))
       )
 
       val expectResult = Seq(
-        Document(Support, "18", Some("Movement certificate A.TR.1")),
-        Document(Transport, "2", Some("Certificate of conformity"))
+        Document(Transport, "1", Some("Certificate of quality")),
+        Document(Transport, "4", None)
       )
 
-      connector.getDocuments().futureValue mustEqual expectResult
+      connector.getTransportDocuments().futureValue mustEqual expectResult
     }
 
     "must return an exception when an error response is returned" in {
 
-      checkErrorResponse(s"/$baseUrl/document-type", connector.getDocuments())
+      checkErrorResponse(url, connector.getTransportDocuments())
+    }
+  }
+
+  "getSupportingDocuments" - {
+
+    val url = s"/$baseUrl/supporting-document-types"
+
+    "must return list of documents when successful" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .willReturn(okJson(documentsJson))
+      )
+
+      val expectResult = Seq(
+        Document(Support, "1", Some("Certificate of quality")),
+        Document(Support, "4", None)
+      )
+
+      connector.getSupportingDocuments().futureValue mustEqual expectResult
     }
 
+    "must return an exception when an error response is returned" in {
+
+      checkErrorResponse(url, connector.getSupportingDocuments())
+    }
   }
 
   "getMetrics" - {
