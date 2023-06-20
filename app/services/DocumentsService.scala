@@ -17,6 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
+import models.DocumentType.Transport
 import models.SelectableList
 import models.reference.Document
 import uk.gov.hmrc.http.HeaderCarrier
@@ -24,13 +25,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+sealed trait DocumentsService {
 
-  def getDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
+  val referenceDataConnector: ReferenceDataConnector
+
+  implicit val ec: ExecutionContext
+
+  def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document]
+
+  def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
-      documents         <- referenceDataConnector.getDocuments()
+      documents <- referenceDataConnector.getDocuments()
+      filteredDocuments = filterDocuments(documents, attachToAllItems)
       previousDocuments <- referenceDataConnector.getPreviousDocuments()
-    } yield sort(documents ++ previousDocuments)
+    } yield sort(filteredDocuments ++ previousDocuments)
 
   def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     referenceDataConnector
@@ -39,4 +47,22 @@ class DocumentsService @Inject() (referenceDataConnector: ReferenceDataConnector
 
   private def sort(documents: Seq[Document]): SelectableList[Document] =
     SelectableList(documents.sortBy(_.description.map(_.toLowerCase)))
+}
+
+class TransitionDocumentsService @Inject() (
+  override val referenceDataConnector: ReferenceDataConnector
+)(implicit override val ec: ExecutionContext)
+    extends DocumentsService {
+
+  override def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document] =
+    documents
+}
+
+class PostTransitionDocumentsService @Inject() (
+  override val referenceDataConnector: ReferenceDataConnector
+)(implicit override val ec: ExecutionContext)
+    extends DocumentsService {
+
+  override def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document] =
+    if (attachToAllItems) documents else documents.filterNot(_.`type` == Transport)
 }
