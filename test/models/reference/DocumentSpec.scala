@@ -40,7 +40,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document](referenceDataReads) mustBe Document(Transport, "code", Some("description"))
+        json.as[Document](referenceDataReads(Transport)) mustBe Document(Transport, "code", Some("description"))
       }
 
       "when support" in {
@@ -52,7 +52,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document](referenceDataReads) mustBe Document(Support, "code", Some("description"))
+        json.as[Document](referenceDataReads(Support)) mustBe Document(Support, "code", Some("description"))
       }
 
       "when previous" in {
@@ -63,7 +63,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document](referenceDataReads) mustBe Document(Previous, "code", Some("description"))
+        json.as[Document](referenceDataReads(Previous)) mustBe Document(Previous, "code", Some("description"))
       }
     }
   }

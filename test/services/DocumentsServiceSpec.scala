@@ -22,7 +22,7 @@ import models.DocumentType._
 import models.SelectableList
 import models.reference.Document
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.bind
@@ -34,18 +34,21 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val document1 = Document(Transport, "N741", Some("Master airwaybill"))
-  private val document2 = Document(Support, "C673", Some("Catch certificate"))
-  private val document3 = Document(Previous, "C605", Some("Information sheet INF3"))
+  private val transportDocument  = Document(Transport, "N741", Some("Master airwaybill"))
+  private val supportingDocument = Document(Support, "C673", Some("Catch certificate"))
+  private val previousDocument   = Document(Previous, "C605", Some("Information sheet INF3"))
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
 
-    when(mockRefDataConnector.getDocuments()(any(), any()))
-      .thenReturn(Future.successful(Seq(document1, document2)))
+    when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
+      .thenReturn(Future.successful(Seq(supportingDocument)))
+
+    when(mockRefDataConnector.getTransportDocuments()(any(), any()))
+      .thenReturn(Future.successful(Seq(transportDocument)))
 
     when(mockRefDataConnector.getPreviousDocuments()(any(), any()))
-      .thenReturn(Future.successful(Seq(document3)))
+      .thenReturn(Future.successful(Seq(previousDocument)))
 
     super.beforeEach()
   }
@@ -65,10 +68,11 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
               val service = app.injector.instanceOf[DocumentsService]
 
               service.getDocuments(attachToAllItems = true).futureValue mustBe
-                SelectableList(Seq(document2, document3, document1))
+                SelectableList(Seq(supportingDocument, previousDocument, transportDocument))
 
-              verify(mockRefDataConnector).getDocuments()(any(), any())
+              verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
               verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+              verify(mockRefDataConnector).getTransportDocuments()(any(), any())
             }
           }
         }
@@ -79,10 +83,11 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
               val service = app.injector.instanceOf[DocumentsService]
 
               service.getDocuments(attachToAllItems = false).futureValue mustBe
-                SelectableList(Seq(document2, document3))
+                SelectableList(Seq(supportingDocument, previousDocument))
 
-              verify(mockRefDataConnector).getDocuments()(any(), any())
+              verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
               verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+              verify(mockRefDataConnector, never()).getTransportDocuments()(any(), any())
             }
           }
         }
@@ -103,10 +108,11 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
                 val service = app.injector.instanceOf[DocumentsService]
 
                 service.getDocuments(attachToAllItems).futureValue mustBe
-                  SelectableList(Seq(document2, document3, document1))
+                  SelectableList(Seq(supportingDocument, previousDocument, transportDocument))
 
-                verify(mockRefDataConnector).getDocuments()(any(), any())
+                verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
                 verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+                verify(mockRefDataConnector).getTransportDocuments()(any(), any())
               }
           }
         }

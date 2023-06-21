@@ -16,7 +16,6 @@
 
 package models.reference
 
-import models.DocumentType._
 import models.{DocumentType, Selectable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -34,25 +33,19 @@ case class Document(`type`: DocumentType, code: String, description: Option[Stri
 
 object Document {
 
-  val httpReads: HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) =>
+  def httpReads(`type`: DocumentType): HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) =>
     response.json match {
       case JsArray(values) =>
-        values.flatMap(_.validate[Document](referenceDataReads).asOpt).toSeq
+        values.flatMap(_.validate[Document](referenceDataReads(`type`)).asOpt).toSeq
       case _ =>
         Nil
     }
 
-  val referenceDataReads: Reads[Document] = (
+  def referenceDataReads(`type`: DocumentType): Reads[Document] = (
     (__ \ "code").read[String] and
-      (__ \ "description").readNullable[String] and
-      (__ \ "transportDocument").readNullable[Boolean]
+      (__ \ "description").readNullable[String]
   ).apply {
-    (code, description, isTransportDocument) =>
-      val `type` = isTransportDocument match {
-        case Some(true)  => Transport
-        case Some(false) => Support
-        case None        => Previous
-      }
+    (code, description) =>
       Document(`type`, code, description)
   }
 

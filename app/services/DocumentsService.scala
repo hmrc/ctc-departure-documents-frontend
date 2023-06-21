@@ -17,7 +17,6 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.DocumentType.Transport
 import models.SelectableList
 import models.reference.Document
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,14 +30,15 @@ sealed trait DocumentsService {
 
   implicit val ec: ExecutionContext
 
-  def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document]
+  def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Seq[Document]] =
+    referenceDataConnector.getTransportDocuments()
 
   def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
-      documents <- referenceDataConnector.getDocuments()
-      filteredDocuments = filterDocuments(documents, attachToAllItems)
-      previousDocuments <- referenceDataConnector.getPreviousDocuments()
-    } yield sort(filteredDocuments ++ previousDocuments)
+      supportingDocuments <- referenceDataConnector.getSupportingDocuments()
+      transportDocuments  <- getTransportDocuments(attachToAllItems)
+      previousDocuments   <- referenceDataConnector.getPreviousDocuments()
+    } yield sort(supportingDocuments ++ transportDocuments ++ previousDocuments)
 
   def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     referenceDataConnector
@@ -54,8 +54,8 @@ class TransitionDocumentsService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends DocumentsService {
 
-  override def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document] =
-    documents
+  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Seq[Document]] =
+    super.getTransportDocuments(attachToAllItems)
 }
 
 class PostTransitionDocumentsService @Inject() (
@@ -63,6 +63,6 @@ class PostTransitionDocumentsService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends DocumentsService {
 
-  override def filterDocuments(documents: Seq[Document], attachToAllItems: Boolean): Seq[Document] =
-    if (attachToAllItems) documents else documents.filterNot(_.`type` == Transport)
+  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Seq[Document]] =
+    if (attachToAllItems) super.getTransportDocuments(attachToAllItems) else Future.successful(Seq.empty)
 }
