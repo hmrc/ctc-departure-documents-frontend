@@ -35,7 +35,9 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
 
         "must contain a placeholder" in {
           val placeholder = getElementsByTag(doc, "option").first()
-          placeholder.text() mustBe messages(s"$prefix.placeholder")
+          val messageKey  = s"$prefix.placeholder"
+          assert(messages.isDefinedAt(messageKey))
+          placeholder.text() mustBe messages(messageKey)
         }
 
         val options = getElementsByTag(doc, "option")

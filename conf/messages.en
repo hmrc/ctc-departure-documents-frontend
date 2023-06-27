@@ -35,12 +35,12 @@ document.type.hint = Enter the document name or code.
 document.type.paragraph = You will be able to attach this document to the relevant item in your Items section.
 document.type.change.hidden = document type
 document.type.checkYourAnswersLabel = Document type
+document.type.placeholder = Select a document type
 document.type.error.required = Select the type of document you want to add
 document.type.error.maxLimitReached = You cannot add any more documents of this type. To add another, you need to remove one first
 
 document.documentReferenceNumber.title = What is the document’s reference number?
 document.documentReferenceNumber.heading = What is the document’s reference number?
-document.documentReferenceNumber.placeholder = Select a document type
 document.documentReferenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
 document.documentReferenceNumber.checkYourAnswersLabel = Reference number
 document.documentReferenceNumber.change.hidden = reference number
