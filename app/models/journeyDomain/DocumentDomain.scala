@@ -116,7 +116,6 @@ object PreviousDocumentDomain {
 case class PreviousDocumentItemLevelDomain(
   document: Document,
   referenceNumber: String,
-  goodsItemNumber: Option[Int],
   `package`: Option[PackageDomain],
   quantity: Option[QuantityDomain],
   additionalInformation: Option[String]
@@ -132,7 +131,6 @@ object PreviousDocumentItemLevelDomain {
     (
       UserAnswersReader(document),
       DocumentReferenceNumberPage(index).reader,
-      AddGoodsItemNumberYesNoPage(index).filterOptionalDependent(identity)(GoodsItemNumberPage(index).reader),
       AddTypeOfPackageYesNoPage(index).filterOptionalDependent(identity)(PackageDomain.userAnswersReader(index)),
       DeclareQuantityOfGoodsYesNoPage(index).filterOptionalDependent(identity)(QuantityDomain.userAnswersReader(index)),
       AddAdditionalInformationYesNoPage(index).filterOptionalDependent(identity)(AdditionalInformationPage(index).reader)

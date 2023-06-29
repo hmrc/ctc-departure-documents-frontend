@@ -57,20 +57,6 @@ class DocumentAnswersHelper(
     id = Some("change-reference-number")
   )
 
-  def goodsItemNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddGoodsItemNumberYesNoPage(documentIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "document.addGoodsItemNumberYesNo",
-    id = Some("change-add-goods-item-number")
-  )
-
-  def goodsItemNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
-    page = GoodsItemNumberPage(documentIndex),
-    formatAnswer = formatAsText,
-    prefix = "document.goodsItemNumber",
-    id = Some("change-goods-item-number")
-  )
-
   def typeOfPackageYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddTypeOfPackageYesNoPage(documentIndex),
     formatAnswer = formatAsYesOrNo,

@@ -49,29 +49,12 @@ document.documentReferenceNumber.error.length = The reference number must be 70 
 document.documentReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
 document.documentReferenceNumber.error.unique = The reference number must be unique
 
-document.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
-document.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
-document.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
-document.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
-document.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
-
 document.addTypeOfPackageYesNo.title = Do you want to declare the package used to transport the goods into the UK?
 document.addTypeOfPackageYesNo.heading = Do you want to declare the package used to transport the goods into the UK?
 document.addTypeOfPackageYesNo.paragraph = This means the packaging used to import this document’s goods - not the package for exporting your items.
 document.addTypeOfPackageYesNo.checkYourAnswersLabel = Do you want to declare the package used to transport the goods into the UK?
 document.addTypeOfPackageYesNo.change.hidden = if you want to declare the package used to transport the goods into the UK
 document.addTypeOfPackageYesNo.error.required = Select yes if you want to declare the package used to transport the goods into the UK
-
-document.goodsItemNumber.title = What is the goods item number?
-document.goodsItemNumber.heading = What is the goods item number?
-document.goodsItemNumber.hint = This can be up to 5 numbers long.
-document.goodsItemNumber.checkYourAnswersLabel = Goods item number
-document.goodsItemNumber.change.hidden = goods item number
-document.goodsItemNumber.error.nonNumeric = The goods item number must only include numbers 0 to 9
-document.goodsItemNumber.error.required = Enter the goods item number
-document.goodsItemNumber.error.wholeNumber = The goods item number must only include numbers 0 to 9
-document.goodsItemNumber.error.negative = The goods item number must only include numbers 0 to 9
-document.goodsItemNumber.error.maximum = The goods item number must be 5 characters or less
 
 document.packageType.title = What type of package was used to transport the goods into the UK?
 document.packageType.heading = What type of package was used to transport the goods into the UK?

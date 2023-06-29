@@ -38,8 +38,6 @@ object DocumentAnswersViewModel {
           helper.documentType,
           helper.previousDocumentType,
           helper.documentReferenceNumber,
-          helper.goodsItemNumberYesNo,
-          helper.goodsItemNumber,
           helper.typeOfPackageYesNo,
           helper.packageType,
           helper.numberOfPackagesYesNo,
