@@ -67,7 +67,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"${document.toString} - reference number $referenceNumber",
+                      name = s"${document.toString} - $referenceNumber",
                       changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, documentIndex).url,
                       removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url)
                     )
@@ -102,7 +102,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Right(
                       ListItem(
-                        name = s"${previousDocument.toString} - reference number $referenceNumber",
+                        name = s"${previousDocument.toString} - $referenceNumber",
                         changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
                         removeUrl = None
                       )
