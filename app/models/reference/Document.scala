@@ -25,7 +25,7 @@ case class Document(`type`: DocumentType, code: String, description: Option[Stri
 
   override def toString: String = description match {
     case Some(value) if value.trim.nonEmpty => s"${`type`.display} - ($code) $value"
-    case _                                  => code
+    case _                                  => s"${`type`.display} - $code"
   }
 
   override val value: String = toString
