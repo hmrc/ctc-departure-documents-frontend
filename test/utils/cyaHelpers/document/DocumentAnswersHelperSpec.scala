@@ -160,69 +160,6 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "goodsItemNumberYesNo" - {
-      "must return None" - {
-        "when AddGoodsItemNumberYesNo page is undefined" in {
-          val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
-          val result = helper.goodsItemNumberYesNo
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AddGoodsItemNumberYesNo page is defined" in {
-          val answers = emptyUserAnswers.setValue(AddGoodsItemNumberYesNoPage(documentIndex), true)
-
-          val helper = new DocumentAnswersHelper(answers, documentIndex)
-          val result = helper.goodsItemNumberYesNo.get
-
-          result.key.value mustBe "Do you want to add a goods item number?"
-          result.value.value mustBe "Yes"
-
-          val actions = result.actions.get.items
-          actions.size mustBe 1
-          val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddGoodsItemNumberYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add a goods item number"
-          action.id mustBe "change-add-goods-item-number"
-        }
-      }
-    }
-
-    "goodsItemNumber" - {
-      "must return None" - {
-        "when GoodsItemNumber page is undefined" in {
-          val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
-          val result = helper.goodsItemNumber
-          result mustBe None
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when GoodsItemNumber page is defined" in {
-          forAll(arbitrary[Int]) {
-            number =>
-              val answers = emptyUserAnswers.setValue(GoodsItemNumberPage(documentIndex), number)
-
-              val helper = new DocumentAnswersHelper(answers, documentIndex)
-              val result = helper.goodsItemNumber.get
-
-              result.key.value mustBe "Goods item number"
-              result.value.value mustBe number.toString
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe GoodsItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "goods item number"
-              action.id mustBe "change-goods-item-number"
-          }
-        }
-      }
-    }
-
     "typeOfPackageYesNo" - {
       "must return None" - {
         "when AddTypeOfPackageYesNo page is undefined" in {

@@ -17,8 +17,8 @@
 package pages.document
 
 import models.reference.{Document, Metric, PackageType}
-import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
+import pages.behaviours.PageBehaviours
 
 class AttachToAllItemsPageSpec extends PageBehaviours {
 
@@ -42,8 +42,6 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
                 .setValue(TypePage(index), arbitrary[Document].sample.value)
                 .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
                 .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-                .setValue(AddGoodsItemNumberYesNoPage(index), true)
-                .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
                 .setValue(AddTypeOfPackageYesNoPage(index), true)
                 .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
                 .setValue(AddNumberOfPackagesYesNoPage(index), true)
@@ -60,8 +58,6 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
               result.get(TypePage(index)) must not be defined
               result.get(PreviousDocumentTypePage(index)) must not be defined
               result.get(DocumentReferenceNumberPage(index)) must not be defined
-              result.get(AddGoodsItemNumberYesNoPage(index)) must not be defined
-              result.get(GoodsItemNumberPage(index)) must not be defined
               result.get(AddTypeOfPackageYesNoPage(index)) must not be defined
               result.get(PackageTypePage(index)) must not be defined
               result.get(AddNumberOfPackagesYesNoPage(index)) must not be defined
@@ -84,8 +80,6 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
                 .setValue(TypePage(index), arbitrary[Document].sample.value)
                 .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
                 .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-                .setValue(AddGoodsItemNumberYesNoPage(index), true)
-                .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
                 .setValue(AddTypeOfPackageYesNoPage(index), true)
                 .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
                 .setValue(AddNumberOfPackagesYesNoPage(index), true)
@@ -101,8 +95,6 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
               result.get(TypePage(index)) must be(defined)
               result.get(PreviousDocumentTypePage(index)) must be(defined)
               result.get(DocumentReferenceNumberPage(index)) must be(defined)
-              result.get(AddGoodsItemNumberYesNoPage(index)) must be(defined)
-              result.get(GoodsItemNumberPage(index)) must be(defined)
               result.get(AddTypeOfPackageYesNoPage(index)) must be(defined)
               result.get(PackageTypePage(index)) must be(defined)
               result.get(AddNumberOfPackagesYesNoPage(index)) must be(defined)

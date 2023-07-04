@@ -92,7 +92,6 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
                     .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
-                    .setValue(AddGoodsItemNumberYesNoPage(Index(0)), false)
                     .setValue(AddTypeOfPackageYesNoPage(Index(0)), false)
                     .setValue(DeclareQuantityOfGoodsYesNoPage(Index(0)), false)
                     .setValue(AddAdditionalInformationYesNoPage(Index(0)), false)
