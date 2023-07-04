@@ -17,7 +17,7 @@
 package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo, urlPathMatching}
 import models.DocumentType._
 import models.reference.{Document, Metric}
 import org.scalacheck.Gen
@@ -30,51 +30,81 @@ import scala.concurrent.Future
 
 class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
 
-  private val baseUrl = "test-only/transit-movements-trader-reference-data"
+  private val baseUrl = "customs-reference-data/test-only"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super
     .guiceApplicationBuilder()
     .configure(
-      conf = "microservice.services.referenceData.port" -> server.port()
+      conf = "microservice.services.customsReferenceData.port" -> server.port()
     )
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val documentsJson: String =
-    """
-      |[
+  private def documentsJson(docType: String): String =
+    s"""
+      |{
+      |"_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/$docType"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "$docType",
+      |  "data": [
       |  {
+      |    "activeFrom": "2023-01-23",
+      |    "state": "valid",
       |    "code": "1",
       |    "description": "Certificate of quality"
       |  },
       |  {
       |    "code": "4"
       |  }
-      |]
+      |  ]
+      |}
       |""".stripMargin
 
   private val metricJson: String =
     """
-      |[
-      | {
+      |{
+      |"_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/Unit"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "Unit",
+      |  "data": [
+      |  {
+      |    "activeFrom": "2023-01-23",
+      |    "state": "valid",
       |    "code": "CTM",
       |    "description": "Carats (one metric carat = 2 x 10-4kg)"
       |  },
       |  {
-      |    "code": "DTN",
-      |    "description": "Hectokilogram"
+      |      "activeFrom": "2023-01-23",
+      |      "state": "valid",
+      |      "code": "DTN",
+      |      "description": "Hectokilogram"
       |  }
       |]
+      |}
       |""".stripMargin
 
   "getPreviousDocuments" - {
 
-    val url = s"/$baseUrl/previous-document-types"
+    val url = s"/$baseUrl/lists/PreviousDocumentType"
 
     "must return list of previous documents when successful" in {
       server.stubFor(
-        get(urlEqualTo(url))
-          .willReturn(okJson(documentsJson))
+        get(urlPathMatching(url))
+          .willReturn(okJson(documentsJson("PreviousDocumentType")))
       )
 
       val expectResult = Seq(
@@ -93,12 +123,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   "getTransportDocuments" - {
 
-    val url = s"/$baseUrl/transport-document-types"
+    val url = s"/$baseUrl/lists/TransportDocumentType"
 
     "must return list of documents when successful" in {
       server.stubFor(
         get(urlEqualTo(url))
-          .willReturn(okJson(documentsJson))
+          .willReturn(okJson(documentsJson("TransportDocumentType")))
       )
 
       val expectResult = Seq(
@@ -117,12 +147,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   "getSupportingDocuments" - {
 
-    val url = s"/$baseUrl/supporting-document-types"
+    val url = s"/$baseUrl/lists/SupportingDocumentType"
 
     "must return list of documents when successful" in {
       server.stubFor(
         get(urlEqualTo(url))
-          .willReturn(okJson(documentsJson))
+          .willReturn(okJson(documentsJson("SupportingDocumentType")))
       )
 
       val expectResult = Seq(
@@ -143,7 +173,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must return list of metrics when successful" in {
       server.stubFor(
-        get(urlEqualTo(s"/$baseUrl/metrics"))
+        get(urlEqualTo(s"/$baseUrl/lists/Unit"))
           .willReturn(okJson(metricJson))
       )
 
