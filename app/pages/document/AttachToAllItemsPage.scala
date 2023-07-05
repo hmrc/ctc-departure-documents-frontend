@@ -31,15 +31,12 @@ abstract class BaseAttachToAllItemsPage(documentIndex: Index) extends QuestionPa
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AttachToAllItemsController.onPageLoad(userAnswers.lrn, mode, documentIndex))
-}
 
-case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
-  override def toString: String = "attachToAllItems"
+  def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(_) =>
-      userAnswers
-        .remove(InferredAttachToAllItemsPage(documentIndex))
+      cleanup(userAnswers)
         .flatMap(_.remove(TypePage(documentIndex)))
         .flatMap(_.remove(PreviousDocumentTypePage(documentIndex)))
         .flatMap(_.remove(DocumentDetailsSection(documentIndex)))
@@ -48,6 +45,16 @@ case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllIte
   }
 }
 
+case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+  override def toString: String = "attachToAllItems"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(InferredAttachToAllItemsPage(documentIndex))
+}
+
 case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
   override def toString: String = "inferredAttachToAllItems"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(AttachToAllItemsPage(documentIndex))
 }
