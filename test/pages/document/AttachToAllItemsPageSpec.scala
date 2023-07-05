@@ -16,9 +16,11 @@
 
 package pages.document
 
-import models.reference.{Document, Metric, PackageType}
+import models.reference.Document
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.sections.DocumentDetailsSection
+import play.api.libs.json.Json
 
 class AttachToAllItemsPageSpec extends PageBehaviours {
 
@@ -31,80 +33,55 @@ class AttachToAllItemsPageSpec extends PageBehaviours {
     beRemovable[Boolean](AttachToAllItemsPage(documentIndex))
 
     "cleanup" - {
+      "must remove pages" in {
+        forAll(arbitrary[Boolean]) {
+          bool =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InferredAttachToAllItemsPage(index), bool)
+              .setValue(TypePage(index), arbitrary[Document].sample.value)
+              .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
+              .setValue(DocumentDetailsSection(index), Json.obj("foo" -> "bar"))
 
-      "when answer changes" - {
-        "must remove pages" in {
-          forAll(arbitrary[Boolean]) {
-            bool =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AttachToAllItemsPage(index), bool)
-                .setValue(InferredAttachToAllItemsPage(index), false)
-                .setValue(TypePage(index), arbitrary[Document].sample.value)
-                .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
-                .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-                .setValue(AddTypeOfPackageYesNoPage(index), true)
-                .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
-                .setValue(AddNumberOfPackagesYesNoPage(index), true)
-                .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
-                .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
-                .setValue(MetricPage(index), arbitrary[Metric].sample.value)
-                .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
-                .setValue(AddAdditionalInformationYesNoPage(index), true)
-                .setValue(AdditionalInformationPage(index), nonEmptyString.sample.value)
+            val result = userAnswers.setValue(AttachToAllItemsPage(index), bool)
 
-              val result = userAnswers.setValue(AttachToAllItemsPage(index), !bool)
-
-              result.get(InferredAttachToAllItemsPage(index)) must not be defined
-              result.get(TypePage(index)) must not be defined
-              result.get(PreviousDocumentTypePage(index)) must not be defined
-              result.get(DocumentReferenceNumberPage(index)) must not be defined
-              result.get(AddTypeOfPackageYesNoPage(index)) must not be defined
-              result.get(PackageTypePage(index)) must not be defined
-              result.get(AddNumberOfPackagesYesNoPage(index)) must not be defined
-              result.get(NumberOfPackagesPage(index)) must not be defined
-              result.get(DeclareQuantityOfGoodsYesNoPage(index)) must not be defined
-              result.get(MetricPage(index)) must not be defined
-              result.get(QuantityPage(index)) must not be defined
-              result.get(AddAdditionalInformationYesNoPage(index)) must not be defined
-              result.get(AdditionalInformationPage(index)) must not be defined
-          }
+            result.get(AttachToAllItemsPage(index)) mustBe defined
+            result.get(InferredAttachToAllItemsPage(index)) must not be defined
+            result.get(TypePage(index)) must not be defined
+            result.get(PreviousDocumentTypePage(index)) must not be defined
+            result.get(DocumentDetailsSection(index)) must not be defined
         }
       }
+    }
+  }
+}
 
-      "when answer does not change" - {
-        "must not remove pages" in {
-          forAll(arbitrary[Boolean]) {
-            bool =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AttachToAllItemsPage(index), bool)
-                .setValue(TypePage(index), arbitrary[Document].sample.value)
-                .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
-                .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-                .setValue(AddTypeOfPackageYesNoPage(index), true)
-                .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
-                .setValue(AddNumberOfPackagesYesNoPage(index), true)
-                .setValue(NumberOfPackagesPage(index), arbitrary[Int].sample.value)
-                .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
-                .setValue(MetricPage(index), arbitrary[Metric].sample.value)
-                .setValue(QuantityPage(index), arbitrary[BigDecimal].sample.value)
-                .setValue(AddAdditionalInformationYesNoPage(index), true)
-                .setValue(AdditionalInformationPage(index), nonEmptyString.sample.value)
+class InferredAttachToAllItemsPageSpec extends PageBehaviours {
 
-              val result = userAnswers.setValue(AttachToAllItemsPage(index), bool)
+  "InferredAttachToAllItemsPage" - {
 
-              result.get(TypePage(index)) must be(defined)
-              result.get(PreviousDocumentTypePage(index)) must be(defined)
-              result.get(DocumentReferenceNumberPage(index)) must be(defined)
-              result.get(AddTypeOfPackageYesNoPage(index)) must be(defined)
-              result.get(PackageTypePage(index)) must be(defined)
-              result.get(AddNumberOfPackagesYesNoPage(index)) must be(defined)
-              result.get(NumberOfPackagesPage(index)) must be(defined)
-              result.get(DeclareQuantityOfGoodsYesNoPage(index)) must be(defined)
-              result.get(MetricPage(index)) must be(defined)
-              result.get(QuantityPage(index)) must be(defined)
-              result.get(AddAdditionalInformationYesNoPage(index)) must be(defined)
-              result.get(AdditionalInformationPage(index)) must be(defined)
-          }
+    beRetrievable[Boolean](InferredAttachToAllItemsPage(documentIndex))
+
+    beSettable[Boolean](InferredAttachToAllItemsPage(documentIndex))
+
+    beRemovable[Boolean](InferredAttachToAllItemsPage(documentIndex))
+
+    "cleanup" - {
+      "must remove pages" in {
+        forAll(arbitrary[Boolean]) {
+          bool =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AttachToAllItemsPage(index), bool)
+              .setValue(TypePage(index), arbitrary[Document].sample.value)
+              .setValue(PreviousDocumentTypePage(index), arbitrary[Document].sample.value)
+              .setValue(DocumentDetailsSection(index), Json.obj("foo" -> "bar"))
+
+            val result = userAnswers.setValue(InferredAttachToAllItemsPage(index), bool)
+
+            result.get(InferredAttachToAllItemsPage(index)) mustBe defined
+            result.get(AttachToAllItemsPage(index)) must not be defined
+            result.get(TypePage(index)) must not be defined
+            result.get(PreviousDocumentTypePage(index)) must not be defined
+            result.get(DocumentDetailsSection(index)) must not be defined
         }
       }
     }
