@@ -24,8 +24,8 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 case class Document(`type`: DocumentType, code: String, description: Option[String]) extends Selectable {
 
   override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"($code) $value"
-    case _                                  => code
+    case Some(value) if value.trim.nonEmpty => s"${`type`.display} - ($code) $value"
+    case _                                  => s"${`type`.display} - $code"
   }
 
   override val value: String = toString

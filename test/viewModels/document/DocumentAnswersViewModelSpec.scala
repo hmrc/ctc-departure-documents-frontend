@@ -68,15 +68,13 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
   }
 
   "when previous document" - {
-    "must render 14 rows" in {
+    "must render 12 rows" in {
       forAll(Gen.oneOf(TypePage, PreviousDocumentTypePage)) {
         typePage =>
           val userAnswers = emptyUserAnswers
             .setValue(AttachToAllItemsPage(index), arbitrary[Boolean].sample.value)
             .setValue(typePage(index), arbitrary[Document](arbitraryPreviousDocument).sample.value)
             .setValue(DocumentReferenceNumberPage(index), nonEmptyString.sample.value)
-            .setValue(AddGoodsItemNumberYesNoPage(index), true)
-            .setValue(GoodsItemNumberPage(index), arbitrary[Int].sample.value)
             .setValue(AddTypeOfPackageYesNoPage(index), true)
             .setValue(PackageTypePage(index), arbitrary[PackageType].sample.value)
             .setValue(AddNumberOfPackagesYesNoPage(index), true)
@@ -91,7 +89,7 @@ class DocumentAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyCheck
 
           result.sectionTitle must not be defined
 
-          result.rows.size mustBe 14
+          result.rows.size mustBe 12
 
           result.addAnotherLink must not be defined
       }

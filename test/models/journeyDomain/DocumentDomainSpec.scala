@@ -345,12 +345,10 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
     "can be read from user answers" in {
-      forAll(documentGen, nonEmptyString, arbitrary[Int], arbitrary[PackageType], arbitrary[Metric], arbitrary[BigDecimal]) {
-        (document, referenceInformation, goodsItemNumber, packageType, metric, quantity) =>
+      forAll(documentGen, nonEmptyString, arbitrary[PackageType], arbitrary[Metric], arbitrary[BigDecimal]) {
+        (document, referenceInformation, packageType, metric, quantity) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceInformation)
-            .setValue(AddGoodsItemNumberYesNoPage(index), true)
-            .setValue(GoodsItemNumberPage(index), goodsItemNumber)
             .setValue(AddTypeOfPackageYesNoPage(index), true)
             .setValue(PackageTypePage(index), packageType)
             .setValue(AddNumberOfPackagesYesNoPage(index), false)
@@ -363,7 +361,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val expectedResult = PreviousDocumentItemLevelDomain(
             document = document,
             referenceNumber = referenceInformation,
-            goodsItemNumber = Some(goodsItemNumber),
             `package` = Some(
               PackageDomain(
                 `type` = packageType,
@@ -401,41 +398,11 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         }
       }
 
-      "when add goods item number yes/no is unanswered" in {
-        forAll(documentGen, nonEmptyString) {
-          (document, referenceNumber) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-
-            val result: EitherType[PreviousDocumentItemLevelDomain] = UserAnswersReader[PreviousDocumentItemLevelDomain](
-              PreviousDocumentItemLevelDomain.userAnswersReader(index, document)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe AddGoodsItemNumberYesNoPage(index)
-        }
-      }
-
-      "when goods item number is unanswered" in {
-        forAll(documentGen, nonEmptyString) {
-          (document, referenceNumber) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddGoodsItemNumberYesNoPage(index), true)
-
-            val result: EitherType[PreviousDocumentItemLevelDomain] = UserAnswersReader[PreviousDocumentItemLevelDomain](
-              PreviousDocumentItemLevelDomain.userAnswersReader(index, document)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe GoodsItemNumberPage(index)
-        }
-      }
-
       "when add package yes/no is unanswered" in {
         forAll(documentGen, nonEmptyString) {
           (document, referenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddGoodsItemNumberYesNoPage(index), false)
 
             val result: EitherType[PreviousDocumentItemLevelDomain] = UserAnswersReader[PreviousDocumentItemLevelDomain](
               PreviousDocumentItemLevelDomain.userAnswersReader(index, document)
@@ -450,7 +417,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           (document, referenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddGoodsItemNumberYesNoPage(index), false)
               .setValue(AddTypeOfPackageYesNoPage(index), false)
 
             val result: EitherType[PreviousDocumentItemLevelDomain] = UserAnswersReader[PreviousDocumentItemLevelDomain](
@@ -466,7 +432,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           (document, referenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddGoodsItemNumberYesNoPage(index), false)
               .setValue(AddTypeOfPackageYesNoPage(index), false)
               .setValue(DeclareQuantityOfGoodsYesNoPage(index), false)
 
@@ -483,7 +448,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           (document, referenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddGoodsItemNumberYesNoPage(index), false)
               .setValue(AddTypeOfPackageYesNoPage(index), false)
               .setValue(DeclareQuantityOfGoodsYesNoPage(index), false)
               .setValue(AddAdditionalInformationYesNoPage(index), true)
