@@ -33,13 +33,18 @@ case class Document(`type`: DocumentType, code: String, description: Option[Stri
 
 object Document {
 
-  def httpReads(`type`: DocumentType): HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) =>
-    response.json match {
+  def httpReads(`type`: DocumentType): HttpReads[Seq[Document]] = (_: String, _: String, response: HttpResponse) => {
+    val referenceData: JsValue = (response.json \ "data").getOrElse(
+      throw new IllegalStateException("[Document][httpReads] Reference data could not be parsed")
+    )
+
+    referenceData match {
       case JsArray(values) =>
         values.flatMap(_.validate[Document](referenceDataReads(`type`)).asOpt).toSeq
       case _ =>
         Nil
     }
+  }
 
   def referenceDataReads(`type`: DocumentType): Reads[Document] = (
     (__ \ "code").read[String] and
