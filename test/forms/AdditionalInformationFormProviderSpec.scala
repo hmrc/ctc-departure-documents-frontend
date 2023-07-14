@@ -16,49 +16,69 @@
 
 package forms
 
-import forms.Constants.maxAdditionalInformationLength
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
+import play.api.Application
 import play.api.data.FormError
+import play.api.test.Helpers.running
 
-class AdditionalInformationFormProviderSpec extends StringFieldBehaviours {
+class AdditionalInformationFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
 
-  private val form = new AdditionalInformationFormProvider()(prefix)
+  "when post-transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      runTest(app, 35)
+    }
+  }
 
-  ".value" - {
+  "when during transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      runTest(app, 26)
+    }
+  }
 
-    val fieldName = "value"
+  private def runTest(app: Application, maxLength: Int): Unit = {
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxAdditionalInformationLength)
-    )
+    val formProvider = app.injector.instanceOf[AdditionalInformationFormProvider]
+    val form         = formProvider(prefix)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    ".value" - {
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxAdditionalInformationLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxAdditionalInformationLength))
-    )
+      val fieldName = "value"
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
-      maxAdditionalInformationLength
-    )
+      behave like fieldThatBindsValidData(
+        form = form,
+        fieldName = fieldName,
+        validDataGenerator = stringsWithMaxLength(maxLength)
+      )
+
+      behave like mandatoryField(
+        form = form,
+        fieldName = fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
+
+      behave like fieldWithMaxLength(
+        form = form,
+        fieldName = fieldName,
+        maxLength = maxLength,
+        lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      )
+
+      behave like fieldWithInvalidCharacters(
+        form = form,
+        fieldName = fieldName,
+        error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+        length = maxLength
+      )
+    }
   }
 }

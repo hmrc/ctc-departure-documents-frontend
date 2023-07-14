@@ -16,23 +16,35 @@
 
 package views.document
 
+import base.AppWithDefaultMockFixtures
 import forms.DocumentReferenceNumberFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.Application
 import play.api.data.Form
+import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.document.DocumentReferenceNumberView
 
-class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
+class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] with AppWithDefaultMockFixtures {
 
   override val prefix: String = "document.documentReferenceNumber"
 
-  override def form: Form[String] = new DocumentReferenceNumberFormProvider()(prefix, Nil)
+  override def form: Form[String] = form(app)
+
+  private def form(app: Application): Form[String] =
+    app.injector.instanceOf[DocumentReferenceNumberFormProvider].apply(prefix, Nil)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[DocumentReferenceNumberView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
+    applyView(app, form)
+
+  private def applyView(app: Application): HtmlFormat.Appendable =
+    applyView(app, form(app))
+
+  private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
+    app.injector.instanceOf[DocumentReferenceNumberView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -44,9 +56,23 @@ class DocumentReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This can be up to 70 characters long and include both letters and numbers.")
-
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when post-transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "This can be up to 70 characters long and include both letters and numbers.")
+    }
+  }
+
+  "when transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "This can be up to 35 characters long and include both letters and numbers.")
+    }
+  }
 }
