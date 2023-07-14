@@ -32,8 +32,6 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours with
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val uniqueKey   = s"$prefix.error.unique"
 
-  private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
-
   "when post-transition" - {
     val app = postTransitionApplicationBuilder().build()
     running(app) {
@@ -49,6 +47,8 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours with
   }
 
   private def runTest(app: Application, maxLength: Int): Unit = {
+
+    val values = listWithMaxLength[String]()(Arbitrary(stringsWithMaxLength(maxLength))).sample.value
 
     val formProvider = app.injector.instanceOf[DocumentReferenceNumberFormProvider]
     val form         = formProvider(prefix, values)
