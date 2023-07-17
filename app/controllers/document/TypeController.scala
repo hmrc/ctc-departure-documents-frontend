@@ -45,7 +45,7 @@ class TypeController @Inject() (
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

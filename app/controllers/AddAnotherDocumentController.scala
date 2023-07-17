@@ -40,7 +40,7 @@ class AddAnotherDocumentController @Inject() (
   viewModelProvider: AddAnotherDocumentViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDocumentView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
