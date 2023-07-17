@@ -24,6 +24,7 @@ import models.requests.SpecificDataRequestProvider1
 import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage, TypePage}
+import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,7 +45,7 @@ class TypeController @Inject() (
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: TypeView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
     extends FrontendBaseController
     with I18nSupport {
 

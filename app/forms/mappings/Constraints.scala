@@ -19,6 +19,7 @@ package forms.mappings
 import config.{FrontendAppConfig, PhaseConfig}
 import models.ConsignmentLevelDocuments
 import models.reference.Document
+import play.api.Configuration
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
@@ -122,7 +123,8 @@ trait Constraints {
 
   protected def maxLimit(consignmentLevelDocuments: ConsignmentLevelDocuments, attachedToAllItems: Boolean, errorKey: String)(implicit
     config: FrontendAppConfig,
-    phaseConfig: PhaseConfig
+    phaseConfig: PhaseConfig,
+    configuration: Configuration
   ): Constraint[Document] =
     Constraint {
       case document if !attachedToAllItems || consignmentLevelDocuments.canAdd(document.`type`) =>

@@ -25,6 +25,7 @@ import models.{ConsignmentLevelDocuments, DeclarationType, Index, LocalReference
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage, PreviousDocumentTypePage}
 import pages.external.TransitOperationDeclarationTypePage
+import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,7 +46,7 @@ class PreviousDocumentTypeController @Inject() (
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
     extends FrontendBaseController
     with I18nSupport {
 

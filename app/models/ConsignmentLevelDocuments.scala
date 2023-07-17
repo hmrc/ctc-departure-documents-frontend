@@ -19,6 +19,7 @@ package models
 import config.{FrontendAppConfig, PhaseConfig}
 import pages.document._
 import pages.sections.DocumentsSection
+import play.api.Configuration
 
 case class ConsignmentLevelDocuments(
   previous: Int,
@@ -26,13 +27,14 @@ case class ConsignmentLevelDocuments(
   transport: Int
 ) {
 
-  def canAdd(documentType: DocumentType)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig): Boolean = documentType match {
-    case DocumentType.Previous  => previous < phaseConfig.maxPreviousDocuments
-    case DocumentType.Support   => supporting < config.maxSupportingDocuments
-    case DocumentType.Transport => transport < config.maxTransportDocuments
-  }
+  def canAdd(documentType: DocumentType)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration): Boolean =
+    documentType match {
+      case DocumentType.Previous  => previous < phaseConfig.maxPreviousDocuments
+      case DocumentType.Support   => supporting < config.maxSupportingDocuments
+      case DocumentType.Transport => transport < config.maxTransportDocuments
+    }
 
-  def cannotAddAnyMore(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig): Boolean =
+  def cannotAddAnyMore(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration): Boolean =
     !canAdd(DocumentType.Previous) && !canAdd(DocumentType.Support) && !canAdd(DocumentType.Transport)
 }
 

@@ -25,6 +25,7 @@ import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.{QuestionPage, ReadOnlyPage}
+import play.api.Configuration
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Format, JsResultException, Json, Reads}
@@ -64,6 +65,7 @@ trait SpecBase
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
   implicit def phaseConfig: PhaseConfig             = injector.instanceOf[PhaseConfig]
+  implicit def configuration: Configuration         = injector.instanceOf[Configuration]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

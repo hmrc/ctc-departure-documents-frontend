@@ -20,6 +20,7 @@ import config.{FrontendAppConfig, PhaseConfig}
 import forms.mappings.Mappings
 import models.reference.Document
 import models.{ConsignmentLevelDocuments, SelectableList}
+import play.api.Configuration
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class DocumentFormProvider @Inject() extends Mappings {
     consignmentLevelDocuments: ConsignmentLevelDocuments,
     attachedToAllItems: Boolean,
     args: Any*
-  )(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig): Form[Document] =
+  )(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration): Form[Document] =
     Form(
       "value" -> selectable[Document](selectableList, s"$prefix.error.required", args)
         .verifying(

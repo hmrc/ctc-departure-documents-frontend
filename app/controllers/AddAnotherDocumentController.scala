@@ -20,6 +20,7 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode, NormalMode}
+import play.api.Configuration
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +40,7 @@ class AddAnotherDocumentController @Inject() (
   viewModelProvider: AddAnotherDocumentViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDocumentView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
     extends FrontendBaseController
     with I18nSupport {
 

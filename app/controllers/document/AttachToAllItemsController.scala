@@ -25,6 +25,7 @@ import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.QuestionPage
 import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage}
+import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -42,7 +43,7 @@ class AttachToAllItemsController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AttachToAllItemsView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
     extends FrontendBaseController
     with I18nSupport {
 

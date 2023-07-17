@@ -201,7 +201,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         ) {
           (numberOfPreviousDocuments, document) =>
             val consignmentLevelDocuments = ConsignmentLevelDocuments(numberOfPreviousDocuments, 0, 0)
-            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Valid
         }
       }
@@ -213,7 +214,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         ) {
           (numberOfSupportingDocuments, document) =>
             val consignmentLevelDocuments = ConsignmentLevelDocuments(0, numberOfSupportingDocuments, 0)
-            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Valid
         }
       }
@@ -225,7 +227,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         ) {
           (numberOfTransportDocuments, document) =>
             val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, numberOfTransportDocuments)
-            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Valid
         }
       }
@@ -235,7 +238,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
           document =>
             val consignmentLevelDocuments =
               ConsignmentLevelDocuments(phaseConfig.maxPreviousDocuments, frontendAppConfig.maxSupportingDocuments, frontendAppConfig.maxTransportDocuments)
-            val result = maxLimit(consignmentLevelDocuments, attachedToAllItems = false, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = false, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Valid
         }
       }
@@ -248,7 +252,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         ) {
           document =>
             val consignmentLevelDocuments = ConsignmentLevelDocuments(phaseConfig.maxPreviousDocuments, 0, 0)
-            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Invalid("error.maxLimitReached")
         }
       }
@@ -259,7 +264,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         ) {
           document =>
             val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0)
-            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Invalid("error.maxLimitReached")
         }
       }
@@ -270,7 +276,8 @@ class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         ) {
           document =>
             val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments)
-            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig)(document)
+            val result =
+              maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig, phaseConfig, configuration)(document)
             result mustEqual Invalid("error.maxLimitReached")
         }
       }
