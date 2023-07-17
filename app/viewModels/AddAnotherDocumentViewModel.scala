@@ -18,7 +18,6 @@ package viewModels
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{ConsignmentLevelDocuments, UserAnswers}
-import play.api.Configuration
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.DocumentsAnswersHelper
@@ -39,7 +38,7 @@ object AddAnotherDocumentViewModel {
 
     def apply(
       userAnswers: UserAnswers
-    )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration): AddAnotherDocumentViewModel = {
+    )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): AddAnotherDocumentViewModel = {
       val helper = new DocumentsAnswersHelper(userAnswers)
 
       val listItems = helper.listItems.collect {

@@ -54,8 +54,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 
-  lazy val maxSupportingDocuments: Int = configuration.get[Int]("limits.maxSupportingDocuments")
-  lazy val maxTransportDocuments: Int  = configuration.get[Int]("limits.maxTransportDocuments")
+  lazy val maxSupportingDocuments: Int                             = configuration.get[Int]("limits.maxSupportingDocuments")
+  lazy val maxTransportDocuments: Int                              = configuration.get[Int]("limits.maxTransportDocuments")
+  def maxPreviousDocuments(implicit phaseConfig: PhaseConfig): Int = phaseConfig.maxPreviousDocuments(configuration)
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
 

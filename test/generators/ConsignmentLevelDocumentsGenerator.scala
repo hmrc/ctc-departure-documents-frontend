@@ -26,7 +26,7 @@ import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOffi
 trait ConsignmentLevelDocumentsGenerator {
   self: SpecBase with Generators =>
 
-  private val numberOfPreviousAndSupportingDocuments: Int = phaseConfig.maxPreviousDocuments + frontendAppConfig.maxSupportingDocuments
+  private val numberOfPreviousAndSupportingDocuments: Int = frontendAppConfig.maxPreviousDocuments + frontendAppConfig.maxSupportingDocuments
 
   val numberOfDocuments: Int = numberOfPreviousAndSupportingDocuments + frontendAppConfig.maxTransportDocuments
 
@@ -39,11 +39,11 @@ trait ConsignmentLevelDocumentsGenerator {
       (acc, i) =>
         val ua = acc.setValue(AttachToAllItemsPage(Index(i)), true)
         i match {
-          case it if 0 until phaseConfig.maxPreviousDocuments contains it =>
+          case it if 0 until frontendAppConfig.maxPreviousDocuments contains it =>
             ua
               .setValue(TypePage(Index(i)), arbitrary[Document](arbitraryPreviousDocument).sample.value)
               .setValue(PreviousDocumentTypePage(Index(i)), arbitrary[Document](arbitraryPreviousDocument).sample.value)
-          case it if phaseConfig.maxPreviousDocuments until numberOfPreviousAndSupportingDocuments contains it =>
+          case it if frontendAppConfig.maxPreviousDocuments until numberOfPreviousAndSupportingDocuments contains it =>
             ua.setValue(TypePage(Index(i)), arbitrary[Document](arbitrarySupportDocument).sample.value)
           case it if numberOfPreviousAndSupportingDocuments until numberOfDocuments contains it =>
             ua.setValue(TypePage(Index(i)), arbitrary[Document](arbitraryTransportDocument).sample.value)

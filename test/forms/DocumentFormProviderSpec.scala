@@ -75,7 +75,7 @@ class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with 
         val document1                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val document2                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(phaseConfig.maxPreviousDocuments, 0, 0)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, true, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)
@@ -110,7 +110,7 @@ class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with 
         val document1                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val document2                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(phaseConfig.maxPreviousDocuments, 0, 0)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, false, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)

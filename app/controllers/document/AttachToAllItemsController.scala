@@ -43,7 +43,7 @@ class AttachToAllItemsController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AttachToAllItemsView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

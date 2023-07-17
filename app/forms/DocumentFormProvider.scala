@@ -33,7 +33,7 @@ class DocumentFormProvider @Inject() extends Mappings {
     consignmentLevelDocuments: ConsignmentLevelDocuments,
     attachedToAllItems: Boolean,
     args: Any*
-  )(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig, configuration: Configuration): Form[Document] =
+  )(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig): Form[Document] =
     Form(
       "value" -> selectable[Document](selectableList, s"$prefix.error.required", args)
         .verifying(

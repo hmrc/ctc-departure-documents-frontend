@@ -28,10 +28,10 @@ trait PhaseConfig {
 
 class TransitionConfig() extends PhaseConfig {
   override val phase: Phase                                                     = Transition
-  override def maxPreviousDocuments(implicit configuration: Configuration): Int = configuration.get[Int]("maxPreviousDocuments.transition")
+  override def maxPreviousDocuments(implicit configuration: Configuration): Int = configuration.get[Int]("limits.maxPreviousDocuments.transition")
 }
 
 class PostTransitionConfig() extends PhaseConfig {
   override val phase: Phase                                                     = PostTransition
-  override def maxPreviousDocuments(implicit configuration: Configuration): Int = configuration.get[Int]("maxPreviousDocuments.postTransition")
+  override def maxPreviousDocuments(implicit configuration: Configuration): Int = configuration.get[Int]("limits.maxPreviousDocuments.postTransition")
 }
