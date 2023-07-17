@@ -16,7 +16,7 @@
 
 package controllers.document
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
@@ -45,7 +45,7 @@ class PreviousDocumentTypeController @Inject() (
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: PreviousDocumentTypeView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

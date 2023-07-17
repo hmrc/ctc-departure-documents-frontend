@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.ConsignmentLevelDocuments
 import models.reference.Document
 import play.api.data.validation.{Constraint, Invalid, Valid}
@@ -121,7 +121,8 @@ trait Constraints {
     }
 
   protected def maxLimit(consignmentLevelDocuments: ConsignmentLevelDocuments, attachedToAllItems: Boolean, errorKey: String)(implicit
-    config: FrontendAppConfig
+    config: FrontendAppConfig,
+    phaseConfig: PhaseConfig
   ): Constraint[Document] =
     Constraint {
       case document if !attachedToAllItems || consignmentLevelDocuments.canAdd(document.`type`) =>

@@ -16,7 +16,7 @@
 
 package base
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -48,9 +48,8 @@ trait SpecBase
 
   val eoriNumber: EoriNumber    = EoriNumber("GB1234567891234")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
-
-  val index: Index         = Index(0)
-  val documentIndex: Index = Index(0)
+  val index: Index              = Index(0)
+  val documentIndex: Index      = Index(0)
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
@@ -64,6 +63,7 @@ trait SpecBase
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit def phaseConfig: PhaseConfig             = injector.instanceOf[PhaseConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

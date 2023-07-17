@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode, NormalMode}
@@ -39,7 +39,7 @@ class AddAnotherDocumentController @Inject() (
   viewModelProvider: AddAnotherDocumentViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDocumentView
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,7 +16,7 @@
 
 package forms
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import forms.mappings.Mappings
 import models.reference.Document
 import models.{ConsignmentLevelDocuments, SelectableList}
@@ -32,7 +32,7 @@ class DocumentFormProvider @Inject() extends Mappings {
     consignmentLevelDocuments: ConsignmentLevelDocuments,
     attachedToAllItems: Boolean,
     args: Any*
-  )(implicit config: FrontendAppConfig): Form[Document] =
+  )(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig): Form[Document] =
     Form(
       "value" -> selectable[Document](selectableList, s"$prefix.error.required", args)
         .verifying(

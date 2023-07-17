@@ -16,7 +16,7 @@
 
 package controllers.document
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -42,7 +42,7 @@ class AttachToAllItemsController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AttachToAllItemsView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
