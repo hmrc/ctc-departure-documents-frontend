@@ -17,6 +17,7 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.{PhaseConfig, PostTransitionConfig}
 import forms.YesNoFormProvider
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
 import models.{Index, NormalMode, UserAnswers}
@@ -43,119 +44,123 @@ class AttachToAllItemsControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig]))
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
   "AttachToAllItems Controller" - {
 
-    "must set inferred value to false if cannot add any more consignment level documents" in {
+    "In PostTransition" - {
 
-      val documentIndex = Index(numberOfDocuments)
-      setExistingUserAnswers(userAnswersWithConsignmentLevelDocumentsMaxedOut)
+      "must set inferred value to false if cannot add any more consignment level documents" in {
 
-      lazy val attachToAllItemsRoute = routes.AttachToAllItemsController.onPageLoad(lrn, mode, documentIndex).url
+        val documentIndex = Index(numberOfDocuments)
+        setExistingUserAnswers(userAnswersWithConsignmentLevelDocumentsMaxedOut)
 
-      val request = FakeRequest(GET, attachToAllItemsRoute)
-      val result  = route(app, request).value
+        lazy val attachToAllItemsRoute = routes.AttachToAllItemsController.onPageLoad(lrn, mode, documentIndex).url
 
-      status(result) mustEqual SEE_OTHER
+        val request = FakeRequest(GET, attachToAllItemsRoute)
+        val result  = route(app, request).value
 
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(documentIndex)).value mustBe false
-    }
+        status(result) mustEqual SEE_OTHER
 
-    "must return OK and the correct view for a GET" in {
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(documentIndex)).value mustBe false
+      }
 
-      setExistingUserAnswers(emptyUserAnswers)
+      "must return OK and the correct view for a GET" in {
 
-      val request = FakeRequest(GET, attachToAllItemsRoute)
-      val result  = route(app, request).value
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val view = injector.instanceOf[AttachToAllItemsView]
+        val request = FakeRequest(GET, attachToAllItemsRoute)
+        val result  = route(app, request).value
 
-      status(result) mustEqual OK
+        val view = injector.instanceOf[AttachToAllItemsView]
 
-      contentAsString(result) mustEqual
-        view(form, lrn, mode, documentIndex)(request, messages).toString
-    }
+        status(result) mustEqual OK
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+        contentAsString(result) mustEqual
+          view(form, lrn, mode, documentIndex)(request, messages).toString
+      }
 
-      val userAnswers = emptyUserAnswers.setValue(AttachToAllItemsPage(documentIndex), true)
-      setExistingUserAnswers(userAnswers)
+      "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val request = FakeRequest(GET, attachToAllItemsRoute)
+        val userAnswers = emptyUserAnswers.setValue(AttachToAllItemsPage(documentIndex), true)
+        setExistingUserAnswers(userAnswers)
 
-      val result = route(app, request).value
+        val request = FakeRequest(GET, attachToAllItemsRoute)
 
-      val filledForm = form.bind(Map("value" -> "true"))
+        val result = route(app, request).value
 
-      val view = injector.instanceOf[AttachToAllItemsView]
+        val filledForm = form.bind(Map("value" -> "true"))
 
-      status(result) mustEqual OK
+        val view = injector.instanceOf[AttachToAllItemsView]
 
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
-    }
+        status(result) mustEqual OK
 
-    "must redirect to the next page when valid data is submitted" in {
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+      }
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, attachToAllItemsRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val result = route(app, request).value
+        val request = FakeRequest(POST, attachToAllItemsRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual onwardRoute.url
-    }
+        status(result) mustEqual SEE_OTHER
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
 
-      setExistingUserAnswers(emptyUserAnswers)
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val request   = FakeRequest(POST, attachToAllItemsRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val result = route(app, request).value
+        val request   = FakeRequest(POST, attachToAllItemsRoute).withFormUrlEncodedBody(("value", ""))
+        val boundForm = form.bind(Map("value" -> ""))
 
-      status(result) mustEqual BAD_REQUEST
+        val result = route(app, request).value
 
-      val view = injector.instanceOf[AttachToAllItemsView]
+        status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, documentIndex)(request, messages).toString
-    }
+        val view = injector.instanceOf[AttachToAllItemsView]
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
+        contentAsString(result) mustEqual
+          view(boundForm, lrn, mode, documentIndex)(request, messages).toString
+      }
 
-      setNoExistingUserAnswers()
+      "must redirect to Session Expired for a GET if no existing data is found" in {
 
-      val request = FakeRequest(GET, attachToAllItemsRoute)
+        setNoExistingUserAnswers()
 
-      val result = route(app, request).value
+        val request = FakeRequest(GET, attachToAllItemsRoute)
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-    }
+        status(result) mustEqual SEE_OTHER
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
 
-      setNoExistingUserAnswers()
+      "must redirect to Session Expired for a POST if no existing data is found" in {
 
-      val request = FakeRequest(POST, attachToAllItemsRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        setNoExistingUserAnswers()
 
-      val result = route(app, request).value
+        val request = FakeRequest(POST, attachToAllItemsRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      status(result) mustEqual SEE_OTHER
+        val result = route(app, request).value
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
     }
   }
 }
