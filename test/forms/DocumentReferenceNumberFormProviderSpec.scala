@@ -16,59 +16,79 @@
 
 package forms
 
-import forms.Constants.maxDocumentRefNumberLength
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.Application
 import play.api.data.FormError
+import play.api.test.Helpers.running
 
-class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
+class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
-  private val prefix    = Gen.alphaNumStr.sample.value
-  val requiredKey       = s"$prefix.error.required"
-  val lengthKey         = s"$prefix.error.length"
-  val invalidKey        = s"$prefix.error.invalidCharacters"
-  private val uniqueKey = s"$prefix.error.unique"
+  private val prefix      = Gen.alphaNumStr.sample.value
+  private val requiredKey = s"$prefix.error.required"
+  private val lengthKey   = s"$prefix.error.length"
+  private val invalidKey  = s"$prefix.error.invalidCharacters"
+  private val uniqueKey   = s"$prefix.error.unique"
 
-  private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
+  "when post-transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      runTest(app, 70)
+    }
+  }
 
-  val form = new DocumentReferenceNumberFormProvider()(prefix, values)
+  "when during transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      runTest(app, 35)
+    }
+  }
 
-  ".value" - {
+  private def runTest(app: Application, maxLength: Int): Unit = {
 
-    val fieldName = "value"
+    val values = listWithMaxLength[String]()(Arbitrary(stringsWithMaxLength(maxLength))).sample.value
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxDocumentRefNumberLength)
-    )
+    val formProvider = app.injector.instanceOf[DocumentReferenceNumberFormProvider]
+    val form         = formProvider(prefix, values)
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxDocumentRefNumberLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxDocumentRefNumberLength))
-    )
+    ".value" - {
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      val fieldName = "value"
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxDocumentRefNumberLength
-    )
+      behave like fieldThatBindsValidData(
+        form = form,
+        fieldName = fieldName,
+        validDataGenerator = stringsWithMaxLength(maxLength)
+      )
 
-    behave like fieldThatBindsUniqueData(
-      form = form,
-      fieldName = fieldName,
-      uniqueError = FormError(fieldName, uniqueKey),
-      values = values
-    )
+      behave like fieldWithMaxLength(
+        form = form,
+        fieldName = fieldName,
+        maxLength = maxLength,
+        lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      )
+
+      behave like mandatoryField(
+        form = form,
+        fieldName = fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
+
+      behave like fieldWithInvalidCharacters(
+        form = form,
+        fieldName = fieldName,
+        error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+        length = maxLength
+      )
+
+      behave like fieldThatBindsUniqueData(
+        form = form,
+        fieldName = fieldName,
+        uniqueError = FormError(fieldName, uniqueKey),
+        values = values
+      )
+    }
   }
 }

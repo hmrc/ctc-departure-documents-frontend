@@ -16,20 +16,31 @@
 
 package views.document
 
+import base.AppWithDefaultMockFixtures
 import forms.AdditionalInformationFormProvider
-import forms.Constants.maxAdditionalInformationLength
 import models.NormalMode
+import play.api.Application
 import play.api.data.Form
+import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.document.AdditionalInformationView
 
-class AdditionalInformationViewSpec extends CharacterCountViewBehaviours {
+class AdditionalInformationViewSpec extends CharacterCountViewBehaviours with AppWithDefaultMockFixtures {
 
-  override def form: Form[String] = new AdditionalInformationFormProvider()(prefix, documentIndex.display)
+  override def form: Form[String] = form(app)
+
+  private def form(app: Application): Form[String] =
+    app.injector.instanceOf[AdditionalInformationFormProvider].apply(prefix, documentIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AdditionalInformationView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
+    applyView(app, form)
+
+  private def applyView(app: Application): HtmlFormat.Appendable =
+    applyView(app, form(app))
+
+  private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
+    app.injector.instanceOf[AdditionalInformationView].apply(form, lrn, NormalMode, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = "document.additionalInformation"
 
@@ -41,7 +52,21 @@ class AdditionalInformationViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(maxAdditionalInformationLength)
-
   behave like pageWithSubmitButton("Save and continue")
+
+  "when post-transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithCharacterCount(doc, 35)
+    }
+  }
+
+  "when transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithCharacterCount(doc, 26)
+    }
+  }
 }

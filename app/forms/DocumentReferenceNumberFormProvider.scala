@@ -16,21 +16,21 @@
 
 package forms
 
-import forms.Constants.maxDocumentRefNumberLength
+import config.PhaseConfig
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
-
-import javax.inject.Inject
 import play.api.data.Form
 
-class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class DocumentReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String, otherReferenceNumbers: Seq[String]): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(maxDocumentRefNumberLength, s"$prefix.error.length"),
+            maxLength(phaseConfig.maxDocumentRefNumberLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
             notInList(otherReferenceNumbers, s"$prefix.error.unique")
           )
