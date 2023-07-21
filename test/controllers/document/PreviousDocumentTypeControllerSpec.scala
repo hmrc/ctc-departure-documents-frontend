@@ -17,9 +17,10 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants._
 import forms.DocumentFormProvider
 import generators.Generators
-import models.{ConsignmentLevelDocuments, DeclarationType, NormalMode, SelectableList}
+import models.{ConsignmentLevelDocuments, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -38,7 +39,7 @@ import scala.concurrent.Future
 
 class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val declarationType      = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F).sample.get
+  private val declarationType      = Gen.oneOf(T2, T2F).sample.get
   private val previousDocument1    = arbitraryPreviousDocument.arbitrary.sample.get
   private val previousDocument2    = arbitraryPreviousDocument.arbitrary.sample.get
   private val previousDocumentList = SelectableList(Seq(previousDocument1, previousDocument2))

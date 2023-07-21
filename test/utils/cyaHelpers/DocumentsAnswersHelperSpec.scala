@@ -19,11 +19,9 @@ package utils.cyaHelpers
 import base.SpecBase
 import controllers.document.routes
 import generators.Generators
-import models.DeclarationType._
 import models.reference.{CustomsOffice, Document}
-import models.{DeclarationType, Index, NormalMode}
+import models.{Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.document._
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
@@ -49,7 +47,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           "must return list items with remove links" in {
             forAll(
               arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
-              arbitrary[DeclarationType],
+              arbitrary[String](arbitraryDeclarationType),
               arbitrary[Boolean],
               arbitrary[Document](arbitraryTransportDocument),
               nonEmptyString
@@ -80,7 +78,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             "must return list items with remove links" in {
               forAll(
                 arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
-                Gen.oneOf(T2, T2F),
+                arbitrary[String](arbitraryT2OrT2FDeclarationType),
                 arbitrary[Boolean],
                 arbitrary[Document](arbitraryPreviousDocument),
                 nonEmptyString
@@ -117,7 +115,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             "must return list items with remove links" in {
               forAll(
                 arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
-                arbitrary[DeclarationType],
+                arbitrary[String](arbitraryDeclarationType),
                 arbitrary[Boolean]
               ) {
                 (xiCustomsOffice, declarationType, attachToAllItems) =>
@@ -145,7 +143,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             "must return list items with remove links" in {
               forAll(
                 arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
-                Gen.oneOf(T2, T2F),
+                arbitrary[String](arbitraryT2OrT2FDeclarationType),
                 arbitrary[Boolean]
               ) {
                 (gbCustomsOffice, declarationType, attachToAllItems) =>
@@ -173,7 +171,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             "must return list items with remove links" in {
               forAll(
                 arbitrary[CustomsOffice](arbitraryXiCustomsOffice),
-                arbitrary[DeclarationType],
+                arbitrary[String](arbitraryDeclarationType),
                 arbitrary[Boolean],
                 arbitrary[Document]
               ) {
@@ -203,7 +201,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             "must return list items with remove links" in {
               forAll(
                 arbitrary[CustomsOffice](arbitraryGbCustomsOffice),
-                Gen.oneOf(T2, T2F),
+                arbitrary[String](arbitraryT2OrT2FDeclarationType),
                 arbitrary[Boolean],
                 arbitrary[Document](arbitraryPreviousDocument)
               ) {

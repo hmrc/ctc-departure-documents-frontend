@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
 import models.requests.SpecificDataRequestProvider2
-import models.{ConsignmentLevelDocuments, DeclarationType, Index, LocalReferenceNumber, Mode}
+import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.{AttachToAllItemsPage, InferredAttachToAllItemsPage, PreviousDocumentTypePage}
 import pages.external.TransitOperationDeclarationTypePage
@@ -51,7 +51,7 @@ class PreviousDocumentTypeController @Inject() (
 
   private val prefix: String = "document.previousDocumentType"
 
-  private type Request = SpecificDataRequestProvider2[Boolean, DeclarationType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider2[Boolean, String]#SpecificDataRequest[_]
 
   private def consignmentLevelDocuments(documentIndex: Index)(implicit request: Request): ConsignmentLevelDocuments =
     ConsignmentLevelDocuments(request.userAnswers, documentIndex)

@@ -16,7 +16,6 @@
 
 package generators
 
-import models.DeclarationType
 import models.reference.{CustomsOffice, Document, Metric, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -35,7 +34,7 @@ trait UserAnswersEntryGenerators {
     import pages.external._
     {
       case TransitOperationOfficeOfDeparturePage => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case TransitOperationDeclarationTypePage   => arbitrary[DeclarationType].map(Json.toJson(_))
+      case TransitOperationDeclarationTypePage   => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
     }
   }
 

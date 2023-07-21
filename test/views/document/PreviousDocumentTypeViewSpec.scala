@@ -18,7 +18,7 @@ package views.document
 
 import forms.SelectableFormProvider
 import models.reference.Document
-import models.{DeclarationType, NormalMode, SelectableList}
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
@@ -28,7 +28,7 @@ import views.html.document.PreviousDocumentTypeView
 
 class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[Document] {
 
-  private val declarationType = arbitrary[DeclarationType].sample.get
+  private val declarationType = arbitrary[String](arbitraryDeclarationType).sample.get
 
   override def form: Form[Document] = new SelectableFormProvider()(prefix, SelectableList(values))
 

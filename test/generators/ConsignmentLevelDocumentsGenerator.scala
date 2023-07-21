@@ -18,7 +18,7 @@ package generators
 
 import base.SpecBase
 import models.reference.{CustomsOffice, Document}
-import models.{DeclarationType, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.document.{AttachToAllItemsPage, PreviousDocumentTypePage, TypePage}
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
@@ -33,7 +33,7 @@ trait ConsignmentLevelDocumentsGenerator {
   def userAnswersWithConsignmentLevelDocumentsMaxedOut: UserAnswers = {
     val initialAnswers = emptyUserAnswers
       .setValue(TransitOperationOfficeOfDeparturePage, arbitrary[CustomsOffice].sample.value)
-      .setValue(TransitOperationDeclarationTypePage, arbitrary[DeclarationType].sample.value)
+      .setValue(TransitOperationDeclarationTypePage, arbitrary[String](arbitraryDeclarationType).sample.value)
 
     (0 until numberOfDocuments).foldLeft(initialAnswers) {
       (acc, i) =>

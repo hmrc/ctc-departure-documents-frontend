@@ -16,7 +16,7 @@
 
 package generators
 
-import config.Constants.{GB, XI}
+import config.Constants._
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -126,9 +126,19 @@ trait ModelGenerators {
       } yield CustomsOffice(s"$XI$id", name, phoneNumber)
     }
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values)
+      Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
+    }
+
+  lazy val arbitraryT2OrT2FDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("T2", "T2F")
+    }
+
+  lazy val arbitraryNonT2OrT2FDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("T", "T1", "TIR")
     }
 
   implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
