@@ -16,6 +16,7 @@
 
 package controllers.document
 
+import config.PhaseConfig
 import controllers.actions._
 import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,7 +33,8 @@ class DocumentAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: DocumentAnswersView,
   viewModelProvider: DocumentAnswersViewModelProvider
-) extends FrontendBaseController
+)(implicit phaseConfig: PhaseConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {

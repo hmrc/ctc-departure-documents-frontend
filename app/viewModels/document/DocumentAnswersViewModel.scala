@@ -16,7 +16,8 @@
 
 package viewModels.document
 
-import models.{Index, UserAnswers}
+import config.PhaseConfig
+import models.{Index, Phase, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.document.DocumentAnswersHelper
 import viewModels.Section
@@ -29,28 +30,39 @@ object DocumentAnswersViewModel {
 
   class DocumentAnswersViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages): DocumentAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, phaseConfig: PhaseConfig): DocumentAnswersViewModel = {
       val helper = new DocumentAnswersHelper(userAnswers, index)
 
-      val section = Section(
-        rows = Seq(
-          helper.attachToAllItems,
-          helper.documentType,
-          helper.previousDocumentType,
-          helper.documentReferenceNumber,
-          helper.typeOfPackageYesNo,
-          helper.packageType,
-          helper.numberOfPackagesYesNo,
-          helper.numberOfPackage,
-          helper.declareQuantityOfGoodsYesNo,
-          helper.metric,
-          helper.quantity,
-          helper.lineItemNumberYesNo,
-          helper.lineItemNumber,
-          helper.additionalInformationYesNo,
-          helper.additionalInformation
-        ).flatten
-      )
+      val rows = Seq(
+        helper.attachToAllItems,
+        helper.documentType,
+        helper.previousDocumentType,
+        helper.documentReferenceNumber,
+        helper.typeOfPackageYesNo,
+        helper.packageType,
+        helper.numberOfPackagesYesNo,
+        helper.numberOfPackage,
+        helper.declareQuantityOfGoodsYesNo,
+        helper.metric,
+        helper.quantity,
+        helper.lineItemNumberYesNo,
+        helper.lineItemNumber,
+        helper.additionalInformationYesNo,
+        helper.additionalInformation
+      ).flatten
+
+      val section = {
+        phaseConfig.phase match {
+          case Phase.Transition =>
+            Section(
+              rows.tail
+            )
+          case Phase.PostTransition =>
+            Section(
+              rows
+            )
+        }
+      }
 
       new DocumentAnswersViewModel(Seq(section))
     }
