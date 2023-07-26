@@ -42,8 +42,8 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
 
   private val otherReferenceNumbers = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
 
-  private val formProvider                      = new DocumentReferenceNumberFormProvider()
-  private val form                              = formProvider("document.documentReferenceNumber", otherReferenceNumbers)
+  private lazy val formProvider                 = new DocumentReferenceNumberFormProvider()
+  private lazy val form                         = formProvider("document.documentReferenceNumber", otherReferenceNumbers)
   private val mode                              = NormalMode
   private val validAnswer                       = "testString123"
   private lazy val documentReferenceNumberRoute = routes.DocumentReferenceNumberController.onPageLoad(lrn, mode, documentIndex).url

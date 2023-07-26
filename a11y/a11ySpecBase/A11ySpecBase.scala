@@ -16,6 +16,7 @@
 
 package a11ySpecBase
 
+import config.PhaseConfig
 import generators.Generators
 import models.LocalReferenceNumber
 import org.scalacheck.Arbitrary.arbitrary
@@ -48,6 +49,8 @@ trait A11ySpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite wi
     val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
     messagesApi.preferred(fakeRequest)
   }
+
+  implicit def phaseConfig: PhaseConfig = app.injector.instanceOf[PhaseConfig]
 
   def heading(text: String): Html = Html(s"""<h1>$text</h1>""")
 

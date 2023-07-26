@@ -48,7 +48,7 @@ class InputTextSpec extends A11ySpecBase {
       .sample
       .value
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new AdditionalInformationFormProvider()(messageKeyPrefix)
+    val form           = new AdditionalInformationFormProvider().apply(messageKeyPrefix)
 
     "pass accessibility checks" when {
 

@@ -41,11 +41,11 @@ document.type.error.maxLimitReached = You cannot add any more documents of this 
 
 document.documentReferenceNumber.title = What is the document’s reference number?
 document.documentReferenceNumber.heading = What is the document’s reference number?
-document.documentReferenceNumber.hint = This can be up to 70 characters long and include both letters and numbers.
+document.documentReferenceNumber.hint = This can be up to {0} characters long and include both letters and numbers.
 document.documentReferenceNumber.checkYourAnswersLabel = Reference number
 document.documentReferenceNumber.change.hidden = reference number
 document.documentReferenceNumber.error.required = Enter the document’s reference number
-document.documentReferenceNumber.error.length = The reference number must be 70 characters or less
+document.documentReferenceNumber.error.length = The reference number must be {0} characters or less
 document.documentReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
 document.documentReferenceNumber.error.unique = The reference number must be unique
 
@@ -137,7 +137,7 @@ document.additionalInformation.title = Enter the additional information
 document.additionalInformation.heading = Enter the additional information
 document.additionalInformation.checkYourAnswersLabel = Additional information
 document.additionalInformation.change.hidden = additional information
-document.additionalInformation.error.length = The additional information must be 35 characters or less
+document.additionalInformation.error.length = The additional information must be {0} characters or less
 document.additionalInformation.error.required = Enter the additional information
 document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 

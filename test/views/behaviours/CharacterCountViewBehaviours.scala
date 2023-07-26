@@ -16,9 +16,13 @@
 
 package views.behaviours
 
+import org.jsoup.nodes.Document
+
 trait CharacterCountViewBehaviours extends QuestionViewBehaviours[String] {
 
-  def pageWithCharacterCount(maxLength: Int): Unit =
+  def pageWithCharacterCount(maxLength: Int): Unit = pageWithCharacterCount(doc, maxLength)
+
+  def pageWithCharacterCount(doc: Document, maxLength: Int): Unit =
     "page with a character count question" - {
 
       "when rendered" - {

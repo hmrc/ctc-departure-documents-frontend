@@ -21,17 +21,22 @@ import models.Phase.{PostTransition, Transition}
 import play.api.Configuration
 
 trait PhaseConfig {
-  // we can put things like form validation values in here (regex, length etc.)
   val phase: Phase
+  val maxDocumentRefNumberLength: Int
+  val maxAdditionalInformationLength: Int
   def maxPreviousDocuments(implicit configuration: Configuration): Int
 }
 
 class TransitionConfig() extends PhaseConfig {
   override val phase: Phase                                                     = Transition
+  override val maxDocumentRefNumberLength: Int                                  = 35
+  override val maxAdditionalInformationLength: Int                              = 26
   override def maxPreviousDocuments(implicit configuration: Configuration): Int = configuration.get[Int]("limits.maxPreviousDocuments.transition")
 }
 
 class PostTransitionConfig() extends PhaseConfig {
   override val phase: Phase                                                     = PostTransition
+  override val maxDocumentRefNumberLength: Int                                  = 70
+  override val maxAdditionalInformationLength: Int                              = 35
   override def maxPreviousDocuments(implicit configuration: Configuration): Int = configuration.get[Int]("limits.maxPreviousDocuments.postTransition")
 }
