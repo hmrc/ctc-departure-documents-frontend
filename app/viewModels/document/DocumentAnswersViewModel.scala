@@ -17,6 +17,7 @@
 package viewModels.document
 
 import config.PhaseConfig
+import models.Phase.PostTransition
 import models.{Index, Phase, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.document.DocumentAnswersHelper
@@ -34,7 +35,6 @@ object DocumentAnswersViewModel {
       val helper = new DocumentAnswersHelper(userAnswers, index)
 
       val rows = Seq(
-        helper.attachToAllItems,
         helper.documentType,
         helper.previousDocumentType,
         helper.documentReferenceNumber,
@@ -51,15 +51,17 @@ object DocumentAnswersViewModel {
         helper.additionalInformation
       ).flatten
 
+      val postTransitionRows = Seq(helper.attachToAllItems).flatten ++ rows
+
       val section = {
         phaseConfig.phase match {
           case Phase.Transition =>
             Section(
-              rows.tail
+              rows = rows
             )
           case Phase.PostTransition =>
             Section(
-              rows
+              rows = postTransitionRows
             )
         }
       }
