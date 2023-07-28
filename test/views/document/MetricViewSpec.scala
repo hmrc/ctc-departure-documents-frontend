@@ -50,4 +50,6 @@ class MetricViewSpec extends InputSelectViewBehaviours[Metric] {
   behave like pageWithoutHint()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithContent("p", "This will be a unit of measurement, such as litres, square metres or number of parts.")
 }

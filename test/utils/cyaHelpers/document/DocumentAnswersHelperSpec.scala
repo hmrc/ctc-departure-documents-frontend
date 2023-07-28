@@ -216,7 +216,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe PackageTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "package type"
+              action.visuallyHiddenText.get mustBe "Enter the package name or code, like barrel or BA."
               action.id mustBe "change-package-type"
           }
         }

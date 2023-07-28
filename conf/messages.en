@@ -60,7 +60,7 @@ document.packageType.title = What type of package was used to transport the good
 document.packageType.heading = What type of package was used to transport the goods into the UK?
 document.packageType.placeholder = Select a package type
 document.packageType.checkYourAnswersLabel = Package type
-document.packageType.change.hidden = package type
+document.packageType.change.hidden = Enter the package name or code, like barrel or BA.
 document.packageType.error.required = Select the type of package used to transport the goods into the UK
 
 document.addLineItemNumberYesNo.title = Do you want to add a line item number?
@@ -106,6 +106,7 @@ document.quantity.error.invalidValue = The quantity must be 16 characters or les
 
 document.metric.title = What metric do you want to use for the quantity of goods?
 document.metric.heading = What metric do you want to use for the quantity of goods?
+document.metric.paragraph = This will be a unit of measurement, such as litres, square metres or number of parts.
 document.metric.placeholder = Select a metric
 document.metric.checkYourAnswersLabel = Metric for quantity of goods
 document.metric.change.hidden = metric for quantity of goods
