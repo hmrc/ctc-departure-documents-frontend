@@ -60,7 +60,8 @@ document.packageType.title = What type of package was used to transport the good
 document.packageType.heading = What type of package was used to transport the goods into the UK?
 document.packageType.placeholder = Select a package type
 document.packageType.checkYourAnswersLabel = Package type
-document.packageType.change.hidden = Enter the package name or code, like barrel or BA.
+document.packageType.change.hidden = package type
+document.packageType.hint = Enter the package name or code, like barrel or BA.
 document.packageType.error.required = Select the type of package used to transport the goods into the UK
 
 document.addLineItemNumberYesNo.title = Do you want to add a line item number?

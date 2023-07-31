@@ -44,6 +44,8 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   behave like pageWithHeading()
 
+  behave like pageWithHint("Enter the package name or code, like barrel or BA.")
+
   behave like pageWithSelect()
 
   behave like pageWithSubmitButton("Save and continue")
