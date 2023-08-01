@@ -16,10 +16,11 @@
 
 package controllers.document
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import models.Phase.Transition
 import models.requests.DataRequest
 import models.{ConsignmentLevelDocuments, Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
@@ -42,7 +43,7 @@ class AttachToAllItemsController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AttachToAllItemsView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -50,7 +51,7 @@ class AttachToAllItemsController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      if (ConsignmentLevelDocuments(request.userAnswers, documentIndex).cannotAddAnyMore) {
+      if (phaseConfig.phase == Transition || ConsignmentLevelDocuments(request.userAnswers, documentIndex).cannotAddAnyMore) {
         redirect(mode, documentIndex, InferredAttachToAllItemsPage, value = false)
       } else {
         val preparedForm = request.userAnswers.get(AttachToAllItemsPage(documentIndex)) match {
