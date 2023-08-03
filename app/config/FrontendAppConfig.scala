@@ -58,7 +58,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val maxSupportingDocuments: Int = configuration.get[Int]("limits.maxSupportingDocuments")
   lazy val maxTransportDocuments: Int  = configuration.get[Int]("limits.maxTransportDocuments")
 
-  def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
+  def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
   val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
 
