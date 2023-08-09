@@ -45,9 +45,10 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
+            selectType = SelectWithAdditionalHtml(
                 heading = messages("document.metric.heading"),
-                caption = Some(messages("document.caption"))
+                caption = Some(messages("document.caption")),
+                additionalHtml = messages("document.metric.paragraph").toParagraph
             ),
             selectItems = metrics.toSelectItems(form.value),
             placeholder = messages("document.metric.placeholder")
