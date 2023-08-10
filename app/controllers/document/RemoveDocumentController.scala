@@ -20,9 +20,9 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.Document
-import models.requests.SpecificDataRequestProvider1
-import models.{Index, LocalReferenceNumber}
-import pages.document.{DocumentUuidPage, PreviousDocumentTypePage, TypePage}
+import models.requests.{SpecificDataRequestProvider1, SpecificDataRequestProvider2}
+import models.{DeclarationType, Index, LocalReferenceNumber}
+import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,27 +48,30 @@ class RemoveDocumentController @Inject() (
 
   private def form(documentType: Document): Form[Boolean] = formProvider("document.removeDocument", documentType)
 
-  private type Request = SpecificDataRequestProvider1[Document]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider2[Document, String]#SpecificDataRequest[_]
 
-  private def documentType(implicit request: Request): Document = request.arg
+  private def documentType(implicit request: Request): Document          = request.arg._1
+  private def documentReferenceNumber(implicit request: Request): String = request.arg._2
 
   def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex))) {
+    .andThen(getMandatoryPage.getFirst(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
+    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex))) {
       implicit request =>
-        Ok(view(form(documentType), lrn, documentIndex, documentType))
+        Ok(view(form(documentType), lrn, documentIndex, documentType, documentReferenceNumber))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
+    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex)))
     .async {
       implicit request =>
         lazy val redirect = controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
         form(documentType)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, documentType))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, documentType, documentReferenceNumber))),
             {
               case true =>
                 DocumentSection(documentIndex)
