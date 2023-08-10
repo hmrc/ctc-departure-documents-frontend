@@ -17,17 +17,18 @@
 @import controllers.document.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("document.addNumberOfPackagesYesNo.title"),
@@ -41,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("document.addNumberOfPackagesYesNo.heading"),
-                caption = Some(messages("document.caption"))
+                caption = Some(messages("document.caption")),
+                additionalHtml = insetText(packageType)
             )
         )
 
