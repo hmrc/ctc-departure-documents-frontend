@@ -147,9 +147,9 @@ document.additionalInformation.error.invalidCharacters = The additional informat
 document.documentAnswers.title = Check your answers
 document.documentAnswers.heading = Check your answers
 
-document.removeDocument.title = Are you sure you want to remove the {0}?
-document.removeDocument.heading = Are you sure you want to remove the {0}?
-document.removeDocument.error.required = Select yes if you want to remove the {0}
+document.removeDocument.title = Are you sure you want to remove this document?
+document.removeDocument.heading = Are you sure you want to remove this document?
+document.removeDocument.error.required = Select yes if you want to remove this document
 
 document.attachToAllItems.title = Do you want to use this document for all items?
 document.attachToAllItems.heading = Do you want to use this document for all items?
