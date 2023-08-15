@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.document.AddNumberOfPackagesYesNoPage
+import pages.document.{AddNumberOfPackagesYesNoPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -36,6 +36,7 @@ class AddNumberOfPackagesYesNoController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddNumberOfPackagesYesNoView
@@ -45,26 +46,31 @@ class AddNumberOfPackagesYesNoController @Inject() (
 
   private val form = formProvider("document.addNumberOfPackagesYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddNumberOfPackagesYesNoPage(documentIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(PackageTypePage(documentIndex))) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddNumberOfPackagesYesNoPage(documentIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, lrn, mode, documentIndex))
-  }
+        Ok(view(preparedForm, lrn, mode, documentIndex, request.arg.toString))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            AddNumberOfPackagesYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(PackageTypePage(documentIndex)))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, request.arg.toString))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+              AddNumberOfPackagesYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }
