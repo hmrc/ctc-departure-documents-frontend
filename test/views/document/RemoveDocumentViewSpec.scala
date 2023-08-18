@@ -26,24 +26,27 @@ import views.html.document.RemoveDocumentView
 
 class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val documentType = arbitrary[Document].sample.value
+  private val documentType            = arbitrary[Document].sample.value
+  private val documentReferenceNumber = arbitrary[String].sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDocumentView]
-      .apply(form, lrn, documentIndex, documentType)(fakeRequest, messages)
+      .apply(form, lrn, documentIndex, documentType, documentReferenceNumber)(fakeRequest, messages)
 
   override val prefix: String = "document.removeDocument"
 
-  behave like pageWithTitle(documentType)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Documents")
 
-  behave like pageWithHeading(documentType)
+  behave like pageWithHeading()
 
   behave like pageWithRadioItems(args = Seq(documentType))
+
+  behave like pageWithInsetText(s"$documentType - $documentReferenceNumber")
 
   behave like pageWithSubmitButton("Save and continue")
 }

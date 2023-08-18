@@ -39,7 +39,7 @@ class AddTypeOfPackageYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
-  behave like pageWithContent("p", "This means the packaging used to import this document’s goods - not the package for exporting your items.")
+  behave like pageWithContent("p", "This means the packaging used to import the goods into the UK - not the package you are using to export them.")
 
   behave like pageWithSubmitButton("Save and continue")
 }

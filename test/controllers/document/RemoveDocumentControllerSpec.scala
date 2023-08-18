@@ -27,7 +27,7 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.{DocumentUuidPage, PreviousDocumentTypePage, TypePage}
+import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.external.DocumentPage
 import pages.sections.DocumentSection
 import play.api.data.Form
@@ -53,9 +53,11 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   "RemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      val documentReferenceNumber = "Something"
 
       val userAnswers = emptyUserAnswers
         .setValue(typePage(documentIndex), documentType)
+        .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -67,11 +69,12 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(documentType), lrn, documentIndex, documentType)(request, messages).toString
+        view(form(documentType), lrn, documentIndex, documentType, documentReferenceNumber)(request, messages).toString
     }
 
     "when yes submitted" - {
       "must redirect to add another document and remove document at specified index" in {
+        val documentReferenceNumber = "Something"
 
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -81,6 +84,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
           .setValue(DocumentUuidPage(documentIndex), uuid)
           .setValue(DocumentPage(Index(0), Index(0)), uuid)
           .setValue(DocumentPage(Index(1), Index(0)), uuid)
+          .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
         setExistingUserAnswers(userAnswers)
 
@@ -105,10 +109,12 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when no submitted" - {
       "must redirect to add another document and not remove document at specified index" in {
         reset(mockSessionRepository)
+        val documentReferenceNumber = "Something"
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setValue(typePage(documentIndex), documentType)
+          .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
         setExistingUserAnswers(userAnswers)
 
@@ -128,9 +134,11 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      val documentReferenceNumber = "Something"
 
       val userAnswers = emptyUserAnswers
         .setValue(typePage(documentIndex), documentType)
+        .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -144,7 +152,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[RemoveDocumentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, documentIndex, documentType)(request, messages).toString
+        view(boundForm, lrn, documentIndex, documentType, documentReferenceNumber)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {

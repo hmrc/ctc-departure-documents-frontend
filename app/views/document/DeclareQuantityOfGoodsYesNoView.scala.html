@@ -41,9 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("document.declareQuantityOfGoodsYesNo.heading"),
-                caption = Some(messages("document.caption"))
+                caption = Some(messages("document.caption")),
+                additionalHtml = messages("document.declareQuantityOfGoodsYesNo.paragraph").toParagraph
             )
         )
 
