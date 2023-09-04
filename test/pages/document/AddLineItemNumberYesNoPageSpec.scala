@@ -16,6 +16,7 @@
 
 package pages.document
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddLineItemNumberYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,36 @@ class AddLineItemNumberYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddLineItemNumberYesNoPage(documentIndex))
 
     beRemovable[Boolean](AddLineItemNumberYesNoPage(documentIndex))
+
+    "cleanup" - {
+      "when NO selected" - {
+        "must clean up line item number page at document index" in {
+          forAll(arbitrary[Int]) {
+            lineNumber =>
+              val preChange = emptyUserAnswers
+                .setValue(LineItemNumberPage(documentIndex), lineNumber)
+
+              val postChange = preChange.setValue(AddLineItemNumberYesNoPage(documentIndex), false)
+
+              postChange.get(LineItemNumberPage(documentIndex)) mustNot be(defined)
+          }
+        }
+      }
+
+      "when YES selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[Int]) {
+            lineNumber =>
+              val preChange = emptyUserAnswers
+                .setValue(LineItemNumberPage(documentIndex), lineNumber)
+
+              val postChange = preChange.setValue(AddLineItemNumberYesNoPage(documentIndex), true)
+
+              postChange.get(LineItemNumberPage(documentIndex)) must be(defined)
+          }
+        }
+      }
+    }
+
   }
 }
