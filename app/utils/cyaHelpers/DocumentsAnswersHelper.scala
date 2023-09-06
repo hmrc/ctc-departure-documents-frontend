@@ -42,10 +42,10 @@ class DocumentsAnswersHelper(
             }
 
             buildListItem[DocumentDomain](
-              nameWhenComplete = _.label,
+              nameWhenComplete = _.asString,
               nameWhenInProgress = (
                 userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
-              ).map(_.toString) orElse Some(""),
+              ).map(_.asString) orElse Some(""),
               removeRoute = removeRoute
             )(DocumentDomain.userAnswersReader(documentIndex))
         }

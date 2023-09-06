@@ -67,7 +67,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"${document.toString} - $referenceNumber",
+                      name = s"${document.asString} - $referenceNumber",
                       changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, documentIndex).url,
                       removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url)
                     )
@@ -101,7 +101,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Right(
                       ListItem(
-                        name = s"${previousDocument.toString} - $referenceNumber",
+                        name = s"${previousDocument.asString} - $referenceNumber",
                         changeUrl = routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, Index(0)).url,
                         removeUrl = None
                       )
@@ -189,7 +189,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = document.toString,
+                        name = document.asString,
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
                       )
@@ -219,7 +219,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = previousDocument.toString,
+                        name = previousDocument.asString,
                         changeUrl = controllers.document.routes.DocumentReferenceNumberController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = None
                       )

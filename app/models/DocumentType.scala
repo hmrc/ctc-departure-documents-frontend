@@ -16,22 +16,24 @@
 
 package models
 
+import play.api.i18n.Messages
+
 sealed trait DocumentType {
-  val display: String
+  def asString(implicit messages: Messages): String
 }
 
 object DocumentType extends EnumerableType[DocumentType] {
 
   case object Support extends DocumentType {
-    val display = "Supporting"
+    override def asString(implicit messages: Messages): String = messages("documentType.support")
   }
 
   case object Transport extends DocumentType {
-    val display = "Transport"
+    override def asString(implicit messages: Messages): String = messages("documentType.transport")
   }
 
   case object Previous extends DocumentType {
-    val display = "Previous"
+    override def asString(implicit messages: Messages): String = messages("documentType.previous")
   }
 
   override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
