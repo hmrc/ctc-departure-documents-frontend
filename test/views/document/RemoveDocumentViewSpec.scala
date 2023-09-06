@@ -17,8 +17,7 @@
 package views.document
 
 import generators.Generators
-import models.reference.Document
-import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -26,13 +25,12 @@ import views.html.document.RemoveDocumentView
 
 class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val documentType            = arbitrary[Document].sample.value
-  private val documentReferenceNumber = arbitrary[String].sample.value
+  private val document = Gen.alphaNumStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDocumentView]
-      .apply(form, lrn, documentIndex, documentType, documentReferenceNumber)(fakeRequest, messages)
+      .apply(form, lrn, documentIndex, document)(fakeRequest, messages)
 
   override val prefix: String = "document.removeDocument"
 
@@ -44,9 +42,9 @@ class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
 
   behave like pageWithHeading()
 
-  behave like pageWithRadioItems(args = Seq(documentType))
+  behave like pageWithRadioItems()
 
-  behave like pageWithInsetText(s"$documentType - $documentReferenceNumber")
+  behave like pageWithInsetText(document)
 
   behave like pageWithSubmitButton("Save and continue")
 }

@@ -19,8 +19,8 @@ package controllers.document
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.reference.Document
-import models.requests.SpecificDataRequestProvider2
+import models.journeyDomain.DocumentDomain
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber}
 import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
@@ -38,7 +38,6 @@ class RemoveDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDocumentView
@@ -46,35 +45,32 @@ class RemoveDocumentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(documentType: Document): Form[Boolean] = formProvider("document.removeDocument", documentType)
-
-  private type Request = SpecificDataRequestProvider2[Document, String]#SpecificDataRequest[_]
-
-  private def documentType(implicit request: Request): Document          = request.arg._1
-  private def documentReferenceNumber(implicit request: Request): String = request.arg._2
+  private val form: Form[Boolean] = formProvider("document.removeDocument")
 
   private def addAnother(lrn: LocalReferenceNumber): Call =
     controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
 
-  // TODO - create a view model for this controller. Ref number might not be populated for an in-progress document.
+  private def document(index: Index)(implicit request: DataRequest[_]): String =
+    DocumentDomain.asString(
+      index,
+      request.userAnswers.get(TypePage(index)) orElse request.userAnswers.get(PreviousDocumentTypePage(index)),
+      request.userAnswers.get(DocumentReferenceNumberPage(index))
+    )
+
   def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn))
-    .andThen(getMandatoryPage.getFirst(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
-    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex))) {
+    .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn)) {
       implicit request =>
-        Ok(view(form(documentType), lrn, documentIndex, documentType, documentReferenceNumber))
+        Ok(view(form, lrn, documentIndex, document(documentIndex)))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn))
-    .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
-    .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex)))
     .async {
       implicit request =>
-        form(documentType)
+        form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, documentType, documentReferenceNumber))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, document(documentIndex)))),
             {
               case true =>
                 DocumentSection(documentIndex)

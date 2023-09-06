@@ -17,15 +17,16 @@
 package models.reference
 
 import models.{DocumentType, Selectable}
+import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 case class Document(`type`: DocumentType, code: String, description: Option[String]) extends Selectable {
 
-  override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"${`type`.display} - ($code) $value"
-    case _                                  => s"${`type`.display} - $code"
+  override def asString(implicit messages: Messages): String = description match {
+    case Some(value) if value.trim.nonEmpty => s"${`type`.asString} - ($code) $value"
+    case _                                  => s"${`type`.asString} - $code"
   }
 
   override val value: String = toString

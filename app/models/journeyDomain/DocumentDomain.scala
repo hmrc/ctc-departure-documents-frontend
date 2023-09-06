@@ -31,7 +31,8 @@ sealed trait DocumentDomain extends JourneyDomainModel {
   val document: Document
   val referenceNumber: String
 
-  def label(implicit messages: Messages): String = messages("document.label", document, referenceNumber)
+  def asString(implicit messages: Messages): String =
+    DocumentDomain.asString(index, Some(document), Some(referenceNumber))
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
     routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, index)
@@ -39,6 +40,13 @@ sealed trait DocumentDomain extends JourneyDomainModel {
 }
 
 object DocumentDomain {
+
+  def asString(index: Index, document: Option[Document], referenceNumber: Option[String])(implicit messages: Messages): String =
+    (document, referenceNumber) match {
+      case (Some(document), Some(referenceNumber)) => messages("document.label", document.asString, referenceNumber)
+      case (Some(document), None)                  => document.asString
+      case _                                       => index.display.toString
+    }
 
   def isMandatoryPrevious(documentIndex: Index): UserAnswersReader[Boolean] =
     DocumentsDomain.isMandatoryPrevious.map(_ && documentIndex.isFirst)

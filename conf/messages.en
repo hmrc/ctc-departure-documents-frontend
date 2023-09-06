@@ -17,6 +17,10 @@ error.summary.title = There is a problem
 
 document.caption = Documents
 
+documentType.support = Supporting
+documentType.transport = Transport
+documentType.previous = Previous
+
 document.label = {0} - {1}
 
 document.previousDocumentType.title = What previous document do you want to add?
