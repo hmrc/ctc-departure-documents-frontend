@@ -20,13 +20,13 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.Document
-import models.requests.{SpecificDataRequestProvider1, SpecificDataRequestProvider2}
-import models.{DeclarationType, Index, LocalReferenceNumber}
+import models.requests.SpecificDataRequestProvider2
+import models.{Index, LocalReferenceNumber}
 import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.RemoveDocumentView
@@ -53,8 +53,12 @@ class RemoveDocumentController @Inject() (
   private def documentType(implicit request: Request): Document          = request.arg._1
   private def documentReferenceNumber(implicit request: Request): String = request.arg._2
 
+  private def addAnother(lrn: LocalReferenceNumber): Call =
+    controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
+
+  // TODO - create a view model for this controller. Ref number might not be populated for an in-progress document.
   def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn))
     .andThen(getMandatoryPage.getFirst(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
     .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex))) {
       implicit request =>
@@ -62,12 +66,11 @@ class RemoveDocumentController @Inject() (
     }
 
   def onSubmit(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn))
     .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
     .andThen(getMandatoryPage.getSecond(DocumentReferenceNumberPage(documentIndex)))
     .async {
       implicit request =>
-        lazy val redirect = controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
         form(documentType)
           .bindFromRequest()
           .fold(
@@ -79,9 +82,9 @@ class RemoveDocumentController @Inject() (
                   .removeDocumentFromItems(request.userAnswers.get(DocumentUuidPage(documentIndex)))
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(redirect)
+                  .navigateTo(addAnother(lrn))
               case false =>
-                Future.successful(Redirect(redirect))
+                Future.successful(Redirect(addAnother(lrn)))
             }
           )
     }
