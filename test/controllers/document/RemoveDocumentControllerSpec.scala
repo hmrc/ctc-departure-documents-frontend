@@ -168,7 +168,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no authorisation number is found" in {
+      "if no document is found" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, removeDocumentRoute)
@@ -177,7 +177,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
       }
     }
 
@@ -207,7 +208,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
       }
     }
   }
