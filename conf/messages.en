@@ -17,6 +17,10 @@ error.summary.title = There is a problem
 
 document.caption = Documents
 
+documentType.support = Supporting
+documentType.transport = Transport
+documentType.previous = Previous
+
 document.label = {0} - {1}
 
 document.previousDocumentType.title = What previous document do you want to add?
@@ -51,7 +55,7 @@ document.documentReferenceNumber.error.unique = The reference number must be uni
 
 document.addTypeOfPackageYesNo.title = Do you want to declare the package used to transport the goods into the UK?
 document.addTypeOfPackageYesNo.heading = Do you want to declare the package used to transport the goods into the UK?
-document.addTypeOfPackageYesNo.paragraph = This means the packaging used to import this document’s goods - not the package for exporting your items.
+document.addTypeOfPackageYesNo.paragraph = This means the packaging used to import the goods into the UK - not the package you are using to export them.
 document.addTypeOfPackageYesNo.checkYourAnswersLabel = Do you want to declare the package used to transport the goods into the UK?
 document.addTypeOfPackageYesNo.change.hidden = if you want to declare the package used to transport the goods into the UK
 document.addTypeOfPackageYesNo.error.required = Select yes if you want to declare the package used to transport the goods into the UK
@@ -61,6 +65,7 @@ document.packageType.heading = What type of package was used to transport the go
 document.packageType.placeholder = Select a package type
 document.packageType.checkYourAnswersLabel = Package type
 document.packageType.change.hidden = package type
+document.packageType.hint = Enter the package name or code, like barrel or BA.
 document.packageType.error.required = Select the type of package used to transport the goods into the UK
 
 document.addLineItemNumberYesNo.title = Do you want to add a line item number?
@@ -89,11 +94,12 @@ addAnotherDocument.label = Do you want to add another document?
 addAnotherDocument.paragraph = Once you’ve added all your documents here, you can then attach them to the relevant items in your Items section.
 addAnotherDocument.maxLimit.label = You cannot attach any more documents to all items. You can still add documents and attach them to individual items.
 
-document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of goods?
-document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of goods?
+document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of the goods transported into the UK?
+document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of the goods transported into the UK?
+document.declareQuantityOfGoodsYesNo.paragraph = This means the quantity of the goods imported into the UK - not the quantity of the goods you are exporting.
 document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to declare the quantity of goods?
 document.declareQuantityOfGoodsYesNo.change.hidden = if you want to declare the quantity of goods
-document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to declare the quantity of goods
+document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to declare the quantity of the goods transported into the UK
 
 document.quantity.title = How many of these do the goods include?
 document.quantity.heading = How many of these do the goods include?
@@ -106,6 +112,7 @@ document.quantity.error.invalidValue = The quantity must be 16 characters or les
 
 document.metric.title = What metric do you want to use for the quantity of goods?
 document.metric.heading = What metric do you want to use for the quantity of goods?
+document.metric.paragraph = This will be a unit of measurement, such as litres, square metres or number of parts.
 document.metric.placeholder = Select a metric
 document.metric.checkYourAnswersLabel = Metric for quantity of goods
 document.metric.change.hidden = metric for quantity of goods
@@ -144,9 +151,9 @@ document.additionalInformation.error.invalidCharacters = The additional informat
 document.documentAnswers.title = Check your answers
 document.documentAnswers.heading = Check your answers
 
-document.removeDocument.title = Are you sure you want to remove the {0}?
-document.removeDocument.heading = Are you sure you want to remove the {0}?
-document.removeDocument.error.required = Select yes if you want to remove the {0}
+document.removeDocument.title = Are you sure you want to remove this document?
+document.removeDocument.heading = Are you sure you want to remove this document?
+document.removeDocument.error.required = Select yes if you want to remove this document
 
 document.attachToAllItems.title = Do you want to use this document for all items?
 document.attachToAllItems.heading = Do you want to use this document for all items?

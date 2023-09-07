@@ -27,7 +27,7 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.{DocumentUuidPage, PreviousDocumentTypePage, TypePage}
+import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.external.DocumentPage
 import pages.sections.DocumentSection
 import play.api.data.Form
@@ -46,16 +46,18 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     formProvider("document.removeDocument", documentType)
 
   private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url
-  private val documentType             = arbitrary[Document].sample.value
+  private val document                 = arbitrary[Document].sample.value
+  private val documentReferenceNumber  = Gen.alphaNumStr.sample.value
+  private val insetText                = s"${document.asString} - $documentReferenceNumber"
   private val typePage                 = Gen.oneOf(TypePage, PreviousDocumentTypePage).sample.value
   private val uuid                     = arbitrary[UUID].sample.value
 
   "RemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
       val userAnswers = emptyUserAnswers
-        .setValue(typePage(documentIndex), documentType)
+        .setValue(typePage(documentIndex), document)
+        .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
       setExistingUserAnswers(userAnswers)
 
@@ -67,20 +69,20 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(documentType), lrn, documentIndex, documentType)(request, messages).toString
+        view(form(document), lrn, documentIndex, insetText)(request, messages).toString
     }
 
     "when yes submitted" - {
       "must redirect to add another document and remove document at specified index" in {
-
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val userAnswers = emptyUserAnswers
-          .setValue(typePage(documentIndex), documentType)
+          .setValue(typePage(documentIndex), document)
           .setValue(DocumentUuidPage(documentIndex), uuid)
           .setValue(DocumentPage(Index(0), Index(0)), uuid)
           .setValue(DocumentPage(Index(1), Index(0)), uuid)
+          .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
         setExistingUserAnswers(userAnswers)
 
@@ -91,7 +93,9 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
+        redirectLocation(result).value mustEqual
+          s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+          s"continue=http://localhost:10132${controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url}"
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -108,7 +112,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         val userAnswers = emptyUserAnswers
-          .setValue(typePage(documentIndex), documentType)
+          .setValue(typePage(documentIndex), document)
+          .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
         setExistingUserAnswers(userAnswers)
 
@@ -128,14 +133,14 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
       val userAnswers = emptyUserAnswers
-        .setValue(typePage(documentIndex), documentType)
+        .setValue(typePage(documentIndex), document)
+        .setValue(DocumentReferenceNumberPage(documentIndex), documentReferenceNumber)
 
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(documentType).bind(Map("value" -> ""))
+      val boundForm = form(document).bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
@@ -144,7 +149,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[RemoveDocumentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, documentIndex, documentType)(request, messages).toString
+        view(boundForm, lrn, documentIndex, insetText)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {
@@ -160,7 +165,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no authorisation number is found" in {
+      "if no document is found" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, removeDocumentRoute)
@@ -169,7 +174,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
       }
     }
 
@@ -199,7 +205,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
       }
     }
   }

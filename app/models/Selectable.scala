@@ -16,19 +16,23 @@
 
 package models
 
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 trait Selectable {
   val value: String
 
-  def toSelectItem(selected: Boolean = false): SelectItem = SelectItem(Some(value), this.toString, selected)
+  def asString(implicit messages: Messages): String = this.toString
+
+  def toSelectItem(selected: Boolean = false)(implicit messages: Messages): SelectItem =
+    SelectItem(Some(value), this.asString, selected)
 }
 
 object Selectable {
 
   implicit class Selectables(selectables: Seq[Selectable]) {
 
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
+    def toSelectItems(selectedValue: Option[Selectable])(implicit messages: Messages): Seq[SelectItem] = selectables.map(
       x => x.toSelectItem(selectedValue.contains(x))
     )
   }

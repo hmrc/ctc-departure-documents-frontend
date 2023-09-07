@@ -39,5 +39,7 @@ class DeclareQuantityOfGoodsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
+  behave like pageWithContent("p", "This means the quantity of the goods imported into the UK - not the quantity of the goods you are exporting.")
+
   behave like pageWithSubmitButton("Save and continue")
 }

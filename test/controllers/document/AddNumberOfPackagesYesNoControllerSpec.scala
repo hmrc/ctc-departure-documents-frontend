@@ -18,12 +18,15 @@ package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
+import generators.Generators
 import models.NormalMode
+import models.reference.PackageType
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.document.AddNumberOfPackagesYesNoPage
+import pages.document.{AddNumberOfPackagesYesNoPage, PackageTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -32,8 +35,9 @@ import views.html.document.AddNumberOfPackagesYesNoView
 
 import scala.concurrent.Future
 
-class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
+  private val packageType                        = Arbitrary.arbitrary[PackageType].sample.get
   private val formProvider                       = new YesNoFormProvider()
   private val form                               = formProvider("document.addNumberOfPackagesYesNo")
   private val mode                               = NormalMode
@@ -48,7 +52,8 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, declarePackageGoodsYesNoRoute)
       val result  = route(app, request).value
@@ -58,12 +63,14 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, documentIndex)(request, messages).toString
+        view(form, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddNumberOfPackagesYesNoPage(documentIndex), true)
+      val userAnswers = emptyUserAnswers
+        .setValue(PackageTypePage(documentIndex), packageType)
+        .setValue(AddNumberOfPackagesYesNoPage(documentIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, declarePackageGoodsYesNoRoute)
@@ -77,14 +84,15 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, declarePackageGoodsYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -98,7 +106,8 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(documentIndex), packageType)
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, declarePackageGoodsYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -110,7 +119,7 @@ class AddNumberOfPackagesYesNoControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[AddNumberOfPackagesYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, documentIndex)(request, messages).toString
+        view(boundForm, lrn, mode, documentIndex, packageType.toString)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

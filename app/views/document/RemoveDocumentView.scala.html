@@ -17,21 +17,22 @@
 @import controllers.document.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 @import models.reference.Document
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, documentIndex: Index, documentType: Document)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, documentIndex: Index, document: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("document.removeDocument.title", documentType),
+    title = messages("document.removeDocument.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -42,9 +43,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("document.removeDocument.heading", documentType),
-                caption = Some(messages("document.caption"))
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("document.removeDocument.heading"),
+                caption = Some(messages("document.caption")),
+                additionalHtml = insetText(document)
             )
         )
 

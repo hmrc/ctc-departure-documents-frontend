@@ -16,17 +16,18 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
-import models.reference.Document
-import models.requests.SpecificDataRequestProvider1
+import models.journeyDomain.DocumentDomain
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber}
-import pages.document.{DocumentUuidPage, PreviousDocumentTypePage, TypePage}
+import pages.document.{DocumentReferenceNumberPage, DocumentUuidPage, PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.document.RemoveDocumentView
@@ -38,37 +39,39 @@ class RemoveDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDocumentView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(documentType: Document): Form[Boolean] = formProvider("document.removeDocument", documentType)
+  private val form: Form[Boolean] = formProvider("document.removeDocument")
 
-  private type Request = SpecificDataRequestProvider1[Document]#SpecificDataRequest[_]
+  private def addAnother(lrn: LocalReferenceNumber): Call =
+    controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
 
-  private def documentType(implicit request: Request): Document = request.arg
+  private def document(index: Index)(implicit request: DataRequest[_]): String =
+    DocumentDomain.asString(
+      index,
+      request.userAnswers.get(TypePage(index)) orElse request.userAnswers.get(PreviousDocumentTypePage(index)),
+      request.userAnswers.get(DocumentReferenceNumberPage(index))
+    )
 
   def onPageLoad(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
-    .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex))) {
+    .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn)) {
       implicit request =>
-        Ok(view(form(documentType), lrn, documentIndex, documentType))
+        Ok(view(form, lrn, documentIndex, document(documentIndex)))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, documentIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
-    .andThen(getMandatoryPage(TypePage(documentIndex), PreviousDocumentTypePage(documentIndex)))
+    .requireIndex(lrn, DocumentSection(documentIndex), addAnother(lrn))
     .async {
       implicit request =>
-        lazy val redirect = controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
-        form(documentType)
+        form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, documentType))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentIndex, document(documentIndex)))),
             {
               case true =>
                 DocumentSection(documentIndex)
@@ -76,9 +79,11 @@ class RemoveDocumentController @Inject() (
                   .removeDocumentFromItems(request.userAnswers.get(DocumentUuidPage(documentIndex)))
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(redirect)
+                  .buildCall(addAnother(lrn))
+                  .updateItems(lrn)
+                  .navigate()
               case false =>
-                Future.successful(Redirect(redirect))
+                Future.successful(Redirect(addAnother(lrn)))
             }
           )
     }
