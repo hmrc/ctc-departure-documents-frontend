@@ -20,6 +20,7 @@ import models.reference._
 import models.{CheckMode, Index, UserAnswers}
 import pages.document._
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 
@@ -38,7 +39,7 @@ class DocumentAnswersHelper(
 
   def documentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
     page = TypePage(documentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString.toText,
     prefix = "document.type",
     id = Some("change-type")
   )

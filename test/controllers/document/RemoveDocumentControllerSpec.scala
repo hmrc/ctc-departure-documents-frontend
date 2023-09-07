@@ -93,7 +93,9 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url
+        redirectLocation(result).value mustEqual
+          s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+          s"continue=http://localhost:10132${controllers.routes.AddAnotherDocumentController.onPageLoad(lrn).url}"
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
