@@ -113,7 +113,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val result = helper.previousDocumentType.get
 
               result.key.value mustBe "Document type"
-              result.value.value mustBe document.toString
+              result.value.value mustBe document.asString
 
               val actions = result.actions.get.items
               actions.size mustBe 1

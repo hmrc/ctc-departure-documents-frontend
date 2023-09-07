@@ -46,7 +46,7 @@ class DocumentAnswersHelper(
 
   def previousDocumentType: Option[SummaryListRow] = getAnswerAndBuildRow[Document](
     page = PreviousDocumentTypePage(documentIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString.toText,
     prefix = "document.previousDocumentType",
     id = Some("change-previous-document-type")
   )
