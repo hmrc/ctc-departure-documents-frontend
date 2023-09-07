@@ -19,6 +19,7 @@ package models.journeyDomain
 import base.SpecBase
 import config.Constants._
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
+import models.DocumentType._
 import models.Index
 import models.reference.{CustomsOffice, Document, Metric, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
