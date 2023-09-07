@@ -16,8 +16,9 @@
 
 package controllers.document
 
+import config.FrontendAppConfig
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.journeyDomain.DocumentDomain
 import models.requests.DataRequest
@@ -41,7 +42,7 @@ class RemoveDocumentController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDocumentView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -78,7 +79,9 @@ class RemoveDocumentController @Inject() (
                   .removeDocumentFromItems(request.userAnswers.get(DocumentUuidPage(documentIndex)))
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(addAnother(lrn))
+                  .buildCall(addAnother(lrn))
+                  .updateItems(lrn)
+                  .navigate()
               case false =>
                 Future.successful(Redirect(addAnother(lrn)))
             }
