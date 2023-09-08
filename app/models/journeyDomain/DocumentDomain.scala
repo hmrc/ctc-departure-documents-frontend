@@ -43,8 +43,8 @@ object DocumentDomain {
 
   def asString(index: Index, document: Option[Document], referenceNumber: Option[String])(implicit messages: Messages): String =
     (document, referenceNumber) match {
-      case (Some(document), Some(referenceNumber)) => messages("document.label", document.asString, referenceNumber)
-      case (Some(document), None)                  => document.asString
+      case (Some(document), Some(referenceNumber)) => messages("document.label", document.toString, referenceNumber)
+      case (Some(document), None)                  => document.toString
       case _                                       => index.display.toString
     }
 
