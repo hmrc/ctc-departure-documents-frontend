@@ -48,7 +48,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, documentIndex).url
   private val document                 = arbitrary[Document].sample.value
   private val documentReferenceNumber  = Gen.alphaNumStr.sample.value
-  private val insetText                = s"${document.asString} - $documentReferenceNumber"
+  private val insetText                = s"$document - $documentReferenceNumber"
   private val typePage                 = Gen.oneOf(TypePage, PreviousDocumentTypePage).sample.value
   private val uuid                     = arbitrary[UUID].sample.value
 

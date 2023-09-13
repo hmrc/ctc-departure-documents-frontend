@@ -150,7 +150,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean]) {
       (`type`, code, description, selected) =>
         val document = Document(`type`, code, description)
-        document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.asString, selected)
+        document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.toString, selected)
     }
   }
 
@@ -159,7 +159,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
       forAll(arbitrary[DocumentType], Gen.alphaNumStr, nonEmptyString) {
         (`type`, code, description) =>
           val document = Document(`type`, code, Some(description))
-          document.asString mustBe s"${`type`.asString} - ($code) $description"
+          document.toString mustBe s"${`type`.display} - ($code) $description"
       }
     }
 
@@ -167,7 +167,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
       forAll(arbitrary[DocumentType], Gen.alphaNumStr) {
         (`type`, code) =>
           val document = Document(`type`, code, Some(""))
-          document.asString mustBe s"${`type`.asString} - $code"
+          document.toString mustBe s"${`type`.display} - $code"
       }
     }
 
@@ -175,7 +175,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
       forAll(arbitrary[DocumentType], Gen.alphaNumStr) {
         (`type`, code) =>
           val document = Document(`type`, code, None)
-          document.asString mustBe s"${`type`.asString} - $code"
+          document.toString mustBe s"${`type`.display} - $code"
       }
     }
   }
