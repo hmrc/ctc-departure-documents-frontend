@@ -16,8 +16,10 @@
 
 package pages
 
-import queries.{Gettable, Settable}
+import queries.{Gettable, Removable, Settable}
 
-trait QuestionPage[A] extends ReadOnlyPage[A] with Settable[A]
+trait QuestionPage[A] extends RemovablePage[A] with Settable[A]
 
 trait ReadOnlyPage[A] extends Page with Gettable[A]
+
+trait RemovablePage[A] extends ReadOnlyPage[A] with Removable[A]
