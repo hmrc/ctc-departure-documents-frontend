@@ -16,9 +16,11 @@
 
 package pages.sections
 
-import pages.{QuestionPage, ReadOnlyPage}
+import pages.{QuestionPage, ReadOnlyPage, RemovablePage}
 import play.api.libs.json.JsValue
 
 trait Section[T <: JsValue] extends QuestionPage[T]
 
 trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+
+trait RemovableSection[T <: JsValue] extends RemovablePage[T]

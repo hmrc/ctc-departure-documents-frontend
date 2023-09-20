@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package pages.sections.external
 
-import models.{Mode, UserAnswers}
-import pages.Page
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Index
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsArray, JsPath}
 
-import scala.util.{Success, Try}
+case class ItemSection(itemIndex: Index) extends ReadOnlySection[JsArray] {
 
-sealed trait Query extends Page {
-  def path: JsPath
-}
-
-trait Gettable[A] extends Query {
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
-}
-
-trait Settable[A] extends Query
-
-trait Removable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  override def path: JsPath = ItemsSection.path \ itemIndex.position
 }

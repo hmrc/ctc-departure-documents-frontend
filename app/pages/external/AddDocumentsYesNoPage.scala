@@ -14,27 +14,16 @@
  * limitations under the License.
  */
 
-package queries
+package pages.external
 
-import models.{Mode, UserAnswers}
-import pages.Page
+import models.Index
+import pages.RemovablePage
+import pages.sections.external.ItemSection
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-import scala.util.{Success, Try}
+case class AddDocumentsYesNoPage(itemIndex: Index) extends RemovablePage[Boolean] {
 
-sealed trait Query extends Page {
-  def path: JsPath
-}
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-trait Gettable[A] extends Query {
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
-}
-
-trait Settable[A] extends Query
-
-trait Removable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  override def toString: String = "addDocumentsYesNo"
 }

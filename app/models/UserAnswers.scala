@@ -16,8 +16,8 @@
 
 package models
 
-import pages.QuestionPage
-import pages.external.DocumentPage
+import pages.{QuestionPage, RemovablePage}
+import pages.external.{AddDocumentsYesNoPage, DocumentPage}
 import pages.sections.external.{DocumentSection, DocumentsSection, ItemsSection}
 import play.api.libs.json._
 import queries.Gettable
@@ -58,7 +58,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+  def remove[A](page: RemovablePage[A]): Try[UserAnswers] = {
     val updatedData    = data.removeObject(page.path).getOrElse(data)
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
@@ -75,11 +75,24 @@ final case class UserAnswers(
       (0 until numberOfItems).map(Index(_)).foldLeft(this) {
         (acc1, itemIndex) =>
           val numberOfDocuments = acc1.getArraySize(DocumentsSection(itemIndex))
+
+          def removeYesNoQuestionIfNoDocumentsLeft(userAnswers: UserAnswers): Try[UserAnswers] =
+            if (userAnswers.getArray(DocumentsSection(itemIndex)).isEmpty) {
+              userAnswers.remove(AddDocumentsYesNoPage(itemIndex))
+            } else {
+              Success(userAnswers)
+            }
+
           (numberOfDocuments to 1 by -1).map(_ - 1).map(Index(_)).foldLeft(acc1) {
             (acc2, documentIndex) =>
               acc2.get(DocumentPage(itemIndex, documentIndex)) match {
-                case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid => acc2.remove(DocumentSection(itemIndex, documentIndex)).getOrElse(acc2)
-                case _                                                          => acc2
+                case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid =>
+                  acc2
+                    .remove(DocumentSection(itemIndex, documentIndex))
+                    .flatMap(removeYesNoQuestionIfNoDocumentsLeft)
+                    .getOrElse(acc2)
+                case _ =>
+                  acc2
               }
           }
       }
