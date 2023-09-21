@@ -132,6 +132,7 @@ class UserAnswersSpec extends SpecBase {
              |{
              |  "items" : [
              |    {
+             |      "addDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "$uuid"
@@ -145,6 +146,7 @@ class UserAnswersSpec extends SpecBase {
              |      ]
              |    },
              |    {
+             |      "addDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "$uuid"
@@ -152,6 +154,7 @@ class UserAnswersSpec extends SpecBase {
              |      ]
              |    },
              |    {
+             |      "addDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "ac50154c-cad1-4320-8def-d282eea63b2e"
@@ -162,6 +165,7 @@ class UserAnswersSpec extends SpecBase {
              |      ]
              |    },
              |    {
+             |      "addDocumentsYesNo" : false,
              |      "documents" : []
              |    }
              |  ]
@@ -178,6 +182,7 @@ class UserAnswersSpec extends SpecBase {
              |{
              |  "items" : [
              |    {
+             |      "addDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
@@ -191,6 +196,7 @@ class UserAnswersSpec extends SpecBase {
              |      "documents" : []
              |    },
              |    {
+             |      "addDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "ac50154c-cad1-4320-8def-d282eea63b2e"
@@ -198,6 +204,7 @@ class UserAnswersSpec extends SpecBase {
              |      ]
              |    },
              |    {
+             |      "addDocumentsYesNo" : false,
              |      "documents" : []
              |    }
              |  ]

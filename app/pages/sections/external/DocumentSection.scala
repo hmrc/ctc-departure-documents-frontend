@@ -17,10 +17,10 @@
 package pages.sections.external
 
 import models.Index
-import pages.sections.Section
+import pages.sections.RemovableSection
 import play.api.libs.json.{JsObject, JsPath}
 
-case class DocumentSection(itemIndex: Index, documentIndex: Index) extends Section[JsObject] {
+case class DocumentSection(itemIndex: Index, documentIndex: Index) extends RemovableSection[JsObject] {
 
   override def path: JsPath = DocumentsSection(itemIndex).path \ documentIndex.position
 }
