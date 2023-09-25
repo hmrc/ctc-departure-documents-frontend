@@ -17,11 +17,11 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.Constants._
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
-import models.DeclarationType._
 import models.DocumentType._
+import models.Index
 import models.reference.{CustomsOffice, Document, Metric, PackageType}
-import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -40,7 +40,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         "when attach to all items is unanswered" in {
           val userAnswers = emptyUserAnswers
             .setValue(TransitOperationOfficeOfDeparturePage, arbitrary[CustomsOffice].sample.value)
-            .setValue(TransitOperationDeclarationTypePage, arbitrary[DeclarationType].sample.value)
+            .setValue(TransitOperationDeclarationTypePage, arbitrary[String](arbitraryDeclarationType).sample.value)
 
           val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
             DocumentDomain.userAnswersReader(index)
@@ -83,7 +83,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           }
 
           "and Declaration Type is not in set T2/T2F" in {
-            val declarationTypeGen   = Gen.oneOf(T1, TIR, T)
+            val declarationTypeGen   = arbitrary[String](arbitraryNonT2OrT2FDeclarationType)
             val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
             forAll(declarationTypeGen, officeOfDepartureGen, arbitrary[Boolean]) {
               (declarationType, officeOfDeparture, attachToAllItems) =>

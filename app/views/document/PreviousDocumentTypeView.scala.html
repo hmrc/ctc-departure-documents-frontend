@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Document], lrn: LocalReferenceNumber, previousDocumentTypes: Seq[Document], mode: Mode, declarationType: DeclarationType, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Document], lrn: LocalReferenceNumber, previousDocumentTypes: Seq[Document], mode: Mode, declarationType: String, documentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @additionalHtml = {
     @messages("document.previousDocumentType.paragraph1", declarationType).toParagraph

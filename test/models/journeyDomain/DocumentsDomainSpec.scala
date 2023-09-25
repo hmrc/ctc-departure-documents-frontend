@@ -18,7 +18,6 @@ package models.journeyDomain
 
 import base.SpecBase
 import generators.Generators
-import models.DeclarationType.{T, T1, T2, T2F, TIR}
 import models.Index
 import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
@@ -52,7 +51,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "when there are no documents" - {
         "and Declaration Type is not in set T2 or T2F" in {
-          val declarationTypeGen   = Gen.oneOf(T1, TIR, T)
+          val declarationTypeGen   = arbitrary[String](arbitraryNonT2OrT2FDeclarationType)
           val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
           forAll(declarationTypeGen, officeOfDepartureGen) {
             (declarationType, officeOfDeparture) =>
@@ -68,7 +67,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "and Office of Departure is not in GB" in {
-          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val declarationTypeGen   = arbitrary[String](arbitraryT2OrT2FDeclarationType)
           val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryXiCustomsOffice)
           forAll(declarationTypeGen, officeOfDepartureGen) {
             (declarationType, officeOfDeparture) =>
@@ -90,7 +89,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
       "when add documents yes/no is unanswered" - {
 
         "and Declaration Type is not in set T2 or T2F" in {
-          val declarationTypeGen   = Gen.oneOf(T1, TIR, T)
+          val declarationTypeGen   = arbitrary[String](arbitraryNonT2OrT2FDeclarationType)
           val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
           forAll(declarationTypeGen, officeOfDepartureGen) {
             (declarationType, officeOfDeparture) =>
@@ -105,7 +104,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "and Office of Departure is not in GB" in {
-          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val declarationTypeGen   = arbitrary[String](arbitraryT2OrT2FDeclarationType)
           val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryXiCustomsOffice)
           forAll(declarationTypeGen, officeOfDepartureGen) {
             (declarationType, officeOfDeparture) =>
@@ -122,7 +121,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "when Declaration Type is in set T2/T2F and Office of Departure is in GB" - {
         "and attach to all items is unanswered at index 0" in {
-          val declarationTypeGen   = Gen.oneOf(T2, T2F)
+          val declarationTypeGen   = arbitrary[String](arbitraryT2OrT2FDeclarationType)
           val officeOfDepartureGen = arbitrary[CustomsOffice](arbitraryGbCustomsOffice)
           forAll(declarationTypeGen, officeOfDepartureGen) {
             (declarationType, officeOfDeparture) =>

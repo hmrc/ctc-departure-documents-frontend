@@ -19,7 +19,6 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.DeclarationType._
 import models.{Index, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

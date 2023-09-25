@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import models.DeclarationType.{T2, T2F}
+import config.Constants.{T2, T2F}
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.AddDocumentsYesNoPage
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
@@ -36,7 +36,7 @@ object DocumentsDomain {
     for {
       officeOfDeparture <- TransitOperationOfficeOfDeparturePage.reader
       declarationType   <- TransitOperationDeclarationTypePage.reader
-    } yield officeOfDeparture.isInGB && declarationType.isOneOf(T2, T2F)
+    } yield officeOfDeparture.isInGB && Seq(T2, T2F).contains(declarationType)
 
   implicit def userAnswersReader: UserAnswersReader[DocumentsDomain] = {
     def arrayReader: UserAnswersReader[Seq[DocumentDomain]] = DocumentsSection.arrayReader.flatMap {
