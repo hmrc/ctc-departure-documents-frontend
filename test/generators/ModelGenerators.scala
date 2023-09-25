@@ -17,6 +17,7 @@
 package generators
 
 import config.Constants._
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -169,4 +170,9 @@ trait ModelGenerators {
       metrics <- listWithMaxLength[Metric]()
     } yield MetricList(metrics.distinctBy(_.code))
   }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 }
