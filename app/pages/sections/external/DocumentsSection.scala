@@ -17,10 +17,10 @@
 package pages.sections.external
 
 import models.Index
-import pages.sections.ReadOnlySection
+import pages.sections.RemovableSection
 import play.api.libs.json.{JsArray, JsPath}
 
-case class DocumentsSection(itemIndex: Index) extends ReadOnlySection[JsArray] {
+case class DocumentsSection(itemIndex: Index) extends RemovableSection[JsArray] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
