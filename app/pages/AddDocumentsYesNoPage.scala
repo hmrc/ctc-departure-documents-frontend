@@ -38,6 +38,7 @@ case object AddDocumentsYesNoPage extends QuestionPage[Boolean] {
       case Some(false) =>
         userAnswers
           .remove(DocumentsSection)
+          .map(_.removeDocumentsFromItems())
       case _ =>
         super.cleanup(value, userAnswers)
     }

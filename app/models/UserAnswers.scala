@@ -16,9 +16,9 @@
 
 package models
 
-import pages.{QuestionPage, RemovablePage}
 import pages.external.{AddDocumentsYesNoPage, DocumentPage}
 import pages.sections.external.{DocumentSection, DocumentsSection, ItemsSection}
+import pages.{QuestionPage, RemovablePage}
 import play.api.libs.json._
 import queries.Gettable
 
@@ -67,6 +67,17 @@ final case class UserAnswers(
   def updateTask(section: String, status: TaskStatus): UserAnswers = {
     val tasks = this.tasks.updated(section, status)
     this.copy(tasks = tasks)
+  }
+
+  def removeDocumentsFromItems(): UserAnswers = {
+    val numberOfItems = this.getArraySize(ItemsSection)
+    (0 until numberOfItems).map(Index(_)).foldLeft(this) {
+      (acc1, itemIndex) =>
+        acc1
+          .remove(AddDocumentsYesNoPage(itemIndex))
+          .flatMap(_.remove(DocumentsSection(itemIndex)))
+          .getOrElse(acc1)
+    }
   }
 
   def removeDocumentFromItems(uuid: Option[UUID]): UserAnswers = uuid match {
