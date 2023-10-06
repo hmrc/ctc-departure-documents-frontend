@@ -16,7 +16,7 @@
 
 package models.reference
 
-import config.Constants.GB
+import config.Constants.CountryCode.GB
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 

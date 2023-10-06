@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import config.Constants.{T2, T2F}
+import config.Constants.DeclarationType.{T2, T2F}
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.AddDocumentsYesNoPage
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}

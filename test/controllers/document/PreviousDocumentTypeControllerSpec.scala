@@ -17,7 +17,7 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants._
+import config.Constants.DeclarationType._
 import forms.DocumentFormProvider
 import generators.Generators
 import models.{ConsignmentLevelDocuments, NormalMode, SelectableList}

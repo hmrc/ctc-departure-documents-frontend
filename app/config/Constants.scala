@@ -17,9 +17,14 @@
 package config
 
 object Constants {
-  val GB = "GB"
-  val XI = "XI"
 
-  val T2  = "T2"
-  val T2F = "T2F"
+  object CountryCode {
+    val GB = "GB"
+    val XI = "XI"
+  }
+
+  object DeclarationType {
+    val T2  = "T2"
+    val T2F = "T2F"
+  }
 }

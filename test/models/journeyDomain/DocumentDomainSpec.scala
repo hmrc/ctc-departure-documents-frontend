@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.DeclarationType._
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
 import models.DocumentType._
 import models.Index
