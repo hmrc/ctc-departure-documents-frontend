@@ -16,7 +16,7 @@
 
 package generators
 
-import config.Constants._
+import config.Constants.CountryCode._
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
