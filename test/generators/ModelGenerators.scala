@@ -42,6 +42,16 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
+  implicit lazy val arbitrarySubmissionState: Arbitrary[SubmissionState] = Arbitrary {
+    val values = Seq(
+      SubmissionState.NotSubmitted,
+      SubmissionState.Submitted,
+      SubmissionState.RejectedPendingChanges,
+      SubmissionState.Amendment
+    )
+    Gen.oneOf(values)
+  }
+
   implicit lazy val arbitraryMode: Arbitrary[Mode] = Arbitrary {
     Gen.oneOf(NormalMode, CheckMode)
   }
