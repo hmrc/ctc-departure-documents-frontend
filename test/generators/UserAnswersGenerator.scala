@@ -18,7 +18,7 @@ package generators
 
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.{DocumentDomain, DocumentsDomain, UserAnswersReader}
-import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -28,9 +28,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
-        lrn        <- arbitrary[LocalReferenceNumber]
-        eoriNumber <- arbitrary[EoriNumber]
-        answers    <- buildUserAnswers[DocumentsDomain](UserAnswers(lrn, eoriNumber))
+        lrn             <- arbitrary[LocalReferenceNumber]
+        eoriNumber      <- arbitrary[EoriNumber]
+        submissionState <- arbitrary[SubmissionState]
+        answers         <- buildUserAnswers[DocumentsDomain](UserAnswers(lrn, eoriNumber, submissionState))
       } yield answers
     }
 
