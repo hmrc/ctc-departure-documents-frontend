@@ -16,11 +16,11 @@
 
 import cats.data.ReaderT
 import config.FrontendAppConfig
-import models.TaskStatus.{Completed, InProgress}
-import models.{LocalReferenceNumber, UserAnswers}
+import models.TaskStatus.InProgress
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{DocumentsDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
+import models.{LocalReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
