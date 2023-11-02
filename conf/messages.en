@@ -101,8 +101,8 @@ document.declareQuantityOfGoodsYesNo.checkYourAnswersLabel = Do you want to decl
 document.declareQuantityOfGoodsYesNo.change.hidden = if you want to declare the quantity of goods
 document.declareQuantityOfGoodsYesNo.error.required = Select yes if you want to declare the quantity of the goods transported into the UK
 
-document.quantity.title = How many of these do the goods include?
-document.quantity.heading = How many of these do the goods include?
+document.quantity.title = How many of this metric do the goods include?
+document.quantity.heading = How many of this metric do the goods include?
 document.quantity.checkYourAnswersLabel = Number of {0}
 document.quantity.change.hidden = number of {0}
 document.quantity.error.required = Enter the quantity of the goods’ metric
@@ -124,14 +124,14 @@ document.addNumberOfPackagesYesNo.checkYourAnswersLabel = Do you want to declare
 document.addNumberOfPackagesYesNo.change.hidden = if you want to declare the quantity of this package
 document.addNumberOfPackagesYesNo.error.required = Select yes if you want to declare the quantity of the package type
 
-document.numberOfPackages.title = How many of these were there?
-document.numberOfPackages.heading = How many of these were there?
+document.numberOfPackages.title = How many of this package were there?
+document.numberOfPackages.heading = How many of this package were there?
 document.numberOfPackages.checkYourAnswersLabel = Package quantity
 document.numberOfPackages.change.hidden = package quantity
-document.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
-document.numberOfPackages.error.required = Enter the quantity of the package type
-document.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
-document.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
+document.numberOfPackages.error.nonNumeric = The quantity of the package type must only include numbers 0 to 9
+document.numberOfPackages.error.required = The quantity of the package type must be 1 or more
+document.numberOfPackages.error.wholeNumber = The quantity of the package type must only include numbers 0 to 9
+document.numberOfPackages.error.maximum = The quantity of the package type must be 99,999,999 or less
 
 document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
