@@ -18,6 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo, urlPathMatching}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.DocumentType._
 import models.reference.{Document, Metric}
 import org.scalacheck.Gen
@@ -97,8 +98,14 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
-  "getPreviousDocuments" - {
+  private val emptyResponseJson: String =
+    """
+      |{
+      |  "data": []
+      |}
+      |""".stripMargin
 
+  "getPreviousDocuments" - {
     val url = s"/$baseUrl/lists/PreviousDocumentType"
 
     "must return list of previous documents when successful" in {
@@ -115,14 +122,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       connector.getPreviousDocuments().futureValue mustEqual expectResult
     }
 
-    "must return an exception when an error response is returned" in {
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getPreviousDocuments())
+    }
 
+    "must return an exception when an error response is returned" in {
       checkErrorResponse(url, connector.getPreviousDocuments())
     }
   }
 
   "getTransportDocuments" - {
-
     val url = s"/$baseUrl/lists/TransportDocumentType"
 
     "must return list of documents when successful" in {
@@ -139,14 +148,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       connector.getTransportDocuments().futureValue mustEqual expectResult
     }
 
-    "must return an exception when an error response is returned" in {
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getTransportDocuments())
+    }
 
+    "must return an exception when an error response is returned" in {
       checkErrorResponse(url, connector.getTransportDocuments())
     }
   }
 
   "getSupportingDocuments" - {
-
     val url = s"/$baseUrl/lists/SupportingDocumentType"
 
     "must return list of documents when successful" in {
@@ -163,17 +174,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       connector.getSupportingDocuments().futureValue mustEqual expectResult
     }
 
-    "must return an exception when an error response is returned" in {
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getSupportingDocuments())
+    }
 
+    "must return an exception when an error response is returned" in {
       checkErrorResponse(url, connector.getSupportingDocuments())
     }
   }
 
   "getMetrics" - {
+    val url = s"/$baseUrl/lists/Unit"
 
     "must return list of metrics when successful" in {
       server.stubFor(
-        get(urlEqualTo(s"/$baseUrl/lists/Unit"))
+        get(urlEqualTo(url))
           .willReturn(okJson(metricJson))
       )
 
@@ -185,17 +200,28 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       connector.getMetrics().futureValue mustEqual expectResult
     }
 
-    "must return an exception when an error response is returned" in {
-
-      checkErrorResponse(s"/$baseUrl/metrics", connector.getMetrics())
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getMetrics())
     }
 
+    "must return an exception when an error response is returned" in {
+      checkErrorResponse(url, connector.getMetrics())
+    }
+  }
+
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(emptyResponseJson))
+    )
+
+    whenReady[Throwable, Assertion](result.failed) {
+      _ mustBe a[NoReferenceDataFoundException]
+    }
   }
 
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
-    val errorResponses: Gen[Int] = Gen
-      .chooseNum(400: Int, 599: Int)
-      .suchThat(_ != 404)
+    val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
       errorResponse =>
@@ -207,7 +233,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             )
         )
 
-        whenReady(result.failed) {
+        whenReady[Throwable, Assertion](result.failed) {
           _ mustBe an[Exception]
         }
     }
