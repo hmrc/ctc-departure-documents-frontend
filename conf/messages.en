@@ -148,7 +148,7 @@ document.additionalInformation.error.length = The additional information must be
 document.additionalInformation.error.required = Enter the additional information
 document.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
-document.documentAnswers.title = Check your answers
+document.documentAnswers.title = Check your answers - Documents
 document.documentAnswers.heading = Check your answers
 
 document.removeDocument.title = Are you sure you want to remove this document?
