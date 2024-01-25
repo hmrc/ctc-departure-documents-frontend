@@ -18,16 +18,17 @@ package navigation
 
 import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeDocumentsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends DocumentsNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeDocumentNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig) extends DocumentNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }

@@ -35,6 +35,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 import models.SubmissionState
+import queries.Gettable
 
 trait SpecBase
     extends AnyFreeSpec
@@ -76,7 +77,7 @@ trait SpecBase
     def setValue[T](page: QuestionPage[T], value: T)(implicit format: Format[T]): UserAnswers =
       userAnswers.set(page, value).success.value
 
-    def setValue[T](page: ReadOnlyPage[T], value: T)(implicit format: Format[T]): UserAnswers =
+    def setValue[T](page: Gettable[T], value: T)(implicit format: Format[T]): UserAnswers =
       userAnswers.data
         .setObject(page.path, Json.toJson(value))
         .fold(

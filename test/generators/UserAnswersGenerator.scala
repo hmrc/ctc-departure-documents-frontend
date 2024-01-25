@@ -41,7 +41,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
     def rec(userAnswers: UserAnswers): Gen[UserAnswers] =
       userAnswersReader.run(userAnswers) match {
-        case Left(ReaderError(page, _)) =>
+        case Left(ReaderError(page, _, _)) =>
           generateAnswer
             .apply(page)
             .map {
@@ -61,5 +61,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     buildUserAnswers[DocumentsDomain](userAnswers)
 
   def arbitraryDocumentAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
-    buildUserAnswers[DocumentDomain](userAnswers)(DocumentDomain.userAnswersReader(index))
+    buildUserAnswers[DocumentDomain](userAnswers)(
+      DocumentDomain.userAnswersReader(index).apply(Nil)
+    )
 }

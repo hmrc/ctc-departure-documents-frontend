@@ -16,11 +16,17 @@
 
 package pages.sections
 
+import controllers.routes
+import models.{Mode, UserAnswers}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case object DocumentsSection extends Section[JsArray] {
 
   override def path: JsPath = ParentSection.path \ toString
 
   override def toString: String = "documents"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn))
 }

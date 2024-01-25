@@ -38,22 +38,25 @@ class QuantityDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             value = value
           )
 
-          val result: EitherType[QuantityDomain] = UserAnswersReader[QuantityDomain](
-            QuantityDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = QuantityDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            MetricPage(index),
+            QuantityPage(index)
+          )
       }
     }
   }
 
   "can not be read from user answers" - {
     "when metric is unanswered" in {
-      val result: EitherType[QuantityDomain] = UserAnswersReader[QuantityDomain](
-        QuantityDomain.userAnswersReader(index)
-      ).run(emptyUserAnswers)
+      val result = QuantityDomain.userAnswersReader(index).apply(Nil).run(emptyUserAnswers)
 
       result.left.value.page mustBe MetricPage(index)
+      result.left.value.pages mustBe Seq(
+        MetricPage(index)
+      )
     }
 
     "when quantity is unanswered" in {
@@ -62,11 +65,13 @@ class QuantityDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val userAnswers = emptyUserAnswers
             .setValue(MetricPage(index), metric)
 
-          val result: EitherType[QuantityDomain] = UserAnswersReader[QuantityDomain](
-            QuantityDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = QuantityDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe QuantityPage(index)
+          result.left.value.pages mustBe Seq(
+            MetricPage(index),
+            QuantityPage(index)
+          )
       }
     }
   }

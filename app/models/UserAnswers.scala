@@ -16,11 +16,11 @@
 
 package models
 
+import pages.QuestionPage
 import pages.external.{AddDocumentsYesNoPage, DocumentPage}
 import pages.sections.external.{DocumentSection, DocumentsSection, ItemsSection}
-import pages.{QuestionPage, RemovablePage}
 import play.api.libs.json._
-import queries.Gettable
+import queries.{Gettable, Removable}
 
 import java.util.UUID
 import scala.util.{Failure, Success, Try}
@@ -59,7 +59,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: RemovablePage[A]): Try[UserAnswers] = {
+  def remove[A](page: Removable[A]): Try[UserAnswers] = {
     val updatedData    = data.removeObject(page.path).getOrElse(data)
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)

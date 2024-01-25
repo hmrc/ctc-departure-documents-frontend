@@ -26,6 +26,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.AddDocumentsYesNoPage
 import pages.document.AttachToAllItemsPage
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
+import pages.sections.DocumentsSection
 
 class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -44,9 +45,10 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
             arbitraryDocumentAnswers(updatedUserAnswers, Index(index)).sample.value
         })
 
-        val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+        val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-        result.value.documents.length mustBe numberOfItems
+        result.value.value.documents.length mustBe numberOfItems
+        result.value.pages.last mustBe DocumentsSection
       }
 
       "when there are no documents" - {
@@ -60,9 +62,13 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
                 .setValue(AddDocumentsYesNoPage, false)
 
-              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+              val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.value.documents mustBe Nil
+              result.value.value.documents mustBe Nil
+              result.value.pages mustBe Seq(
+                AddDocumentsYesNoPage,
+                DocumentsSection
+              )
           }
         }
 
@@ -76,9 +82,13 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
                 .setValue(AddDocumentsYesNoPage, false)
 
-              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+              val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.value.documents mustBe Nil
+              result.value.value.documents mustBe Nil
+              result.value.pages mustBe Seq(
+                AddDocumentsYesNoPage,
+                DocumentsSection
+              )
           }
         }
       }
@@ -97,9 +107,12 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+              val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
               result.left.value.page mustBe AddDocumentsYesNoPage
+              result.left.value.pages mustBe Seq(
+                AddDocumentsYesNoPage
+              )
           }
         }
 
@@ -112,9 +125,12 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
 
-              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+              val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
               result.left.value.page mustBe AddDocumentsYesNoPage
+              result.left.value.pages mustBe Seq(
+                AddDocumentsYesNoPage
+              )
           }
         }
       }
@@ -128,11 +144,13 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
               val userAnswers = emptyUserAnswers
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
                 .setValue(TransitOperationOfficeOfDeparturePage, officeOfDeparture)
-                .setValue(AddDocumentsYesNoPage, true)
 
-              val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain].run(userAnswers)
+              val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
               result.left.value.page mustBe AttachToAllItemsPage(Index(0))
+              result.left.value.pages mustBe Seq(
+                AttachToAllItemsPage(Index(0))
+              )
           }
         }
       }

@@ -17,7 +17,7 @@
 package utils.cyaHelpers
 
 import models.journeyDomain.Stage.AccessingJourney
-import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, UserAnswersReader}
 import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray, UserAnswers}
 import pages.QuestionPage
 import pages.sections.Section
@@ -78,7 +78,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
               }
               .map(Left(_))
         }
-      case Right(journeyDomainModel) =>
+      case Right(ReaderSuccess(journeyDomainModel, _)) =>
         journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
           changeRoute =>
             Right(

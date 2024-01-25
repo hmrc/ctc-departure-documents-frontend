@@ -18,8 +18,8 @@ package pages.document
 
 import controllers.document.routes
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
 import pages.sections.{DocumentDetailsSection, DocumentSection}
+import pages.{InferredPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -52,7 +52,7 @@ case class AttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllIte
     userAnswers.remove(InferredAttachToAllItemsPage(documentIndex))
 }
 
-case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) {
+case class InferredAttachToAllItemsPage(documentIndex: Index) extends BaseAttachToAllItemsPage(documentIndex) with InferredPage[Boolean] {
   override def toString: String = "inferredAttachToAllItems"
 
   override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =

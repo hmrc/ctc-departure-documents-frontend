@@ -16,7 +16,6 @@
 
 package models.journeyDomain
 
-import cats.implicits._
 import models.Index
 import models.reference.Metric
 import pages.document._
@@ -24,13 +23,13 @@ import pages.document._
 case class QuantityDomain(
   metric: Metric,
   value: BigDecimal
-)
+) extends JourneyDomainModel
 
 object QuantityDomain {
 
-  implicit def userAnswersReader(index: Index): UserAnswersReader[QuantityDomain] =
+  implicit def userAnswersReader(index: Index): Read[QuantityDomain] =
     (
       MetricPage(index).reader,
       QuantityPage(index).reader
-    ).tupled.map((QuantityDomain.apply _).tupled)
+    ).map(QuantityDomain.apply)
 }
