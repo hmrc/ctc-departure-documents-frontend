@@ -16,7 +16,6 @@
 
 package models.journeyDomain
 
-import cats.implicits._
 import models.Index
 import models.reference.PackageType
 import pages.document._
@@ -24,13 +23,13 @@ import pages.document._
 case class PackageDomain(
   `type`: PackageType,
   numberOfPackages: Option[Int]
-)
+) extends JourneyDomainModel
 
 object PackageDomain {
 
-  implicit def userAnswersReader(index: Index): UserAnswersReader[PackageDomain] =
+  implicit def userAnswersReader(index: Index): Read[PackageDomain] =
     (
       PackageTypePage(index).reader,
       AddNumberOfPackagesYesNoPage(index).filterOptionalDependent(identity)(NumberOfPackagesPage(index).reader)
-    ).tupled.map((PackageDomain.apply _).tupled)
+    ).map(PackageDomain.apply)
 }

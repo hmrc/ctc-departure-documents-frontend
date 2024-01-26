@@ -16,10 +16,15 @@
 
 package pages.sections
 
-import models.Index
+import controllers.document.routes
+import models.{Index, Mode, UserAnswers}
 import play.api.libs.json.{JsObject, JsPath}
+import play.api.mvc.Call
 
 case class DocumentSection(index: Index) extends Section[JsObject] {
 
   override def path: JsPath = DocumentsSection.path \ index.position
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.DocumentAnswersController.onPageLoad(userAnswers.lrn, index))
 }

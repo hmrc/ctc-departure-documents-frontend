@@ -39,22 +39,26 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             numberOfPackages = Some(numberOfPackages)
           )
 
-          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-            PackageDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = PackageDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            PackageTypePage(index),
+            AddNumberOfPackagesYesNoPage(index),
+            NumberOfPackagesPage(index)
+          )
       }
     }
   }
 
   "can not be read from user answers" - {
     "when package type is unanswered" in {
-      val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-        PackageDomain.userAnswersReader(index)
-      ).run(emptyUserAnswers)
+      val result = PackageDomain.userAnswersReader(index).apply(Nil).run(emptyUserAnswers)
 
       result.left.value.page mustBe PackageTypePage(index)
+      result.left.value.pages mustBe Seq(
+        PackageTypePage(index)
+      )
     }
 
     "when add number of packages yes/no is unanswered" in {
@@ -63,11 +67,13 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           val userAnswers = emptyUserAnswers
             .setValue(PackageTypePage(index), packageType)
 
-          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-            PackageDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = PackageDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddNumberOfPackagesYesNoPage(index)
+          result.left.value.pages mustBe Seq(
+            PackageTypePage(index),
+            AddNumberOfPackagesYesNoPage(index)
+          )
       }
     }
 
@@ -78,13 +84,15 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             .setValue(PackageTypePage(index), packageType)
             .setValue(AddNumberOfPackagesYesNoPage(index), true)
 
-          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-            PackageDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = PackageDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe NumberOfPackagesPage(index)
+          result.left.value.pages mustBe Seq(
+            PackageTypePage(index),
+            AddNumberOfPackagesYesNoPage(index),
+            NumberOfPackagesPage(index)
+          )
       }
     }
   }
-
 }

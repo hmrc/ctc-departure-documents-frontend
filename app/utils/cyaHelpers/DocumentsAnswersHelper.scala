@@ -17,7 +17,7 @@
 package utils.cyaHelpers
 
 import controllers.document.routes
-import models.journeyDomain.DocumentDomain
+import models.journeyDomain.{DocumentDomain, ReaderSuccess}
 import models.{NormalMode, UserAnswers}
 import pages.document.{PreviousDocumentTypePage, TypePage}
 import pages.sections.DocumentsSection
@@ -33,8 +33,8 @@ class DocumentsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection) {
       documentIndex =>
-        DocumentDomain.isMandatoryPrevious(documentIndex).run(userAnswers).toOption.flatMap {
-          isMandatoryPrevious =>
+        DocumentDomain.isMandatoryPrevious(documentIndex).apply(Nil).run(userAnswers).toOption.flatMap {
+          case ReaderSuccess(isMandatoryPrevious, pages) =>
             val removeRoute: Option[Call] = if (isMandatoryPrevious) {
               None
             } else {
@@ -47,7 +47,7 @@ class DocumentsAnswersHelper(
                 userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
               ).map(_.toString) orElse Some(""),
               removeRoute = removeRoute
-            )(DocumentDomain.userAnswersReader(documentIndex))
+            )(DocumentDomain.userAnswersReader(documentIndex).apply(pages))
         }
     }
 }
