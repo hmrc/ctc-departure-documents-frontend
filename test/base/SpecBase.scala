@@ -17,25 +17,24 @@
 package base
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import pages.{QuestionPage, ReadOnlyPage}
+import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.libs.json.{Format, JsResultException, Json, Reads}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import queries.Gettable
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
-import models.SubmissionState
-import queries.Gettable
 
 trait SpecBase
     extends AnyFreeSpec

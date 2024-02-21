@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -31,4 +32,8 @@ case class Metric(code: String, description: String) extends Selectable {
 
 object Metric {
   implicit val format: OFormat[Metric] = Json.format[Metric]
+
+  implicit val order: Order[Metric] = (x: Metric, y: Metric) => {
+    x.description.compareToIgnoreCase(y.description)
+  }
 }

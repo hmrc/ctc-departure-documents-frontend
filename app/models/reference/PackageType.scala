@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -31,4 +32,8 @@ case class PackageType(code: String, description: Option[String]) extends Select
 
 object PackageType {
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
+
+  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => {
+    x.toString.compareToIgnoreCase(y.toString)
+  }
 }

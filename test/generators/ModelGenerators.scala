@@ -182,12 +182,6 @@ trait ModelGenerators {
       } yield Metric(code, desc)
     }
 
-  implicit lazy val arbitraryMetricList: Arbitrary[MetricList] = Arbitrary {
-    for {
-      metrics <- listWithMaxLength[Metric]()
-    } yield MetricList(metrics.distinctBy(_.code))
-  }
-
   implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
     Arbitrary {
       Gen.oneOf(Locked, Unlocked, LockCheckFailure)

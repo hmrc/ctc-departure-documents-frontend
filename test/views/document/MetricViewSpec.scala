@@ -16,19 +16,18 @@
 
 package views.document
 
-import forms.MetricFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
+import forms.SelectableFormProvider
 import models.reference.Metric
-import models.MetricList
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.behaviours.InputSelectViewBehaviours
 import views.html.document.MetricView
 
 class MetricViewSpec extends InputSelectViewBehaviours[Metric] {
 
-  override def form: Form[Metric] = new MetricFormProvider()(prefix, MetricList(values))
+  override def form: Form[Metric] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Metric]): HtmlFormat.Appendable =
     injector.instanceOf[MetricView].apply(form, lrn, values, NormalMode, documentIndex)(fakeRequest, messages)

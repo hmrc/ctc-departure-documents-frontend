@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.Document
@@ -30,23 +31,26 @@ sealed trait DocumentsService {
 
   implicit val ec: ExecutionContext
 
-  def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Seq[Document]] =
-    referenceDataConnector.getTransportDocuments()
+  def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
+    referenceDataConnector
+      .getTransportDocuments()
+      .map(Some(_))
 
   def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
       supportingDocuments <- referenceDataConnector.getSupportingDocuments()
       transportDocuments  <- getTransportDocuments(attachToAllItems)
       previousDocuments   <- referenceDataConnector.getPreviousDocuments()
-    } yield sort(supportingDocuments ++ transportDocuments ++ previousDocuments)
+      documents = transportDocuments match {
+        case Some(value) => supportingDocuments ++ value ++ previousDocuments
+        case None        => supportingDocuments ++ previousDocuments
+      }
+    } yield SelectableList(documents)
 
   def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     referenceDataConnector
       .getPreviousDocuments()
-      .map(sort)
-
-  private def sort(documents: Seq[Document]): SelectableList[Document] =
-    SelectableList(documents.sortBy(_.description.map(_.toLowerCase)))
+      .map(SelectableList(_))
 }
 
 class TransitionDocumentsService @Inject() (
@@ -54,7 +58,7 @@ class TransitionDocumentsService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends DocumentsService {
 
-  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Seq[Document]] =
+  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
     super.getTransportDocuments(attachToAllItems)
 }
 
@@ -63,6 +67,6 @@ class PostTransitionDocumentsService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends DocumentsService {
 
-  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Seq[Document]] =
-    if (attachToAllItems) super.getTransportDocuments(attachToAllItems) else Future.successful(Seq.empty)
+  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
+    if (attachToAllItems) super.getTransportDocuments(attachToAllItems) else Future.successful(None)
 }

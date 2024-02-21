@@ -16,9 +16,10 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase, WireMockServerHandler}
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo, urlPathMatching}
+import cats.data.NonEmptySet
+import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import itbase.ItSpecBase
 import models.DocumentType._
 import models.reference.{Document, Metric}
 import org.scalacheck.Gen
@@ -29,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -114,7 +115,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           .willReturn(okJson(documentsJson("PreviousDocumentType")))
       )
 
-      val expectResult = Seq(
+      val expectResult = NonEmptySet.of(
         Document(Previous, "1", Some("Certificate of quality")),
         Document(Previous, "4", None)
       )
@@ -140,7 +141,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           .willReturn(okJson(documentsJson("TransportDocumentType")))
       )
 
-      val expectResult = Seq(
+      val expectResult = NonEmptySet.of(
         Document(Transport, "1", Some("Certificate of quality")),
         Document(Transport, "4", None)
       )
@@ -166,7 +167,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           .willReturn(okJson(documentsJson("SupportingDocumentType")))
       )
 
-      val expectResult = Seq(
+      val expectResult = NonEmptySet.of(
         Document(Support, "1", Some("Certificate of quality")),
         Document(Support, "4", None)
       )
@@ -192,7 +193,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           .willReturn(okJson(metricJson))
       )
 
-      val expectResult = Seq(
+      val expectResult = NonEmptySet.of(
         Metric("CTM", "Carats (one metric carat = 2 x 10-4kg)"),
         Metric("DTN", "Hectokilogram")
       )

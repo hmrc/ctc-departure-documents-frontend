@@ -17,9 +17,9 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.MetricFormProvider
-import models.{MetricList, NormalMode}
+import forms.SelectableFormProvider
 import generators.Generators
+import models.{NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,9 +37,9 @@ class MetricControllerSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private val metric1    = arbitraryMetric.arbitrary.sample.get
   private val metric2    = arbitraryMetric.arbitrary.sample.get
-  private val metricList = MetricList(Seq(metric1, metric2))
+  private val metricList = SelectableList(Seq(metric1, metric2))
 
-  private val formProvider = new MetricFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("document.metric", metricList)
   private val mode         = NormalMode
 
@@ -68,7 +68,7 @@ class MetricControllerSpec extends SpecBase with AppWithDefaultMockFixtures with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, metricList.metrics, mode, documentIndex)(request, messages).toString
+        view(form, lrn, metricList.values, mode, documentIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class MetricControllerSpec extends SpecBase with AppWithDefaultMockFixtures with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, metricList.metrics, mode, documentIndex)(request, messages).toString
+        view(filledForm, lrn, metricList.values, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class MetricControllerSpec extends SpecBase with AppWithDefaultMockFixtures with
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, metricList.metrics, mode, documentIndex)(request, messages).toString
+        view(boundForm, lrn, metricList.values, mode, documentIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

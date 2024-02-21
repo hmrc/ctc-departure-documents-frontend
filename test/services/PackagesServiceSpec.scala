@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.PackageType
@@ -47,14 +48,13 @@ class PackagesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted package types" in {
 
         when(mockRefDataConnector.getPackageTypes()(any(), any()))
-          .thenReturn(Future.successful(Seq(packageType1, packageType2, packageType3)))
+          .thenReturn(Future.successful(NonEmptySet.of(packageType1, packageType2, packageType3)))
 
         service.getPackageTypes().futureValue mustBe
-          SelectableList(Seq(packageType1, packageType3, packageType2))
+          SelectableList(Seq(packageType2, packageType3, packageType1))
 
         verify(mockRefDataConnector).getPackageTypes()(any(), any())
       }
     }
-
   }
 }
