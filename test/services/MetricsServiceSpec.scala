@@ -17,8 +17,9 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
-import models.MetricList
+import models.SelectableList
 import models.reference.Metric
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -47,10 +48,10 @@ class MetricsServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted metrics" in {
 
         when(mockRefDataConnector.getMetrics()(any(), any()))
-          .thenReturn(Future.successful(Seq(metric1, metric2, metric3)))
+          .thenReturn(Future.successful(NonEmptySet.of(metric1, metric2, metric3)))
 
         service.getMetrics().futureValue mustBe
-          MetricList(Seq(metric3, metric2, metric1))
+          SelectableList(Seq(metric3, metric2, metric1))
 
         verify(mockRefDataConnector).getMetrics()(any(), any())
       }

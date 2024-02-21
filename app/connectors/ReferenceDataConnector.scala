@@ -16,6 +16,8 @@
 
 package connectors
 
+import cats.Order
+import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.DocumentType._
@@ -24,54 +26,70 @@ import play.api.Logging
 import play.api.http.Status.OK
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
-  def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Document]] = {
-    val url                             = s"${config.referenceDataUrl}/lists/PreviousDocumentType"
+  def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Document]] = {
+    val url                             = url"${config.referenceDataUrl}/lists/PreviousDocumentType"
     implicit val reads: Reads[Document] = Document.reads(Previous)
-    http.GET[Seq[Document]](url, headers = version2Header)
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Document]]
   }
 
-  def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Document]] = {
-    val url                             = s"${config.referenceDataUrl}/lists/SupportingDocumentType"
+  def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Document]] = {
+    val url                             = url"${config.referenceDataUrl}/lists/SupportingDocumentType"
     implicit val reads: Reads[Document] = Document.reads(Support)
-    http.GET[Seq[Document]](url, headers = version2Header)
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Document]]
   }
 
-  def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Document]] = {
-    val url                             = s"${config.referenceDataUrl}/lists/TransportDocumentType"
+  def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Document]] = {
+    val url                             = url"${config.referenceDataUrl}/lists/TransportDocumentType"
     implicit val reads: Reads[Document] = Document.reads(Transport)
-    http.GET[Seq[Document]](url, headers = version2Header)
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Document]]
   }
 
-  def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val url = s"${config.referenceDataUrl}/lists/KindOfPackages"
-    http.GET[Seq[PackageType]](url, headers = version2Header)
+  def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
+    val url = url"${config.referenceDataUrl}/lists/KindOfPackages"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[PackageType]]
   }
 
-  def getMetrics()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Metric]] = {
-    val url = s"${config.referenceDataUrl}/lists/Unit"
-    http.GET[Seq[Metric]](url, headers = version2Header)
+  def getMetrics()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Metric]] = {
+    val url = url"${config.referenceDataUrl}/lists/Unit"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Metric]]
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
 
-  implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
+  implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          (response.json \ "data").validate[Seq[A]] match {
+          (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException
-            case JsSuccess(value, _) =>
-              value
+            case JsSuccess(head :: tail, _) =>
+              NonEmptySet.of(head, tail: _*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }

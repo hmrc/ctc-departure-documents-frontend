@@ -17,6 +17,7 @@
 package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.DocumentType._
 import models.SelectableList
@@ -42,13 +43,13 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
     reset(mockRefDataConnector)
 
     when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
-      .thenReturn(Future.successful(Seq(supportingDocument)))
+      .thenReturn(Future.successful(NonEmptySet.of(supportingDocument)))
 
     when(mockRefDataConnector.getTransportDocuments()(any(), any()))
-      .thenReturn(Future.successful(Seq(transportDocument)))
+      .thenReturn(Future.successful(NonEmptySet.of(transportDocument)))
 
     when(mockRefDataConnector.getPreviousDocuments()(any(), any()))
-      .thenReturn(Future.successful(Seq(previousDocument)))
+      .thenReturn(Future.successful(NonEmptySet.of(previousDocument)))
 
     super.beforeEach()
   }
@@ -68,7 +69,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
               val service = app.injector.instanceOf[DocumentsService]
 
               service.getDocuments(attachToAllItems = true).futureValue mustBe
-                SelectableList(Seq(supportingDocument, previousDocument, transportDocument))
+                SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
 
               verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
               verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
@@ -83,7 +84,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
               val service = app.injector.instanceOf[DocumentsService]
 
               service.getDocuments(attachToAllItems = false).futureValue mustBe
-                SelectableList(Seq(supportingDocument, previousDocument))
+                SelectableList(Seq(previousDocument, supportingDocument))
 
               verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
               verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
@@ -108,7 +109,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
                 val service = app.injector.instanceOf[DocumentsService]
 
                 service.getDocuments(attachToAllItems).futureValue mustBe
-                  SelectableList(Seq(supportingDocument, previousDocument, transportDocument))
+                  SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
 
                 verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
                 verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
@@ -118,6 +119,5 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
         }
       }
     }
-
   }
 }

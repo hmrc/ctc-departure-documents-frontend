@@ -18,7 +18,7 @@ package controllers.document
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.MetricFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.document.MetricPage
@@ -37,7 +37,7 @@ class MetricController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
-  formProvider: MetricFormProvider,
+  formProvider: SelectableFormProvider,
   service: MetricsService,
   val controllerComponents: MessagesControllerComponents,
   view: MetricView
@@ -57,7 +57,7 @@ class MetricController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, metricList.metrics, mode, documentIndex))
+          Ok(view(preparedForm, lrn, metricList.values, mode, documentIndex))
       }
   }
 
@@ -69,7 +69,7 @@ class MetricController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, metricList.metrics, mode, documentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, metricList.values, mode, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
                 MetricPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

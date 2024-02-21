@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.MetricList
+import models.SelectableList
 import models.reference.Metric
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,11 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MetricsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMetrics()(implicit hc: HeaderCarrier): Future[MetricList] =
+  def getMetrics()(implicit hc: HeaderCarrier): Future[SelectableList[Metric]] =
     referenceDataConnector
       .getMetrics()
-      .map(sort)
-
-  private def sort(metrics: Seq[Metric]): MetricList =
-    MetricList(metrics.sortBy(_.description.toLowerCase))
+      .map(SelectableList(_))
 }

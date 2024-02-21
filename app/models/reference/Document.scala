@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.{DocumentType, Selectable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -41,4 +42,8 @@ object Document {
   }
 
   implicit val format: Format[Document] = Json.format[Document]
+
+  implicit val order: Order[Document] = (x: Document, y: Document) => {
+    x.toString.compareToIgnoreCase(y.toString)
+  }
 }
