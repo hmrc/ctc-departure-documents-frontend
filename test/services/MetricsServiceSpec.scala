@@ -51,7 +51,7 @@ class MetricsServiceSpec extends SpecBase with BeforeAndAfterEach {
           .thenReturn(Future.successful(NonEmptySet.of(metric1, metric2, metric3)))
 
         service.getMetrics().futureValue mustBe
-          SelectableList(Seq(metric3, metric1, metric2))
+          SelectableList(Seq(metric3, metric2, metric1))
 
         verify(mockRefDataConnector).getMetrics()(any(), any())
       }
