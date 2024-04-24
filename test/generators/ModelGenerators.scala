@@ -80,7 +80,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
+        desc <- nonEmptyString
       } yield PackageType(code, desc)
     }
 
@@ -89,7 +89,7 @@ trait ModelGenerators {
       for {
         documentType <- arbitrary[DocumentType]
         code         <- nonEmptyString
-        desc         <- Gen.option(nonEmptyString)
+        desc         <- nonEmptyString
       } yield Document(documentType, code, desc)
     }
 
@@ -97,7 +97,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
+        desc <- nonEmptyString
       } yield Document(DocumentType.Transport, code, desc)
     }
 
@@ -105,7 +105,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
+        desc <- nonEmptyString
       } yield Document(DocumentType.Support, code, desc)
     }
 
@@ -113,7 +113,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code <- nonEmptyString
-        desc <- Gen.option(nonEmptyString)
+        desc <- nonEmptyString
       } yield Document(DocumentType.Previous, code, desc)
     }
 
@@ -123,7 +123,8 @@ trait ModelGenerators {
         id          <- stringsWithMaxLength(stringMaxLength)
         name        <- stringsWithMaxLength(stringMaxLength)
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
+        countryId   <- stringsWithMaxLength(stringMaxLength)
+      } yield CustomsOffice(id, name, phoneNumber, countryId)
     }
 
   lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
@@ -132,7 +133,7 @@ trait ModelGenerators {
         id          <- stringsWithMaxLength(stringMaxLength)
         name        <- stringsWithMaxLength(stringMaxLength)
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(s"$GB$id", name, phoneNumber)
+      } yield CustomsOffice(s"$GB$id", name, phoneNumber, GB)
     }
 
   lazy val arbitraryXiCustomsOffice: Arbitrary[CustomsOffice] =
@@ -141,7 +142,7 @@ trait ModelGenerators {
         id          <- stringsWithMaxLength(stringMaxLength)
         name        <- stringsWithMaxLength(stringMaxLength)
         phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(s"$XI$id", name, phoneNumber)
+      } yield CustomsOffice(s"$XI$id", name, phoneNumber, XI)
     }
 
   lazy val arbitraryDeclarationType: Arbitrary[String] =

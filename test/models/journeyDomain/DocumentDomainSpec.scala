@@ -155,7 +155,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
     "asString" - {
 
-      val document        = Document(Previous, "N270", Some("Delivery note"))
+      val document        = Document(Previous, "N270", "Delivery note")
       val referenceNumber = "123"
 
       "must format document as string" - {

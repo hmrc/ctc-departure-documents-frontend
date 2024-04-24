@@ -22,10 +22,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class Metric(code: String, description: String) extends Selectable {
 
-  override def toString: String = description match {
-    case value if value.trim.nonEmpty => s"($code) $value"
-    case _                            => code
-  }
+  override def toString: String = s"($code) $description"
 
   override val value: String = code
 }
@@ -34,6 +31,6 @@ object Metric {
   implicit val format: OFormat[Metric] = Json.format[Metric]
 
   implicit val order: Order[Metric] = (x: Metric, y: Metric) => {
-    x.description.compareToIgnoreCase(y.description)
+    (x, y).compareBy(_.toString)
   }
 }

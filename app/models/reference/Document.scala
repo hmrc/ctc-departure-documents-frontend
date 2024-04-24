@@ -21,12 +21,9 @@ import models.{DocumentType, Selectable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class Document(`type`: DocumentType, code: String, description: Option[String]) extends Selectable {
+case class Document(`type`: DocumentType, code: String, description: String) extends Selectable {
 
-  override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"${`type`.display} - ($code) $value"
-    case _                                  => s"${`type`.display} - $code"
-  }
+  override def toString: String = s"${`type`.display} - ($code) $description"
 
   override val value: String = toString
 }
@@ -35,7 +32,7 @@ object Document {
 
   def reads(`type`: DocumentType): Reads[Document] = (
     (__ \ "code").read[String] and
-      (__ \ "description").readNullable[String]
+      (__ \ "description").read[String]
   ).apply {
     (code, description) =>
       Document(`type`, code, description)
@@ -44,6 +41,6 @@ object Document {
   implicit val format: Format[Document] = Json.format[Document]
 
   implicit val order: Order[Document] = (x: Document, y: Document) => {
-    x.toString.compareToIgnoreCase(y.toString)
+    (x, y).compareBy(_.toString)
   }
 }

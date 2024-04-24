@@ -33,9 +33,9 @@ class PackagesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new PackagesService(mockRefDataConnector)
 
-  private val packageType1 = PackageType("YN", Some("Composite packaging, glass receptacle in steel drum"))
-  private val packageType2 = PackageType("RD", Some("Rod"))
-  private val packageType3 = PackageType("RG", Some("Ring"))
+  private val packageType1 = PackageType("YN", "Composite packaging, glass receptacle in steel drum")
+  private val packageType2 = PackageType("RD", "Rod")
+  private val packageType3 = PackageType("RG", "Ring")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

@@ -28,92 +28,45 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
   "PackageType" - {
 
-    "must serialise" - {
-      "when description defined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val packageType = PackageType(code, Some(description))
-            Json.toJson(packageType) mustBe Json.parse(s"""
-              |{
-              |  "code": "$code",
-              |  "description": "$description"
-              |}
-              |""".stripMargin)
-        }
+    "must serialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val packageType = PackageType(code, description)
+          Json.toJson(packageType) mustBe Json.parse(s"""
+            |{
+            |  "code": "$code",
+            |  "description": "$description"
+            |}
+            |""".stripMargin)
       }
-
-      "when description undefined" in {
-        forAll(Gen.alphaNumStr) {
-          code =>
-            val packageType = PackageType(code, None)
-            Json.toJson(packageType) mustBe Json.parse(s"""
-              |{
-              |  "code": "$code"
-              |}
-              |""".stripMargin)
-        }
-      }
-
     }
 
-    "must deserialise" - {
-      "when description defined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val json = Json.parse(s"""
-              |{
-              |  "code": "$code",
-              |  "description": "$description"
-              |}
-              |""".stripMargin)
-            json.as[PackageType] mustBe PackageType(code, Some(description))
-        }
-      }
-
-      "when description undefined" in {
-        forAll(Gen.alphaNumStr) {
-          code =>
-            val json = Json.parse(s"""
-              |{
-              |  "code": "$code"
-              |}
-              |""".stripMargin)
-            json.as[PackageType] mustBe PackageType(code, None)
-        }
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val json = Json.parse(s"""
+             |{
+             |  "code": "$code",
+             |  "description": "$description"
+             |}
+             |""".stripMargin)
+          json.as[PackageType] mustBe PackageType(code, description)
       }
     }
 
     "must convert to select item" in {
-      forAll(Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean]) {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
         (code, description, selected) =>
           val packageType = PackageType(code, description)
           packageType.toSelectItem(selected) mustBe SelectItem(Some(code), s"$packageType", selected)
       }
     }
 
-    "must format as string" - {
-      "when description defined and non-empty" in {
-        forAll(Gen.alphaNumStr, nonEmptyString) {
-          (code, description) =>
-            val packageType = PackageType(code, Some(description))
-            packageType.toString mustBe s"($code) $description"
-        }
-      }
-
-      "when description defined and empty" in {
-        forAll(Gen.alphaNumStr) {
-          code =>
-            val packageType = PackageType(code, Some(""))
-            packageType.toString mustBe code
-        }
-      }
-
-      "when description undefined" in {
-        forAll(Gen.alphaNumStr) {
-          code =>
-            val previousDocumentType = PackageType(code, None)
-            previousDocumentType.toString mustBe code
-        }
+    "must format as string" in {
+      forAll(Gen.alphaNumStr, nonEmptyString) {
+        (code, description) =>
+          val packageType = PackageType(code, description)
+          packageType.toString mustBe s"($code) $description"
       }
     }
   }
