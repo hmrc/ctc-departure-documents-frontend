@@ -20,12 +20,9 @@ import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class PackageType(code: String, description: Option[String]) extends Selectable {
+case class PackageType(code: String, description: String) extends Selectable {
 
-  override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"($code) $value"
-    case _                                  => code
-  }
+  override def toString: String = s"($code) $description"
 
   override val value: String = code
 }
@@ -34,6 +31,6 @@ object PackageType {
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
   implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => {
-    x.toString.compareToIgnoreCase(y.toString)
+    (x, y).compareBy(_.toString)
   }
 }

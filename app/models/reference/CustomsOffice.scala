@@ -20,10 +20,10 @@ import config.Constants.CountryCode.GB
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
-case class CustomsOffice(id: String, name: String, phoneNumber: Option[String]) extends Selectable {
+case class CustomsOffice(id: String, name: String, phoneNumber: Option[String], countryId: String) extends Selectable {
   override def toString: String = s"$name ($id)"
 
-  def isInGB: Boolean = id.startsWith(GB)
+  def isInGB: Boolean = countryId == GB
 
   override val value: String = id
 }

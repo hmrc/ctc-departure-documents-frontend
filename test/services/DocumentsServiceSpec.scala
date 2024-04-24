@@ -35,9 +35,9 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
 
-  private val transportDocument  = Document(Transport, "N741", Some("Master airwaybill"))
-  private val supportingDocument = Document(Support, "C673", Some("Catch certificate"))
-  private val previousDocument   = Document(Previous, "C605", Some("Information sheet INF3"))
+  private val transportDocument  = Document(Transport, "N741", "Master airwaybill")
+  private val supportingDocument = Document(Support, "C673", "Catch certificate")
+  private val previousDocument   = Document(Previous, "C605", "Information sheet INF3")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

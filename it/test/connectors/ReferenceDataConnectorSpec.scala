@@ -56,15 +56,16 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |  },
       |  "id": "$docType",
       |  "data": [
-      |  {
-      |    "activeFrom": "2023-01-23",
-      |    "state": "valid",
-      |    "code": "1",
-      |    "description": "Certificate of quality"
-      |  },
-      |  {
-      |    "code": "4"
-      |  }
+      |    {
+      |      "activeFrom": "2023-01-23",
+      |      "state": "valid",
+      |      "code": "1",
+      |      "description": "Certificate of quality"
+      |    },
+      |    {
+      |      "code": "4",
+      |      "description": "Blah"
+      |    }
       |  ]
       |}
       |""".stripMargin
@@ -83,18 +84,18 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |  },
       |  "id": "Unit",
       |  "data": [
-      |  {
-      |    "activeFrom": "2023-01-23",
-      |    "state": "valid",
-      |    "code": "CTM",
-      |    "description": "Carats (one metric carat = 2 x 10-4kg)"
-      |  },
-      |  {
+      |    {
+      |      "activeFrom": "2023-01-23",
+      |      "state": "valid",
+      |      "code": "CTM",
+      |      "description": "Carats (one metric carat = 2 x 10-4kg)"
+      |    },
+      |    {
       |      "activeFrom": "2023-01-23",
       |      "state": "valid",
       |      "code": "DTN",
       |      "description": "Hectokilogram"
-      |  }
+      |    }
       |]
       |}
       |""".stripMargin
@@ -116,8 +117,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       )
 
       val expectResult = NonEmptySet.of(
-        Document(Previous, "1", Some("Certificate of quality")),
-        Document(Previous, "4", None)
+        Document(Previous, "1", "Certificate of quality"),
+        Document(Previous, "4", "Blah")
       )
 
       connector.getPreviousDocuments().futureValue mustEqual expectResult
@@ -142,8 +143,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       )
 
       val expectResult = NonEmptySet.of(
-        Document(Transport, "1", Some("Certificate of quality")),
-        Document(Transport, "4", None)
+        Document(Transport, "1", "Certificate of quality"),
+        Document(Transport, "4", "Blah")
       )
 
       connector.getTransportDocuments().futureValue mustEqual expectResult
@@ -168,8 +169,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       )
 
       val expectResult = NonEmptySet.of(
-        Document(Support, "1", Some("Certificate of quality")),
-        Document(Support, "4", None)
+        Document(Support, "1", "Certificate of quality"),
+        Document(Support, "4", "Blah")
       )
 
       connector.getSupportingDocuments().futureValue mustEqual expectResult

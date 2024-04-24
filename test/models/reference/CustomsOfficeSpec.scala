@@ -29,27 +29,29 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must serialise" - {
       "when phone number defined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-          (id, name, phoneNumber) =>
-            val customsOffice = CustomsOffice(id, name, Some(phoneNumber))
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+          (id, name, phoneNumber, countryId) =>
+            val customsOffice = CustomsOffice(id, name, Some(phoneNumber), countryId)
             Json.toJson(customsOffice) mustBe Json.parse(s"""
                 |{
                 |  "id": "$id",
                 |  "name": "$name",
-                |  "phoneNumber": "$phoneNumber"
+                |  "phoneNumber": "$phoneNumber",
+                |  "countryId": "$countryId"
                 |}
                 |""".stripMargin)
         }
       }
 
       "when phone number undefined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (id, name) =>
-            val customsOffice = CustomsOffice(id, name, None)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+          (id, name, countryId) =>
+            val customsOffice = CustomsOffice(id, name, None, countryId)
             Json.toJson(customsOffice) mustBe Json.parse(s"""
                 |{
                 |  "id": "$id",
-                |  "name": "$name"
+                |  "name": "$name",
+                |  "countryId": "$countryId"
                 |}
                 |""".stripMargin)
         }
@@ -58,15 +60,16 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phone number defined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
-          (id, name, phoneNumber) =>
-            val customsOffice = CustomsOffice(id, name, Some(phoneNumber))
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+          (id, name, phoneNumber, countryId) =>
+            val customsOffice = CustomsOffice(id, name, Some(phoneNumber), countryId)
             Json
               .parse(s"""
                 |{
                 |  "id": "$id",
                 |  "name": "$name",
-                |  "phoneNumber": "$phoneNumber"
+                |  "phoneNumber": "$phoneNumber",
+                |  "countryId": "$countryId"
                 |}
                 |""".stripMargin)
               .as[CustomsOffice] mustBe customsOffice
@@ -74,14 +77,15 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
 
       "when phone number undefined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (id, name) =>
-            val customsOffice = CustomsOffice(id, name, None)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+          (id, name, countryId) =>
+            val customsOffice = CustomsOffice(id, name, None, countryId)
             Json
               .parse(s"""
                 |{
                 |  "id": "$id",
-                |  "name": "$name"
+                |  "name": "$name",
+                |  "countryId": "$countryId"
                 |}
                 |""".stripMargin)
               .as[CustomsOffice] mustBe customsOffice
@@ -90,17 +94,17 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "must convert to select item" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
-        (id, name, selected) =>
-          val customsOffice = CustomsOffice(id, name, None)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
+        (id, name, countryId, selected) =>
+          val customsOffice = CustomsOffice(id, name, None, countryId)
           customsOffice.toSelectItem(selected) mustBe SelectItem(Some(id), s"$name ($id)", selected)
       }
     }
 
     "must format as string" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (id, name) =>
-          val customsOffice = CustomsOffice(id, name, None)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
+        (id, name, countryId) =>
+          val customsOffice = CustomsOffice(id, name, None, countryId)
           customsOffice.toString mustBe s"$name ($id)"
       }
     }

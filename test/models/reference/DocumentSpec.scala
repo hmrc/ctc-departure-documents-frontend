@@ -39,7 +39,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document](Document.reads(Transport)) mustBe Document(Transport, "code", Some("description"))
+        json.as[Document](Document.reads(Transport)) mustBe Document(Transport, "code", "description")
       }
 
       "when support" in {
@@ -51,7 +51,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document](Document.reads(Support)) mustBe Document(Support, "code", Some("description"))
+        json.as[Document](Document.reads(Support)) mustBe Document(Support, "code", "description")
       }
 
       "when previous" in {
@@ -62,7 +62,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document](Document.reads(Previous)) mustBe Document(Previous, "code", Some("description"))
+        json.as[Document](Document.reads(Previous)) mustBe Document(Previous, "code", "description")
       }
     }
   }
@@ -78,7 +78,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document] mustBe Document(Transport, "code", Some("description"))
+        json.as[Document] mustBe Document(Transport, "code", "description")
       }
 
       "when support" in {
@@ -90,7 +90,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document] mustBe Document(Support, "code", Some("description"))
+        json.as[Document] mustBe Document(Support, "code", "description")
       }
 
       "when previous" in {
@@ -102,7 +102,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        json.as[Document] mustBe Document(Previous, "code", Some("description"))
+        json.as[Document] mustBe Document(Previous, "code", "description")
       }
     }
 
@@ -116,7 +116,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        Json.toJson(Document(Transport, "code", Some("description"))) mustBe json
+        Json.toJson(Document(Transport, "code", "description")) mustBe json
       }
 
       "when support" in {
@@ -128,7 +128,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        Json.toJson(Document(Support, "code", Some("description"))) mustBe json
+        Json.toJson(Document(Support, "code", "description")) mustBe json
       }
 
       "when previous" in {
@@ -140,42 +140,24 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             |}
             |""".stripMargin)
 
-        Json.toJson(Document(Previous, "code", Some("description"))) mustBe json
+        Json.toJson(Document(Previous, "code", "description")) mustBe json
       }
     }
   }
 
   "must convert to select item" in {
-    forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean]) {
+    forAll(arbitrary[DocumentType], Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
       (`type`, code, description, selected) =>
         val document = Document(`type`, code, description)
         document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.toString, selected)
     }
   }
 
-  "must format as string" - {
-    "when description defined and non-empty" in {
-      forAll(arbitrary[DocumentType], Gen.alphaNumStr, nonEmptyString) {
-        (`type`, code, description) =>
-          val document = Document(`type`, code, Some(description))
-          document.toString mustBe s"${`type`.display} - ($code) $description"
-      }
-    }
-
-    "when description defined and empty" in {
-      forAll(arbitrary[DocumentType], Gen.alphaNumStr) {
-        (`type`, code) =>
-          val document = Document(`type`, code, Some(""))
-          document.toString mustBe s"${`type`.display} - $code"
-      }
-    }
-
-    "when description undefined" in {
-      forAll(arbitrary[DocumentType], Gen.alphaNumStr) {
-        (`type`, code) =>
-          val document = Document(`type`, code, None)
-          document.toString mustBe s"${`type`.display} - $code"
-      }
+  "must format as string" in {
+    forAll(arbitrary[DocumentType], Gen.alphaNumStr, nonEmptyString) {
+      (`type`, code, description) =>
+        val document = Document(`type`, code, description)
+        document.toString mustBe s"${`type`.display} - ($code) $description"
     }
   }
 }
