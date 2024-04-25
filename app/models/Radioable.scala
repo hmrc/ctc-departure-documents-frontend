@@ -22,18 +22,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 trait Radioable[T] {
 
+  def asString(implicit messages: Messages): String =
+    if (messages.isDefinedAt(contentKey)) messages(contentKey) else this.toString
+
+  val code: String
+
   val messageKeyPrefix: String
 
-  def toRadioItem(index: Int, formKey: String, checked: Boolean)(implicit messages: Messages): RadioItem = RadioItem(
-    content = Text(messages(s"$messageKeyPrefix.$this")),
-    id = Some(if (index == 0) formKey else s"${formKey}_$index"),
-    value = Some(this.toString),
-    checked = checked,
-    hint = {
-      val hintKey = s"$messageKeyPrefix.$this.hint"
-      if (messages.isDefinedAt(hintKey)) Some(Hint(content = Text(messages(hintKey)))) else None
-    }
-  )
+  private lazy val contentKey = s"$messageKeyPrefix.${this.code}"
+
+  def toRadioItem(index: Int, formKey: String, checked: Boolean)(implicit messages: Messages): RadioItem =
+    RadioItem(
+      content = Text(this.asString),
+      id = Some(if (index == 0) formKey else s"${formKey}_$index"),
+      value = Some(code),
+      checked = checked,
+      hint = {
+        val hintKey = s"$contentKey.hint"
+        if (messages.isDefinedAt(hintKey)) Some(Hint(content = Text(messages(hintKey)))) else None
+      }
+    )
 }
 
 object Radioable {
@@ -44,7 +52,7 @@ object Radioable {
       radioables.zipWithIndex
         .map {
           case (value, index) =>
-            value.toRadioItem(index, formKey, checkedValue.contains(value))
+            value.toRadioItem(index, formKey, checkedValue.map(_.code).contains(value.code))
         }
   }
 }
