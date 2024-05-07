@@ -134,7 +134,7 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when metric is undefined" in {
@@ -147,7 +147,7 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
       }
     }
 
@@ -164,7 +164,7 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when metric is undefined" in {
@@ -178,7 +178,7 @@ class QuantityControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
       }
     }
   }

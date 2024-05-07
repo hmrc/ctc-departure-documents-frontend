@@ -69,7 +69,7 @@ class DocumentAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to next page" in {

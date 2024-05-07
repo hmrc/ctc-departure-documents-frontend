@@ -162,7 +162,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no document is found" in {
@@ -191,7 +191,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no document is found" in {
