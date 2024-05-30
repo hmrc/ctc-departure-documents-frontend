@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   "must render service name link in header" in {
     val link = getElementByClass(doc, "hmrc-header__service-name--linked")
-    assertElementContainsText(link, "Manage your transit movements")
+    assertElementContainsText(link, "Departure declarations - Manage your transit movements")
     assertElementContainsHref(link, "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do")
   }
 
@@ -107,7 +107,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   def pageWithTitle(doc: Document, expectedTitle: String): Unit =
     "must render title" in {
       val title = doc.title()
-      title mustBe s"$expectedTitle - Manage your transit movements - GOV.UK"
+      title mustBe s"$expectedTitle - Departure declarations - Manage your transit movements - GOV.UK"
     }
 
   def pageWithHeading(args: Any*): Unit =
