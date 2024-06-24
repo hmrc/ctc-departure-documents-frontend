@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   formProvider: DocumentReferenceNumberFormProvider,
   actions: Actions,
@@ -69,13 +69,13 @@ class DocumentReferenceNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
             DocumentReferenceNumberPage(documentIndex)
               .writeToUserAnswers(value)
               .appendValueIfNotPresent(DocumentUuidPage(documentIndex), UUID.randomUUID())
               .updateTask()
-              .writeToSession()
-              .navigate()
+              .writeToSession(sessionRepository)
+              .navigate(navigator)
           }
         )
   }

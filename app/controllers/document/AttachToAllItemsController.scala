@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AttachToAllItemsController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -79,11 +79,11 @@ class AttachToAllItemsController @Inject() (
     page: Index => QuestionPage[Boolean],
     value: Boolean
   )(implicit request: DataRequest[_]): Future[Result] = {
-    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index)
       .writeToUserAnswers(value)
       .updateTask()
-      .writeToSession()
-      .navigate()
+      .writeToSession(sessionRepository)
+      .navigate(navigator)
   }
 }

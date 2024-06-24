@@ -33,7 +33,6 @@ import javax.inject.Inject
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDocumentViewModelProvider,

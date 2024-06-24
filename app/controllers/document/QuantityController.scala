@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class QuantityController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   formProvider: BigDecimalFormProvider,
   actions: Actions,
@@ -67,8 +67,8 @@ class QuantityController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index, request.arg))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-              QuantityPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+              QuantityPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
             }
           )
     }

@@ -96,8 +96,9 @@ package object controllers {
       }
 
     def writeToSession(
-      userAnswers: UserAnswers
-    )(implicit sessionRepository: SessionRepository, executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
+      userAnswers: UserAnswers,
+      sessionRepository: SessionRepository
+    )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
       userAnswersWriter.run(userAnswers) match {
         case Left(opsError) => Future.failed(new Exception(s"${opsError.toString}"))
         case Right(value) =>
@@ -108,23 +109,24 @@ package object controllers {
             )
       }
 
-    def writeToSession()(implicit
+    def writeToSession(sessionRepository: SessionRepository)(implicit
       dataRequest: MandatoryDataRequest[_],
-      sessionRepository: SessionRepository,
       ex: ExecutionContext,
       hc: HeaderCarrier
-    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers)
+    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers, sessionRepository)
   }
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
 
-    def navigate()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext): Future[Result] =
-      navigate {
+    def navigate(
+      navigator: UserAnswersNavigator
+    )(implicit executionContext: ExecutionContext): Future[Result] =
+      nav {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
 
     def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =
-      navigate {
+      nav {
         _ => call
       }
 
@@ -135,7 +137,7 @@ package object controllers {
           call.copy(url = url)
       }
 
-    private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
+    private def nav(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
         w => Redirect(result(w))
       }
@@ -151,7 +153,7 @@ package object controllers {
     def updateItems(lrn: LocalReferenceNumber)(implicit ex: ExecutionContext, config: FrontendAppConfig): Future[Call] =
       updateTask(config.itemsUrl, lrn)
 
-    def navigate()(implicit executionContext: ExecutionContext): Future[Result] =
+    def navigate(implicit executionContext: ExecutionContext): Future[Result] =
       call.map(Redirect)
   }
 }

@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddNumberOfPackagesYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -68,8 +68,8 @@ class AddNumberOfPackagesYesNoController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, request.arg.toString))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-              AddNumberOfPackagesYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+              AddNumberOfPackagesYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
             }
           )
     }

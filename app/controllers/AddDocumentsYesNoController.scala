@@ -19,9 +19,9 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{LocalReferenceNumber, Mode, UserAnswers}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
-import pages.AddDocumentsYesNoPage
+import pages.{AddDocumentsYesNoPage, QuestionPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddDocumentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -64,10 +64,11 @@ class AddDocumentsYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            lazy val writes                              = AddDocumentsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            val writes: Future[(QuestionPage[Boolean], UserAnswers)] =
+              AddDocumentsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository)
             if (value) {
-              writes.navigate()
+              writes.navigate(navigator)
             } else {
               writes.navigateTo(Call(GET, frontendAppConfig.taskListUrl(lrn)))
             }
