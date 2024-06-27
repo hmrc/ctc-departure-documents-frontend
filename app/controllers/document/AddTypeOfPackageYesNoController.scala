@@ -63,7 +63,7 @@ class AddTypeOfPackageYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            AddTypeOfPackageYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+            AddTypeOfPackageYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

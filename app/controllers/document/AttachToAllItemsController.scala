@@ -84,6 +84,6 @@ class AttachToAllItemsController @Inject() (
       .writeToUserAnswers(value)
       .updateTask()
       .writeToSession(sessionRepository)
-      .navigate(navigator)
+      .navigateWith(navigator)
   }
 }

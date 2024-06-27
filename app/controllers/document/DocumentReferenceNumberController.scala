@@ -75,7 +75,7 @@ class DocumentReferenceNumberController @Inject() (
               .appendValueIfNotPresent(DocumentUuidPage(documentIndex), UUID.randomUUID())
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigate(navigator)
+              .navigateWith(navigator)
           }
         )
   }

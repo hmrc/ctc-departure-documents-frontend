@@ -68,7 +68,7 @@ class QuantityController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index, request.arg))),
             value => {
               val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-              QuantityPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+              QuantityPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

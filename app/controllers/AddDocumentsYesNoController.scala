@@ -68,7 +68,7 @@ class AddDocumentsYesNoController @Inject() (
             val writes: Future[(QuestionPage[Boolean], UserAnswers)] =
               AddDocumentsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository)
             if (value) {
-              writes.navigate(navigator)
+              writes.navigateWith(navigator)
             } else {
               writes.navigateTo(Call(GET, frontendAppConfig.taskListUrl(lrn)))
             }

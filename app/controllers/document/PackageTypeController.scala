@@ -72,7 +72,7 @@ class PackageTypeController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.values, mode, documentIndex))),
               value => {
                 val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                PackageTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+                PackageTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

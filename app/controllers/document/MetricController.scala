@@ -72,7 +72,7 @@ class MetricController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, metricList.values, mode, documentIndex))),
               value => {
                 val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                MetricPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+                MetricPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

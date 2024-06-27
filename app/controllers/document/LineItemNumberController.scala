@@ -63,7 +63,7 @@ class LineItemNumberController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            LineItemNumberPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+            LineItemNumberPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

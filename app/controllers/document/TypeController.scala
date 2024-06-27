@@ -86,7 +86,7 @@ class TypeController @Inject() (
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, documentIndex))),
                 value => {
                   val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                  TypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+                  TypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
                 }
               )
         }

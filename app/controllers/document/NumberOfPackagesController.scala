@@ -69,7 +69,7 @@ class NumberOfPackagesController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex, request.arg.toString))),
             value => {
               val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-              NumberOfPackagesPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+              NumberOfPackagesPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

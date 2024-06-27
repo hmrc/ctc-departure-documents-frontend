@@ -63,7 +63,7 @@ class AddAdditionalInformationYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            AddAdditionalInformationYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+            AddAdditionalInformationYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

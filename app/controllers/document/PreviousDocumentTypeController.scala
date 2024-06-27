@@ -90,7 +90,7 @@ class PreviousDocumentTypeController @Inject() (
                   Future.successful(BadRequest(view(formWithErrors, lrn, previousDocumentTypeList.values, mode, request.arg._2, documentIndex))),
                 value => {
                   val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                  PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+                  PreviousDocumentTypePage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
                 }
               )
         }

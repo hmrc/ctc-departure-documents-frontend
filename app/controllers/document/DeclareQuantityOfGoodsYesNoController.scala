@@ -63,7 +63,7 @@ class DeclareQuantityOfGoodsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-            DeclareQuantityOfGoodsYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigate(navigator)
+            DeclareQuantityOfGoodsYesNoPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }
