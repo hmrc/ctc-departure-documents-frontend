@@ -153,7 +153,7 @@ package object controllers {
     def updateItems(lrn: LocalReferenceNumber)(implicit ex: ExecutionContext, config: FrontendAppConfig): Future[Call] =
       updateTask(config.itemsUrl, lrn)
 
-    def navigate(implicit executionContext: ExecutionContext): Future[Result] =
+    def navigate()(implicit executionContext: ExecutionContext): Future[Result] =
       call.map(Redirect)
   }
 }

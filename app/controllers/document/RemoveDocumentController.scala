@@ -81,7 +81,7 @@ class RemoveDocumentController @Inject() (
                   .writeToSession(sessionRepository)
                   .buildCall(addAnother(lrn))
                   .updateItems(lrn)
-                  .navigate
+                  .navigate()
               case false =>
                 Future.successful(Redirect(addAnother(lrn)))
             }
