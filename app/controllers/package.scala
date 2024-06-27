@@ -121,12 +121,12 @@ package object controllers {
     def navigate(
       navigator: UserAnswersNavigator
     )(implicit executionContext: ExecutionContext): Future[Result] =
-      nav {
+      navigate {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
 
     def navigateTo(call: Call)(implicit executionContext: ExecutionContext): Future[Result] =
-      nav {
+      navigate {
         _ => call
       }
 
@@ -137,7 +137,7 @@ package object controllers {
           call.copy(url = url)
       }
 
-    private def nav(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
+    private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
         w => Redirect(result(w))
       }
