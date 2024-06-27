@@ -1,6 +1,4 @@
-# ctc-departure-DOCUMENTS-frontend
-
-This service allows a user to complete the documents section of a transit movement departure.
+# ctc-departure-documents-frontend
 
 This service allows a user to complete the documents section of a transit movement departure.
 
