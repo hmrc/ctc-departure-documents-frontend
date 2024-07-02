@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MetricController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -71,8 +71,8 @@ class MetricController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, metricList.values, mode, documentIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
-                MetricPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, documentIndex)
+                MetricPage(documentIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

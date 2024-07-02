@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LineItemNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   formProvider: IntFormProvider,
   actions: Actions,
@@ -62,8 +62,8 @@ class LineItemNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-            LineItemNumberPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+            LineItemNumberPage(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }
