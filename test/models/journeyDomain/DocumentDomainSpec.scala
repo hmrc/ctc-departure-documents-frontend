@@ -416,30 +416,12 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         (document, referenceInformation, packageType, metric, quantity) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceInformation)
-            .setValue(AddTypeOfPackageYesNoPage(index), true)
-            .setValue(PackageTypePage(index), packageType)
-            .setValue(AddNumberOfPackagesYesNoPage(index), false)
-            .setValue(DeclareQuantityOfGoodsYesNoPage(index), true)
-            .setValue(MetricPage(index), metric)
-            .setValue(QuantityPage(index), quantity)
             .setValue(AddAdditionalInformationYesNoPage(index), true)
             .setValue(AdditionalInformationPage(index), referenceInformation)
 
           val expectedResult = PreviousDocumentItemLevelDomain(
             document = document,
             referenceNumber = referenceInformation,
-            `package` = Some(
-              PackageDomain(
-                `type` = packageType,
-                numberOfPackages = None
-              )
-            ),
-            quantity = Some(
-              QuantityDomain(
-                metric = metric,
-                value = quantity
-              )
-            ),
             additionalInformation = Some(referenceInformation)
           )(index)
 
@@ -448,12 +430,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
             DocumentReferenceNumberPage(index),
-            AddTypeOfPackageYesNoPage(index),
-            PackageTypePage(index),
-            AddNumberOfPackagesYesNoPage(index),
-            DeclareQuantityOfGoodsYesNoPage(index),
-            MetricPage(index),
-            QuantityPage(index),
             AddAdditionalInformationYesNoPage(index),
             AdditionalInformationPage(index),
             DocumentSection(index)
@@ -476,55 +452,17 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         }
       }
 
-      "when add package yes/no is unanswered" in {
-        forAll(documentGen, nonEmptyString) {
-          (document, referenceNumber) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-
-            val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe AddTypeOfPackageYesNoPage(index)
-            result.left.value.pages mustBe Seq(
-              DocumentReferenceNumberPage(index),
-              AddTypeOfPackageYesNoPage(index)
-            )
-        }
-      }
-
-      "when add quantity yes/no is unanswered" in {
-        forAll(documentGen, nonEmptyString) {
-          (document, referenceNumber) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddTypeOfPackageYesNoPage(index), false)
-
-            val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe DeclareQuantityOfGoodsYesNoPage(index)
-            result.left.value.pages mustBe Seq(
-              DocumentReferenceNumberPage(index),
-              AddTypeOfPackageYesNoPage(index),
-              DeclareQuantityOfGoodsYesNoPage(index)
-            )
-        }
-      }
-
       "when additional information yes/no is unanswered" in {
         forAll(documentGen, nonEmptyString) {
           (document, referenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddTypeOfPackageYesNoPage(index), false)
-              .setValue(DeclareQuantityOfGoodsYesNoPage(index), false)
 
             val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddAdditionalInformationYesNoPage(index)
             result.left.value.pages mustBe Seq(
               DocumentReferenceNumberPage(index),
-              AddTypeOfPackageYesNoPage(index),
-              DeclareQuantityOfGoodsYesNoPage(index),
               AddAdditionalInformationYesNoPage(index)
             )
         }
@@ -535,8 +473,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           (document, referenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentReferenceNumberPage(index), referenceNumber)
-              .setValue(AddTypeOfPackageYesNoPage(index), false)
-              .setValue(DeclareQuantityOfGoodsYesNoPage(index), false)
               .setValue(AddAdditionalInformationYesNoPage(index), true)
 
             val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
@@ -544,8 +480,6 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             result.left.value.page mustBe AdditionalInformationPage(index)
             result.left.value.pages mustBe Seq(
               DocumentReferenceNumberPage(index),
-              AddTypeOfPackageYesNoPage(index),
-              DeclareQuantityOfGoodsYesNoPage(index),
               AddAdditionalInformationYesNoPage(index),
               AdditionalInformationPage(index)
             )

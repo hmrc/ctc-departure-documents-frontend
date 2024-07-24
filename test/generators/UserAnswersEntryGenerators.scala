@@ -16,7 +16,7 @@
 
 package generators
 
-import models.reference.{CustomsOffice, Document, Metric, PackageType}
+import models.reference.{CustomsOffice, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -52,13 +52,6 @@ trait UserAnswersEntryGenerators {
       case TypePage(_)                          => arbitrary[Document].map(Json.toJson(_))
       case AttachToAllItemsPage(_)              => arbitrary[Boolean].map(JsBoolean)
       case DocumentReferenceNumberPage(_)       => nonEmptyString.map(JsString)
-      case AddTypeOfPackageYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
-      case PackageTypePage(_)                   => arbitrary[PackageType].map(Json.toJson(_))
-      case AddNumberOfPackagesYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
-      case NumberOfPackagesPage(_)              => arbitrary[Int].map(Json.toJson(_))
-      case DeclareQuantityOfGoodsYesNoPage(_)   => arbitrary[Boolean].map(JsBoolean)
-      case MetricPage(_)                        => arbitrary[Metric].map(Json.toJson(_))
-      case QuantityPage(_)                      => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddLineItemNumberYesNoPage(_)        => arbitrary[Boolean].map(JsBoolean)
       case LineItemNumberPage(_)                => positiveInts.map(Json.toJson(_))
       case AddAdditionalInformationYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
