@@ -45,7 +45,7 @@ class DocumentsAnswersHelper(
               nameWhenComplete = _.asString,
               nameWhenInProgress = (
                 userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
-              ).map(_.toString) orElse Some(""),
+              ).map(_.toString) orElse Some(s"Document ${documentIndex.display}"),
               removeRoute = removeRoute
             )(DocumentDomain.userAnswersReader(documentIndex).apply(pages))
         }
