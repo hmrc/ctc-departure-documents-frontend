@@ -45,7 +45,7 @@ class DocumentsAnswersHelper(
               nameWhenComplete = _.asString,
               nameWhenInProgress = (
                 userAnswers.get(TypePage(documentIndex)) orElse userAnswers.get(PreviousDocumentTypePage(documentIndex))
-              ).map(_.toString) orElse Some(s"Document ${documentIndex.display}"),
+              ).map(_.toString) orElse Some(messages("addAnotherDocument.defaultDocumentLabel", documentIndex.display)),
               removeRoute = removeRoute
             )(DocumentDomain.userAnswersReader(documentIndex).apply(pages))
         }

@@ -96,6 +96,7 @@ addAnotherDocument.error.required =  Select yes if you want to add another docum
 addAnotherDocument.label = Do you want to add another document?
 addAnotherDocument.paragraph = Once you’ve added all your documents here, you can then attach them to the relevant items in your Items section.
 addAnotherDocument.maxLimit.label = You cannot attach any more documents to all items. You can still add documents and attach them to individual items.
+addAnotherDocument.defaultDocumentLabel = Document {0}
 
 document.declareQuantityOfGoodsYesNo.title = Do you want to declare the quantity of the goods transported into the UK?
 document.declareQuantityOfGoodsYesNo.heading = Do you want to declare the quantity of the goods transported into the UK?
