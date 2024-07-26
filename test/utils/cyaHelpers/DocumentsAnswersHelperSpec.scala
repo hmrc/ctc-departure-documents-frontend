@@ -129,7 +129,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = "",
+                        name = "Document 1",
                         changeUrl = controllers.document.routes.TypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
                       )
@@ -157,7 +157,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = "",
+                        name = "Document 1",
                         changeUrl = controllers.document.routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = None
                       )
