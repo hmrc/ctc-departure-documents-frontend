@@ -115,8 +115,6 @@ object PreviousDocumentDomain {
 case class PreviousDocumentItemLevelDomain(
   document: Document,
   referenceNumber: String,
-  `package`: Option[PackageDomain],
-  quantity: Option[QuantityDomain],
   additionalInformation: Option[String]
 )(override val index: Index)
     extends PreviousDocumentDomain {
@@ -129,10 +127,8 @@ object PreviousDocumentItemLevelDomain {
   implicit def userAnswersReader(index: Index, document: Document): Read[DocumentDomain] =
     (
       DocumentReferenceNumberPage(index).reader,
-      AddTypeOfPackageYesNoPage(index).filterOptionalDependent(identity)(PackageDomain.userAnswersReader(index)),
-      DeclareQuantityOfGoodsYesNoPage(index).filterOptionalDependent(identity)(QuantityDomain.userAnswersReader(index)),
       AddAdditionalInformationYesNoPage(index).filterOptionalDependent(identity)(AdditionalInformationPage(index).reader)
-    ).map(PreviousDocumentItemLevelDomain.apply(document, _, _, _, _)(index))
+    ).map(PreviousDocumentItemLevelDomain.apply(document, _, _)(index))
 }
 
 case class PreviousDocumentConsignmentLevelDomain(
