@@ -23,7 +23,6 @@ import models.{LocalReferenceNumber, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.AddAnotherDocumentViewModel
 import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
@@ -33,7 +32,6 @@ import javax.inject.Inject
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDocumentViewModelProvider,

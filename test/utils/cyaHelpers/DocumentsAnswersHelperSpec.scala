@@ -90,8 +90,6 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     .setValue(AttachToAllItemsPage(Index(0)), attachToAllItems)
                     .setValue(PreviousDocumentTypePage(Index(0)), previousDocument)
                     .setValue(DocumentReferenceNumberPage(Index(0)), referenceNumber)
-                    .setValue(AddTypeOfPackageYesNoPage(Index(0)), false)
-                    .setValue(DeclareQuantityOfGoodsYesNoPage(Index(0)), false)
                     .setValue(AddAdditionalInformationYesNoPage(Index(0)), false)
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
@@ -129,7 +127,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = "",
+                        name = "Document 1",
                         changeUrl = controllers.document.routes.TypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = Some(routes.RemoveDocumentController.onPageLoad(lrn, Index(0)).url)
                       )
@@ -157,7 +155,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                   helper.listItems mustBe Seq(
                     Left(
                       ListItem(
-                        name = "",
+                        name = "Document 1",
                         changeUrl = controllers.document.routes.PreviousDocumentTypeController.onPageLoad(userAnswers.lrn, NormalMode, Index(0)).url,
                         removeUrl = None
                       )
