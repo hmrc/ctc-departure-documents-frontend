@@ -111,7 +111,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   def pageWithTitle(doc: Document, expectedTitle: String): Unit =
     "must render title" in {
       val title = doc.title()
-      title mustBe s"$expectedTitle - Manage your transit movements - GOV.UK"
+      title mustBe s"$expectedTitle - Departure declarations - Manage your transit movements - GOV.UK"
     }
 
   def pageWithHeading(args: Any*): Unit =
