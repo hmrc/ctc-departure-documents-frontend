@@ -67,7 +67,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, $className;format="decap"$Route)
         .withFormUrlEncodedBody(("value", "test string"))

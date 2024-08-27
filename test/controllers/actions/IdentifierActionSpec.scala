@@ -248,7 +248,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         )
 
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newEnrolmentsWithoutEori ~ Some("testName")))
+          .`thenReturn`(Future.successful(newEnrolmentsWithoutEori ~ Some("testName")))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -266,8 +266,8 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     "when given user has no active new enrolments but new group has" - {
       "must redirect to unauthorised page with group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
+          .`thenReturn`(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).`thenReturn`(Future.successful(true))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -285,8 +285,8 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     "when given user has no enrolments but group has" - {
       "must redirect to unauthorised page with group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(true))
+          .`thenReturn`(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).`thenReturn`(Future.successful(true))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -304,8 +304,8 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     "when given both user and group has no enrolments" - {
       "must redirect to unauthorised page without group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
+          .`thenReturn`(Future.successful(Enrolments(Set.empty) ~ Some("testName")))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).`thenReturn`(Future.successful(false))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -322,9 +322,9 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     "when given user has no enrolments and there is no group" - {
       "must redirect to unauthorised page without group access" in {
         when(mockAuthConnector.authorise[Enrolments ~ Option[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(Enrolments(Set.empty) ~ None))
+          .`thenReturn`(Future.successful(Enrolments(Set.empty) ~ None))
 
-        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).thenReturn(Future.successful(false))
+        when(mockEnrolmentStoreConnector.checkGroupEnrolments(any(), eqTo(ENROLMENT_KEY))(any())).`thenReturn`(Future.successful(false))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
@@ -349,7 +349,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         )
 
         when(mockAuthConnector.authorise[Enrolments ~ Some[String]](any(), any())(any(), any()))
-          .thenReturn(Future.successful(newEnrolmentsWithEori ~ Some("testName")))
+          .`thenReturn`(Future.successful(newEnrolmentsWithEori ~ Some("testName")))
 
         val bodyParsers       = app.injector.instanceOf[BodyParsers.Default]
         val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]

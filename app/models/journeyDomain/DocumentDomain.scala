@@ -32,7 +32,7 @@ sealed trait DocumentDomain extends JourneyDomainModel {
   def asString(implicit messages: Messages): String =
     DocumentDomain.asString(index, Some(document), Some(referenceNumber))
 
-  override def page: Option[Section[_]] = Some(DocumentSection(index))
+  override def page: Option[Section[?]] = Some(DocumentSection(index))
 }
 
 object DocumentDomain {

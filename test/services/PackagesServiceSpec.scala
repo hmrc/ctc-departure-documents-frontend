@@ -48,7 +48,7 @@ class PackagesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted package types" in {
 
         when(mockRefDataConnector.getPackageTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(packageType1, packageType2, packageType3)))
+          .`thenReturn`(Future.successful(NonEmptySet.of(packageType1, packageType2, packageType3)))
 
         service.getPackageTypes().futureValue mustBe
           SelectableList(Seq(packageType2, packageType3, packageType1))

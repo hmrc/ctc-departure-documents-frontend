@@ -25,12 +25,12 @@ import queries.Gettable
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
+  def generateAnswer: PartialFunction[Gettable[?], Gen[JsValue]] =
     generateExternalAnswer orElse
       generateDocumentsAnswer orElse
       generateDocumentAnswer
 
-  private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateExternalAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.external._
     {
       case TransitOperationOfficeOfDeparturePage => arbitrary[CustomsOffice].map(Json.toJson(_))
@@ -38,24 +38,24 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateDocumentsAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages._
     {
       case AddDocumentsYesNoPage => arbitrary[Boolean].map(JsBoolean)
     }
   }
 
-  private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateDocumentAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.document._
     {
       case PreviousDocumentTypePage(_)          => arbitrary[Document].map(Json.toJson(_))
       case TypePage(_)                          => arbitrary[Document].map(Json.toJson(_))
       case AttachToAllItemsPage(_)              => arbitrary[Boolean].map(JsBoolean)
-      case DocumentReferenceNumberPage(_)       => nonEmptyString.map(JsString)
+      case DocumentReferenceNumberPage(_)       => nonEmptyString.map(JsString.apply)
       case AddLineItemNumberYesNoPage(_)        => arbitrary[Boolean].map(JsBoolean)
       case LineItemNumberPage(_)                => positiveInts.map(Json.toJson(_))
       case AddAdditionalInformationYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
-      case AdditionalInformationPage(_)         => nonEmptyString.map(JsString)
+      case AdditionalInformationPage(_)         => nonEmptyString.map(JsString.apply)
     }
   }
 }

@@ -65,7 +65,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockDocumentTypesService.getDocuments(any())(any())).thenReturn(Future.successful(documentList))
+      when(mockDocumentTypesService.getDocuments(any())(any())).`thenReturn`(Future.successful(documentList))
       setExistingUserAnswers(baseAnswers)
 
       val request = FakeRequest(GET, typeRoute)
@@ -82,7 +82,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockDocumentTypesService.getDocuments(any())(any())).thenReturn(Future.successful(documentList))
+      when(mockDocumentTypesService.getDocuments(any())(any())).`thenReturn`(Future.successful(documentList))
       val userAnswers = baseAnswers.setValue(TypePage(documentIndex), document1)
       setExistingUserAnswers(userAnswers)
 
@@ -102,8 +102,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockDocumentTypesService.getDocuments(any())(any())).thenReturn(Future.successful(documentList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockDocumentTypesService.getDocuments(any())(any())).`thenReturn`(Future.successful(documentList))
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(baseAnswers)
 
@@ -119,7 +119,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockDocumentTypesService.getDocuments(any())(any())).thenReturn(Future.successful(documentList))
+      when(mockDocumentTypesService.getDocuments(any())(any())).`thenReturn`(Future.successful(documentList))
       setExistingUserAnswers(baseAnswers)
 
       val request   = FakeRequest(POST, typeRoute).withFormUrlEncodedBody(("value", "invalid value"))

@@ -51,7 +51,7 @@ class RemoveDocumentController @Inject() (
   private def addAnother(lrn: LocalReferenceNumber): Call =
     controllers.routes.AddAnotherDocumentController.onPageLoad(lrn)
 
-  private def document(index: Index)(implicit request: DataRequest[_]): String =
+  private def document(index: Index)(implicit request: DataRequest[?]): String =
     DocumentDomain.asString(
       index,
       request.userAnswers.get(TypePage(index)) orElse request.userAnswers.get(PreviousDocumentTypePage(index)),

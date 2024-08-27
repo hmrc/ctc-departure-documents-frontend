@@ -24,7 +24,7 @@ import pages.sections.{DocumentsSection, Section}
 
 case class DocumentsDomain(documents: Seq[DocumentDomain]) extends JourneyDomainModel {
 
-  override def page: Option[Section[_]] = Some(DocumentsSection)
+  override def page: Option[Section[?]] = Some(DocumentsSection)
 }
 
 object DocumentsDomain {

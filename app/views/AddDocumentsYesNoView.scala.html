@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @hintText = {
     <p class="govuk-hint">@messages("addDocumentsYesNo.hint.paragraph1")</p>

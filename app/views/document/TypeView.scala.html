@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Document], lrn: LocalReferenceNumber, documents: Seq[Document], mode: Mode, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Document], lrn: LocalReferenceNumber, documents: Seq[Document], mode: Mode, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("document.type.title"),

@@ -82,7 +82,7 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when yes is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -98,7 +98,7 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the task list page when no is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 
