@@ -41,7 +41,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockLockService)
 
     when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
-    when(mockLockService.checkLock(any())(any())).`thenReturn`(Future.successful(LockCheck.Unlocked))
+    when(mockLockService.checkLock(any())(any())).thenReturn(Future.successful(LockCheck.Unlocked))
   }
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]

@@ -53,7 +53,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
         val isPostalCodeRequired = true
 
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(isPostalCodeRequired))
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, addressHolderName)
@@ -75,7 +75,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
         val isPostalCodeRequired = false
 
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(isPostalCodeRequired))
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, addressHolderName)
@@ -101,7 +101,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         val isPostalCodeRequired = true
         val testAddress          = arbitrary[DynamicAddress](arbitraryDynamicAddressWithRequiredPostalCode).sample.value
 
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(isPostalCodeRequired))
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, addressHolderName)
@@ -135,7 +135,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
         val isPostalCodeRequired = false
         val testAddress          = arbitrary[DynamicAddress](arbitraryDynamicAddressWithRequiredPostalCode).sample.value
 
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(isPostalCodeRequired))
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, addressHolderName)
@@ -167,7 +167,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(false))
+      when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(false))
       when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val userAnswers = emptyUserAnswers
@@ -195,7 +195,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
         val isPostalCodeRequired = true
 
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(isPostalCodeRequired))
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, addressHolderName)
@@ -219,7 +219,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
         val isPostalCodeRequired = false
 
-        when(mockCountriesService.doesCountryRequireZip(any())(any())).`thenReturn`(Future.successful(isPostalCodeRequired))
+        when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(isPostalCodeRequired))
 
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, addressHolderName)

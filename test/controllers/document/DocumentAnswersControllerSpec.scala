@@ -44,7 +44,7 @@ class DocumentAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixt
     "must return OK and the correct view for a GET" in {
       val sampleSections = arbitrary[List[Section]].sample.value
 
-      when(mockViewModelProvider.apply(any(), any())(any())).`thenReturn`(DocumentAnswersViewModel(sampleSections))
+      when(mockViewModelProvider.apply(any(), any())(any())).thenReturn(DocumentAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -59,7 +59,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any(), any())).`thenReturn`(DocumentReferenceNumberViewModel(otherReferenceNumbers))
+    when(mockViewModelProvider.apply(any(), any())).thenReturn(DocumentReferenceNumberViewModel(otherReferenceNumbers))
   }
 
   "DocumentReferenceNumber Controller" - {

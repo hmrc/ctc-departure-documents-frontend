@@ -42,7 +42,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return Ok when lock is open" in {
 
-      when(mockLockService.checkLock(any())(any())).`thenReturn`(Future(LockCheck.Unlocked))
+      when(mockLockService.checkLock(any())(any())).thenReturn(Future(LockCheck.Unlocked))
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
@@ -51,7 +51,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to lock page when lock is not open" in {
 
-      when(mockLockService.checkLock(any())(any())).`thenReturn`(Future(LockCheck.Locked))
+      when(mockLockService.checkLock(any())(any())).thenReturn(Future(LockCheck.Locked))
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
@@ -60,7 +60,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to technical difficulties when lock check fails" in {
 
-      when(mockLockService.checkLock(any())(any())).`thenReturn`(Future(LockCheck.LockCheckFailure))
+      when(mockLockService.checkLock(any())(any())).thenReturn(Future(LockCheck.LockCheckFailure))
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
