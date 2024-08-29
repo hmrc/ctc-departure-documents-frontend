@@ -85,7 +85,7 @@ class LineItemNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       val request = FakeRequest(POST, lineItemNumberRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))

@@ -49,8 +49,10 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val document                 = arbitrary[Document].sample.value
   private val documentReferenceNumber  = Gen.alphaNumStr.sample.value
   private val insetText                = s"$document - $documentReferenceNumber"
-  private val typePage                 = Gen.oneOf(TypePage, PreviousDocumentTypePage).sample.value
-  private val uuid                     = arbitrary[UUID].sample.value
+
+  private val typePage =
+    Gen.oneOf((documentIndex: Index) => TypePage(documentIndex), (documentIndex: Index) => PreviousDocumentTypePage(documentIndex)).sample.value
+  private val uuid = arbitrary[UUID].sample.value
 
   "RemoveDocument Controller" - {
 
@@ -75,7 +77,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when yes submitted" - {
       "must redirect to add another document and remove document at specified index" in {
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setValue(typePage(documentIndex), document)
@@ -109,7 +111,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when no submitted" - {
       "must redirect to add another document and not remove document at specified index" in {
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
         val userAnswers = emptyUserAnswers
           .setValue(typePage(documentIndex), document)

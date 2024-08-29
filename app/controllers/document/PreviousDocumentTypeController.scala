@@ -51,7 +51,7 @@ class PreviousDocumentTypeController @Inject() (
 
   private val prefix: String = "document.previousDocumentType"
 
-  private type Request = SpecificDataRequestProvider2[Boolean, String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider2[Boolean, String]#SpecificDataRequest[?]
 
   private def consignmentLevelDocuments(documentIndex: Index)(implicit request: Request): ConsignmentLevelDocuments =
     ConsignmentLevelDocuments(request.userAnswers, documentIndex)

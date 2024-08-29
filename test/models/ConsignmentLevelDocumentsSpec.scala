@@ -32,7 +32,7 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
 
       "when there is a previous document" - {
 
-        val pageGen = Gen.oneOf(TypePage, PreviousDocumentTypePage)
+        val pageGen = Gen.oneOf((documentIndex: Index) => TypePage(documentIndex), (documentIndex: Index) => PreviousDocumentTypePage(documentIndex))
 
         "at item level" in {
           forAll(pageGen, arbitrary[Document](arbitraryPreviousDocument)) {

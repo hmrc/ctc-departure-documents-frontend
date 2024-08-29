@@ -52,7 +52,7 @@ class AttachToAllItemsController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       if (phaseConfig.phase == Transition || ConsignmentLevelDocuments(request.userAnswers, documentIndex).cannotAddAnyMore) {
-        redirect(mode, documentIndex, InferredAttachToAllItemsPage, value = false)
+        redirect(mode, documentIndex, InferredAttachToAllItemsPage.apply, value = false)
       } else {
         val preparedForm = request.userAnswers.get(AttachToAllItemsPage(documentIndex)) match {
           case None        => form
@@ -69,7 +69,7 @@ class AttachToAllItemsController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, documentIndex))),
-          value => redirect(mode, documentIndex, AttachToAllItemsPage, value)
+          value => redirect(mode, documentIndex, AttachToAllItemsPage.apply, value)
         )
   }
 
@@ -78,7 +78,7 @@ class AttachToAllItemsController @Inject() (
     index: Index,
     page: Index => QuestionPage[Boolean],
     value: Boolean
-  )(implicit request: DataRequest[_]): Future[Result] = {
+  )(implicit request: DataRequest[?]): Future[Result] = {
     val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index)
       .writeToUserAnswers(value)

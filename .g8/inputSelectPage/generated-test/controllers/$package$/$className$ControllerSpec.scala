@@ -78,7 +78,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must redirect to the next page when valid data is submitted" in {
 
       when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceClass;format="decap"$List))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -103,7 +103,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
       "and UUID not populated" in {
         setExistingUserAnswers(emptyUserAnswers)
 
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, documentReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", validAnswer))
@@ -126,7 +126,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         val userAnswers = emptyUserAnswers.setValue(DocumentUuidPage(documentIndex), uuid)
         setExistingUserAnswers(userAnswers)
 
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
         val request = FakeRequest(POST, documentReferenceNumberRoute)
           .withFormUrlEncodedBody(("value", validAnswer))

@@ -103,7 +103,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockDocumentTypesService.getDocuments(any())(any())).thenReturn(Future.successful(documentList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())) `thenReturn` Future.successful(true)
 
       setExistingUserAnswers(baseAnswers)
 

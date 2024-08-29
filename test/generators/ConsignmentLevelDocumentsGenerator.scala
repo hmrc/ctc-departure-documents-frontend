@@ -24,7 +24,7 @@ import pages.document.{AttachToAllItemsPage, PreviousDocumentTypePage, TypePage}
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 
 trait ConsignmentLevelDocumentsGenerator {
-  self: SpecBase with Generators =>
+  self: SpecBase & Generators =>
 
   private val numberOfPreviousAndSupportingDocuments: Int = frontendAppConfig.maxPreviousDocuments + frontendAppConfig.maxSupportingDocuments
 

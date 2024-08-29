@@ -50,7 +50,7 @@ class TypeController @Inject() (
 
   private val prefix: String = "document.type"
 
-  private type Request = SpecificDataRequestProvider1[Boolean]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[Boolean]#SpecificDataRequest[?]
 
   private def consignmentLevelDocuments(documentIndex: Index)(implicit request: Request): ConsignmentLevelDocuments =
     ConsignmentLevelDocuments(request.userAnswers, documentIndex)

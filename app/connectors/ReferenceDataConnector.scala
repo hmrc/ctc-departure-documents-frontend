@@ -39,7 +39,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Document] = Document.reads(Previous)
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Document]]
   }
 
@@ -48,7 +48,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Document] = Document.reads(Support)
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Document]]
   }
 
@@ -57,7 +57,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Document] = Document.reads(Transport)
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Document]]
   }
 
@@ -65,7 +65,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/KindOfPackages"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[PackageType]]
   }
 
@@ -73,7 +73,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/Unit"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header *)
       .execute[NonEmptySet[Metric]]
   }
 
@@ -89,7 +89,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              NonEmptySet.of(head, tail: _*)
+              NonEmptySet.of(head, tail *)
             case JsError(errors) =>
               throw JsResultException(errors)
           }
