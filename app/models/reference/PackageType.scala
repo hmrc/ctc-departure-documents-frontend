@@ -30,7 +30,5 @@ case class PackageType(code: String, description: String) extends Selectable {
 object PackageType {
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
-  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => {
-    (x, y).compareBy(_.toString)
-  }
+  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => (x, y).compareBy(_.toString)
 }

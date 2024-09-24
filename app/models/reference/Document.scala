@@ -40,7 +40,5 @@ object Document {
 
   implicit val format: Format[Document] = Json.format[Document]
 
-  implicit val order: Order[Document] = (x: Document, y: Document) => {
-    (x, y).compareBy(_.toString)
-  }
+  implicit val order: Order[Document] = (x: Document, y: Document) => (x, y).compareBy(_.toString)
 }

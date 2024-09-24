@@ -39,7 +39,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Document] = Document.reads(Previous)
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Document]]
   }
 
@@ -48,7 +48,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Document] = Document.reads(Support)
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Document]]
   }
 
@@ -57,7 +57,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[Document] = Document.reads(Transport)
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Document]]
   }
 
@@ -65,7 +65,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/KindOfPackages"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[PackageType]]
   }
 
@@ -73,7 +73,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/Unit"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Metric]]
   }
 
@@ -82,14 +82,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
-    (_: String, url: String, response: HttpResponse) => {
+    (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
           (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              NonEmptySet.of(head, tail *)
+              NonEmptySet.of(head, tail*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }
@@ -97,7 +97,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
           logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned $e")
           throw new Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}")
       }
-    }
 }
 
 object ReferenceDataConnector {

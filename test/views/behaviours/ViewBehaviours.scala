@@ -100,11 +100,11 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   }
 
   def pageWithTitle(args: Any*): Unit =
-    pageWithTitle(doc, prefix, args *)
+    pageWithTitle(doc, prefix, args*)
 
   def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit = {
     val messageKey = s"$prefix.title"
-    pageWithTitle(doc, messages(messageKey, args *))
+    pageWithTitle(doc, messages(messageKey, args*))
     assert(messages.isDefinedAt(messageKey))
   }
 
@@ -115,11 +115,11 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithHeading(args: Any*): Unit =
-    pageWithHeading(doc, prefix, args *)
+    pageWithHeading(doc, prefix, args*)
 
   def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit = {
     val messageKey = s"$prefix.heading"
-    pageWithHeading(doc, messages(messageKey, args *))
+    pageWithHeading(doc, messages(messageKey, args*))
     assert(messages.isDefinedAt(messageKey))
   }
 

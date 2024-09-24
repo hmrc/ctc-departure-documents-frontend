@@ -79,7 +79,7 @@ trait Constraints {
       case str if str.matches(regex.pattern.pattern()) =>
         Valid
       case _ =>
-        Invalid(errorKey, args *)
+        Invalid(errorKey, args*)
     }
 
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
@@ -91,7 +91,7 @@ trait Constraints {
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>
-        Invalid(errorKey, args *)
+        Invalid(errorKey, args*)
       case _ =>
         Valid
     }
@@ -99,7 +99,7 @@ trait Constraints {
   protected def minDate(minimum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isBefore(minimum) =>
-        Invalid(errorKey, args *)
+        Invalid(errorKey, args*)
       case _ =>
         Valid
     }
@@ -117,7 +117,7 @@ trait Constraints {
       case str if predicate(str) =>
         Valid
       case _ =>
-        Invalid(errorKey, args *)
+        Invalid(errorKey, args*)
     }
 
   protected def maxLimit(consignmentLevelDocuments: ConsignmentLevelDocuments, attachedToAllItems: Boolean, errorKey: String)(implicit

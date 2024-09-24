@@ -40,10 +40,10 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         val numberOfItems = Gen.choose(1, 3).sample.value
 
-        val userAnswers = (0 until numberOfItems).foldLeft(initialAnswers)({
+        val userAnswers = (0 until numberOfItems).foldLeft(initialAnswers) {
           case (updatedUserAnswers, index) =>
             arbitraryDocumentAnswers(updatedUserAnswers, Index(index)).sample.value
-        })
+        }
 
         val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
