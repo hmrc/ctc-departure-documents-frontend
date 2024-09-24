@@ -30,7 +30,5 @@ case class Metric(code: String, description: String) extends Selectable {
 object Metric {
   implicit val format: OFormat[Metric] = Json.format[Metric]
 
-  implicit val order: Order[Metric] = (x: Metric, y: Metric) => {
-    (x, y).compareBy(_.description, _.code)
-  }
+  implicit val order: Order[Metric] = (x: Metric, y: Metric) => (x, y).compareBy(_.description, _.code)
 }
