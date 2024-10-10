@@ -48,12 +48,14 @@ class $formProvider$ @Inject() extends Mappings {
             )
           }
         }
-      )(DynamicAddress.apply)(DynamicAddress.unapply)
+      )(DynamicAddress.apply)(
+        da => Some(Tuple.fromProductTyped(da))
+      )
     )
 }
 
 object $formProvider$ {
 
   def apply(prefix: String, isPostalCodeRequired: Boolean, args: Any*)(implicit messages: Messages): Form[DynamicAddress] =
-    new $formProvider$()(prefix, isPostalCodeRequired, args: _*)
+    new $formProvider$()(prefix, isPostalCodeRequired, args*)
 }
