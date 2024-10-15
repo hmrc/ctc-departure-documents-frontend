@@ -3,8 +3,9 @@ package controllers.$package$
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.$formProvider$
 import models.NormalMode
+import navigation.$navRoute$NavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import pages.$package$.$className$Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -109,7 +110,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -123,7 +124,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }
