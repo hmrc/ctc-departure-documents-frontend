@@ -10,7 +10,8 @@ class EnumerableFormProviderSpec extends OptionFieldBehaviours {
   private val prefix: String = Gen.alphaNumStr.sample.value
 
   sealed private trait FakeEnum extends Radioable[FakeEnum] {
-    override lazy val messageKeyPrefix: String = FakeEnum.messageKeyPrefix
+    override val messageKeyPrefix: String = prefix
+    override val code: String             = this.toString
   }
 
   private object FakeEnum extends EnumerableType[FakeEnum] {
