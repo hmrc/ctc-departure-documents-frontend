@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import scala.util.matching.Regex
 
 object StringFieldRegex {
 
-  val alphaNumericRegex: Regex     = "^[a-zA-Z0-9]*$".r
-  val stringFieldRegexComma: Regex = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
+  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
+  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
+  val stringFieldRegexComma: Regex       = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
 }

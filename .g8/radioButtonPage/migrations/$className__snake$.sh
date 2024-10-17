@@ -6,20 +6,37 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.$package$.routes"
 
 if [ ! -f ../conf/app.$package$.routes ]; then
-  echo "Write into prod.routes file"
-  awk '/health.Routes/ {\
-    print;\
-    print "";\
-    print "->         /manage-transit-movements/departures/documents                   app.$package$.Routes"
-    next }1' ../conf/prod.routes >> tmp && mv tmp ../conf/prod.routes
+  echo "Write into app.routes file"
+  awk '
+  /# microservice specific routes/ {
+    print;
+    print "";
+    next;
+  }
+  /^\$/ {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                            app.$package$.Routes";
+      next;
+    }
+    print;
+    next;
+  }
+  {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                            app.$package$.Routes";
+    }
+    print
+  }' ../conf/app.routes > tmp && mv tmp ../conf/app.routes
 fi
 
 echo "" >> ../conf/app.$package$.routes
-echo "GET        /:lrn/$package;format="packaged"$/$title;format="normalize"$                        controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.$package$.routes
-echo "POST       /:lrn/$package;format="packaged"$/$title;format="normalize"$                        controllers.$package$.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.$package$.routes
+echo "GET        /$package;format="packaged"$/$title;format="normalize"$/:lrn                        controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.$package$.routes
+echo "POST       /$package;format="packaged"$/$title;format="normalize"$/:lrn                        controllers.$package$.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)" >> ../conf/app.$package$.routes
 
-echo "GET        /:lrn/$package;format="packaged"$/change-$title;format="normalize"$                 controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.$package$.routes
-echo "POST       /:lrn/$package;format="packaged"$/change-$title;format="normalize"$                 controllers.$package$.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.$package$.routes
+echo "GET        /$package;format="packaged"$/change-$title;format="normalize"$/:lrn                 controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.$package$.routes
+echo "POST       /$package;format="packaged"$/change-$title;format="normalize"$/:lrn                 controllers.$package$.$className$Controller.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)" >> ../conf/app.$package$.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
@@ -39,5 +56,31 @@ awk '/self: Generators =>/ {\
     print "      Gen.oneOf(models.$package$.$className$.values)";\
     print "    }";\
     next }1' ../test/generators/ModelGenerators.scala > tmp && mv tmp ../test/generators/ModelGenerators.scala
+
+if grep -q "override val getValue" ../test/views/behaviours/YesNoViewBehaviours.scala; then
+  echo "override val 'getValue' already exists in YesNoViewBehaviours. No changes made."
+else
+  awk '/trait YesNoViewBehaviours extends RadioViewBehaviours\[Boolean\] \{/{
+      print;
+      print "";
+      print "  override val getValue: Boolean => String = _.toString";
+      next;
+  }
+  { print }' ../test/views/behaviours/YesNoViewBehaviours.scala > tmp && mv tmp ../test/views/behaviours/YesNoViewBehaviours.scala
+  echo "override val 'getValue' has been added to YesNoViewBehaviours."
+fi
+
+if grep -q "val getValue" ../test/views/behaviours/RadioViewBehaviours.scala; then
+  echo "val 'getValue' already exists in RadioViewBehaviours. No changes made."
+else
+  awk '/trait RadioViewBehaviours\[T\] extends QuestionViewBehaviours\[T\] \{/{
+      print;
+      print "";
+      print "  val getValue: T => String";
+      next;
+  }
+  { print }' ../test/views/behaviours/RadioViewBehaviours.scala > tmp && mv tmp ../test/views/behaviours/RadioViewBehaviours.scala
+  echo "val 'getValue' has been added to RadioViewBehaviours."
+fi
 
 echo "Migration $className;format="snake"$ completed"

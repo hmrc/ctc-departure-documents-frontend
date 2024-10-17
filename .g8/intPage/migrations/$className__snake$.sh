@@ -6,12 +6,29 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.$package$.routes"
 
 if [ ! -f ../conf/app.$package$.routes ]; then
-  echo "Write into prod.routes file"
-  awk '/health.Routes/ {\
-    print;\
-    print "";\
-    print "->         /manage-transit-movements/departures/documents                   app.$package$.Routes"
-    next }1' ../conf/prod.routes >> tmp && mv tmp ../conf/prod.routes
+  echo "Write into app.routes file"
+  awk '
+  /# microservice specific routes/ {
+    print;
+    print "";
+    next;
+  }
+  /^\$/ {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                            app.$package$.Routes";
+      next;
+    }
+    print;
+    next;
+  }
+  {
+    if (!printed) {
+      printed = 1;
+      print "->         /                                            app.$package$.Routes";
+    }
+    print
+  }' ../conf/app.routes > tmp && mv tmp ../conf/app.routes
 fi
 
 echo "" >> ../conf/app.$package$.routes
@@ -30,5 +47,6 @@ echo "$package$.$className;format="decap"$.error.nonNumeric = Enter your $title$
 echo "$package$.$className;format="decap"$.error.required = Enter your $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.wholeNumber = Enter your $title$ using whole numbers" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.maximum = $title$ must be {0} or less" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.error.negative = $title$ must only include numbers 0 to 9" >> ../conf/messages.en
 
 echo "Migration $className;format="snake"$ completed"

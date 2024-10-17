@@ -6,15 +6,17 @@ import models.$package$.$className$
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.$package$.$className$View
 
-class $className$ViewSpec extends RadioViewBehaviours[$className$] {
+class $className$ViewSpec extends EnumerableViewBehaviours[$className$] {
+
+  override val getValue: $className$ => String = _.code
 
   override def form: Form[$className$] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[$className$]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 
