@@ -40,6 +40,10 @@ echo "POST       /$package;format="packaged"$/change-$title;format="normalize"$/
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
+echo "date.day.capitalized = Day" >> ../conf/messages.en
+echo "date.month.capitalized = Month" >> ../conf/messages.en
+echo "date.year.capitalized = Year" >> ../conf/messages.en
+echo "" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.title = $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.heading = $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.checkYourAnswersLabel = $title$" >> ../conf/messages.en

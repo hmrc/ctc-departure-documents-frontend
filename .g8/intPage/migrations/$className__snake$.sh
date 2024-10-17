@@ -47,5 +47,6 @@ echo "$package$.$className;format="decap"$.error.nonNumeric = Enter your $title$
 echo "$package$.$className;format="decap"$.error.required = Enter your $title$" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.wholeNumber = Enter your $title$ using whole numbers" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.maximum = $title$ must be {0} or less" >> ../conf/messages.en
+echo "$package$.$className;format="decap"$.error.negative = $title$ must only include numbers 0 to 9" >> ../conf/messages.en
 
 echo "Migration $className;format="snake"$ completed"
