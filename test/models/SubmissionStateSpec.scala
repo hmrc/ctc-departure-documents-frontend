@@ -17,7 +17,7 @@
 package models
 
 import generators.Generators
-import models.SubmissionState._
+import models.SubmissionState.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.EitherValues
 import org.scalatest.freespec.AnyFreeSpec
@@ -43,21 +43,24 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
       }
     }
 
-    "when status is non amendment" in {
-      forAll(
-        arbitrary[SubmissionState]
-      ) {
-        state =>
-          state.taskStatus mustBe TaskStatus.Completed
-      }
-    }
+    "taskStatus" - {
 
-    "when status is amendment" in {
-      forAll(
-        arbitrary[SubmissionState](arbitraryAmendedmentSubmissionState)
-      ) {
-        state =>
-          state.taskStatus mustBe TaskStatus.Amended
+      "when status is non amendment" in {
+        forAll(
+          arbitrary[SubmissionState](arbitraryNonAmendmentSubmissionState)
+        ) {
+          state =>
+            state.taskStatus mustBe TaskStatus.Completed
+        }
+      }
+
+      "when status is amendment" in {
+        forAll(
+          arbitrary[SubmissionState](arbitraryAmendmentSubmissionState)
+        ) {
+          state =>
+            state.taskStatus mustBe TaskStatus.Amended
+        }
       }
     }
   }

@@ -16,14 +16,14 @@
 
 package generators
 
-import config.Constants.CountryCode._
+import config.Constants.CountryCode.*
+import models.*
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
-import models._
-import models.reference._
+import models.reference.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs._
+import uk.gov.hmrc.http.HttpVerbs.*
 
 trait ModelGenerators {
   self: Generators =>
@@ -42,7 +42,7 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
-  lazy val arbitraryAmendedmentSubmissionState: Arbitrary[SubmissionState] = Arbitrary {
+  lazy val arbitraryAmendmentSubmissionState: Arbitrary[SubmissionState] = Arbitrary {
     val values = Seq(
       SubmissionState.GuaranteeAmendment,
       SubmissionState.RejectedPendingChanges,
@@ -51,10 +51,21 @@ trait ModelGenerators {
     Gen.oneOf(values)
   }
 
-  implicit lazy val arbitraryNonAmendmentSubmissionState: Arbitrary[SubmissionState] = Arbitrary {
+  lazy val arbitraryNonAmendmentSubmissionState: Arbitrary[SubmissionState] = Arbitrary {
     val values = Seq(
       SubmissionState.NotSubmitted,
       SubmissionState.Submitted
+    )
+    Gen.oneOf(values)
+  }
+
+  implicit lazy val arbitrarySubmissionState: Arbitrary[SubmissionState] = Arbitrary {
+    val values = Seq(
+      SubmissionState.NotSubmitted,
+      SubmissionState.Submitted,
+      SubmissionState.RejectedPendingChanges,
+      SubmissionState.Amendment,
+      SubmissionState.GuaranteeAmendment
     )
     Gen.oneOf(values)
   }
