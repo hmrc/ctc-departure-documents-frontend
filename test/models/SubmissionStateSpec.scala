@@ -23,16 +23,29 @@ import org.scalatest.EitherValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsError, JsString, Json}
 
 class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with EitherValues {
 
   "submissionState" - {
 
-    "must deserialise" in {
-      forAll(arbitrary[SubmissionState]) {
-        state =>
-          JsString(state.asString).as[SubmissionState] mustEqual state
+    "must deserialise" - {
+      "when json in expected shape" in {
+        forAll(arbitrary[SubmissionState]) {
+          state =>
+            val result = JsString(state.asString).validate[SubmissionState]
+            result.get.mustBe(state)
+        }
+      }
+    }
+
+    "must fail to deserialise" - {
+      "when json in unexpected shape" in {
+        forAll(nonEmptyString) {
+          value =>
+            val result = JsString(value).validate[SubmissionState]
+            result.mustBe(a[JsError])
+        }
       }
     }
 

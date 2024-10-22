@@ -17,9 +17,52 @@
 package models
 
 import base.SpecBase
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
+import org.scalacheck.Arbitrary.arbitrary
 
-class TaskStatusSpec extends SpecBase {
+class TaskStatusSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  "isCompleted" - {
+    "when completed" - {
+      "must return true" in {
+        val status = TaskStatus.Completed
+        val result = status.isCompleted
+        result.mustBe(true)
+      }
+    }
+
+    "when otherwise" - {
+      "must return false" in {
+        forAll(arbitrary[TaskStatus].retryUntil(_ != TaskStatus.Completed)) {
+          status =>
+            val result = status.isCompleted
+            result.mustBe(false)
+        }
+      }
+    }
+  }
+
+  "isUnavailable" - {
+    "when unavailable" - {
+      "must return true" in {
+        val status = TaskStatus.Unavailable
+        val result = status.isUnavailable
+        result.mustBe(true)
+      }
+    }
+
+    "when otherwise" - {
+      "must return false" in {
+        forAll(arbitrary[TaskStatus].retryUntil(_ != TaskStatus.Unavailable)) {
+          status =>
+            val result = status.isUnavailable
+            result.mustBe(false)
+        }
+      }
+    }
+  }
 
   "must serialise to json" - {
     "when completed" in {
@@ -42,9 +85,19 @@ class TaskStatusSpec extends SpecBase {
       result mustBe JsString("cannot-start-yet")
     }
 
+    "when unavailable" in {
+      val result = Json.toJson[TaskStatus](TaskStatus.Unavailable)
+      result mustBe JsString("unavailable")
+    }
+
     "when error" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Error)
       result mustBe JsString("error")
+    }
+
+    "when amended" in {
+      val result = Json.toJson[TaskStatus](TaskStatus.Amended)
+      result mustBe JsString("amended")
     }
   }
 
@@ -69,9 +122,19 @@ class TaskStatusSpec extends SpecBase {
       result mustBe TaskStatus.CannotStartYet
     }
 
+    "when unavailable" in {
+      val result = JsString("unavailable").as[TaskStatus]
+      result mustBe TaskStatus.Unavailable
+    }
+
     "when error" in {
       val result = JsString("error").as[TaskStatus]
       result mustBe TaskStatus.Error
+    }
+
+    "when amended" in {
+      val result = JsString("amended").as[TaskStatus]
+      result mustBe TaskStatus.Amended
     }
 
     "when something else" in {

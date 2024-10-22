@@ -176,6 +176,18 @@ trait ModelGenerators {
       Gen.oneOf(DocumentType.values)
     }
 
+  implicit lazy val arbitraryTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
+    Gen.oneOf(
+      TaskStatus.Completed,
+      TaskStatus.InProgress,
+      TaskStatus.NotStarted,
+      TaskStatus.CannotStartYet,
+      TaskStatus.Unavailable,
+      TaskStatus.Error,
+      TaskStatus.Amended
+    )
+  }
+
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }

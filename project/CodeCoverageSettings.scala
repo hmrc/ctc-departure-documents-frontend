@@ -16,7 +16,8 @@ object CodeCoverageSettings {
     "views.html.resources.*",
     "views.html.templates.*",
     "views.utils.*",
-    "models.journeyDomain.RichTuple.*"
+    "models.journeyDomain.RichTuple*",
+    "viewModels.components.*"
   )
 
   val settings: Seq[Setting[?]] = Seq(
