@@ -16,7 +16,7 @@ object CodeCoverageSettings {
     "views.html.resources.*",
     "views.html.templates.*",
     "views.utils.*",
-    "models.journeyDomain.RichTuple*",
+    ".*RichTuple.*",
     "viewModels.components.*"
   )
 
