@@ -223,5 +223,67 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
+    "additionalInformationYesNo" - {
+      "must return None" - {
+        "when AddAdditionalInformationYesNoPage page is undefined" in {
+          val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
+          val result = helper.additionalInformationYesNo
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddAdditionalInformationYesNoPage page is defined" in {
+          val answers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage(documentIndex), true)
+
+          val helper = new DocumentAnswersHelper(answers, documentIndex)
+          val result = helper.additionalInformationYesNo.get
+
+          result.key.value mustBe "Do you want to add any additional information for this document?"
+          result.value.value mustBe "Yes"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
+          action.visuallyHiddenText.get mustBe "if you want to add any additional information for this document"
+          action.id mustBe "change-add-additional-information"
+        }
+      }
+    }
+
+    "additionalInformation" - {
+      "must return None" - {
+        "when AdditionalInformationPage is undefined" in {
+          val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
+          val result = helper.additionalInformation
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AdditionalInformationPage page is defined" in {
+          forAll(nonEmptyString) {
+            additionalInformation =>
+              val answers = emptyUserAnswers.setValue(AdditionalInformationPage(documentIndex), additionalInformation)
+
+              val helper = new DocumentAnswersHelper(answers, documentIndex)
+              val result = helper.additionalInformation.get
+
+              result.key.value mustBe "Additional information"
+              result.value.value mustBe additionalInformation
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AdditionalInformationController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustBe "additional information"
+              action.id mustBe "change-additional-information"
+          }
+        }
+      }
+    }
   }
 }
