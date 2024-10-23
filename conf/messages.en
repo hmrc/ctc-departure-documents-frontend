@@ -87,6 +87,7 @@ addAnotherDocument.defaultDocumentLabel = Document {0}
 document.addAdditionalInformationYesNo.title = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+document.addAdditionalInformationYesNo.hint = Adding additional information is optional.
 document.addAdditionalInformationYesNo.checkYourAnswersLabel = Do you want to add any additional information for this document?
 document.addAdditionalInformationYesNo.change.hidden = if you want to add any additional information for this document
 document.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this document
