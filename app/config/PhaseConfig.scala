@@ -16,23 +16,46 @@
 
 package config
 
+import com.typesafe.config.Config
+import config.PhaseConfig.Values
 import models.Phase
 import models.Phase.{PostTransition, Transition}
+import play.api.{ConfigLoader, Configuration}
+
+import javax.inject.Inject
 
 trait PhaseConfig {
   val phase: Phase
+  val values: Values
   val maxDocumentRefNumberLength: Int
   val maxAdditionalInformationLength: Int
 }
 
-class TransitionConfig() extends PhaseConfig {
+object PhaseConfig {
+
+  case class Values(apiVersion: Double)
+
+  object Values {
+
+    implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
+      config.getConfig(path) match {
+        case phase =>
+          val apiVersion = phase.getDouble("apiVersion")
+          Values(apiVersion)
+      }
+  }
+}
+
+class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
   override val phase: Phase                        = Transition
+  override val values: Values                      = configuration.get[Values]("phase.transitional")
   override val maxDocumentRefNumberLength: Int     = 35
   override val maxAdditionalInformationLength: Int = 26
 }
 
-class PostTransitionConfig() extends PhaseConfig {
+class PostTransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
   override val phase: Phase                        = PostTransition
+  override val values: Values                      = configuration.get[Values]("phase.final")
   override val maxDocumentRefNumberLength: Int     = 70
   override val maxAdditionalInformationLength: Int = 35
 }
