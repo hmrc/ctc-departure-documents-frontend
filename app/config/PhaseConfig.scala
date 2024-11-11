@@ -27,35 +27,32 @@ import javax.inject.Inject
 trait PhaseConfig {
   val phase: Phase
   val values: Values
-  val maxDocumentRefNumberLength: Int
-  val maxAdditionalInformationLength: Int
 }
 
 object PhaseConfig {
 
-  case class Values(apiVersion: Double)
+  case class Values(apiVersion: Double, maxDocumentRefNumberLength: Int, maxAdditionalInformationLength: Int)
 
   object Values {
 
     implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
       config.getConfig(path) match {
         case phase =>
-          val apiVersion = phase.getDouble("apiVersion")
-          Values(apiVersion)
+          Values(
+            phase.getDouble("apiVersion"),
+            phase.getInt("maxDocumentRefNumberLength"),
+            phase.getInt("maxAdditionalInformationLength")
+          )
       }
   }
 }
 
 class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
-  override val phase: Phase                        = Transition
-  override val values: Values                      = configuration.get[Values]("phase.transitional")
-  override val maxDocumentRefNumberLength: Int     = 35
-  override val maxAdditionalInformationLength: Int = 26
+  override val phase: Phase   = Transition
+  override val values: Values = configuration.get[Values]("phase.transitional")
 }
 
 class PostTransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
-  override val phase: Phase                        = PostTransition
-  override val values: Values                      = configuration.get[Values]("phase.final")
-  override val maxDocumentRefNumberLength: Int     = 70
-  override val maxAdditionalInformationLength: Int = 35
+  override val phase: Phase   = PostTransition
+  override val values: Values = configuration.get[Values]("phase.final")
 }

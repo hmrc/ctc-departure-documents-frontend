@@ -30,7 +30,7 @@ class DocumentReferenceNumberFormProvider @Inject() (implicit phaseConfig: Phase
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(phaseConfig.maxDocumentRefNumberLength, s"$prefix.error.length"),
+            maxLength(phaseConfig.values.maxDocumentRefNumberLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
             notInList(otherReferenceNumbers, s"$prefix.error.unique")
           )
