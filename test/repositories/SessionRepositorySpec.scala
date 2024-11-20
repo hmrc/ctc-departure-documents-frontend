@@ -18,6 +18,7 @@ package repositories
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.CacheConnector
+import models.UserAnswersResponse.Answers
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -39,11 +40,11 @@ class SessionRepositorySpec extends SpecBase with AppWithDefaultMockFixtures {
     "must call connector" in {
       val userAnswers = emptyUserAnswers
 
-      when(mockCacheConnector.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+      when(mockCacheConnector.get(any())(any())).thenReturn(Future.successful(Answers(userAnswers)))
 
       val result = repository.get(lrn).futureValue
 
-      result.value.mustBe(userAnswers)
+      result.mustBe(Answers(userAnswers))
 
       verify(mockCacheConnector).get(eqTo(lrn))(any())
     }

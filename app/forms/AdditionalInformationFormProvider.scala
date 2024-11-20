@@ -31,7 +31,7 @@ class AdditionalInformationFormProvider @Inject() (implicit phaseConfig: PhaseCo
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
-            maxLength(phaseConfig.maxAdditionalInformationLength, s"$prefix.error.length")
+            maxLength(phaseConfig.values.maxAdditionalInformationLength, s"$prefix.error.length")
           )
         )
     )
