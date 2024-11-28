@@ -17,9 +17,9 @@
 package models
 
 import pages.QuestionPage
-import pages.external.{AddDocumentsYesNoPage, DocumentPage}
+import pages.external.{AddAnotherDocumentPage, AddDocumentsYesNoPage, DocumentPage, InferredAddDocumentsYesNoPage}
 import pages.sections.external.{DocumentSection, DocumentsSection, ItemsSection}
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.{Gettable, Removable}
 
 import java.util.UUID
@@ -73,11 +73,11 @@ final case class UserAnswers(
   def removeDocumentsFromItems(): UserAnswers = {
     val numberOfItems = this.getArraySize(ItemsSection)
     (0 until numberOfItems).map(Index(_)).foldLeft(this) {
-      (acc1, itemIndex) =>
-        acc1
-          .remove(AddDocumentsYesNoPage(itemIndex))
-          .flatMap(_.remove(DocumentsSection(itemIndex)))
-          .getOrElse(acc1)
+      (acc, itemIndex) =>
+        acc
+          .remove(DocumentsSection(itemIndex))
+          .flatMap(removeYesNoQuestions(_, itemIndex))
+          .getOrElse(acc)
     }
   }
 
@@ -88,9 +88,9 @@ final case class UserAnswers(
         (acc1, itemIndex) =>
           val numberOfDocuments = acc1.getArraySize(DocumentsSection(itemIndex))
 
-          def removeYesNoQuestionIfNoDocumentsLeft(userAnswers: UserAnswers): Try[UserAnswers] =
+          def removeYesNoQuestionsIfNoDocumentsLeft(userAnswers: UserAnswers): Try[UserAnswers] =
             if (userAnswers.getArray(DocumentsSection(itemIndex)).isEmpty) {
-              userAnswers.remove(AddDocumentsYesNoPage(itemIndex))
+              removeYesNoQuestions(userAnswers, itemIndex)
             } else {
               Success(userAnswers)
             }
@@ -101,7 +101,7 @@ final case class UserAnswers(
                 case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid =>
                   acc2
                     .remove(DocumentSection(itemIndex, documentIndex))
-                    .flatMap(removeYesNoQuestionIfNoDocumentsLeft)
+                    .flatMap(removeYesNoQuestionsIfNoDocumentsLeft)
                     .getOrElse(acc2)
                 case _ =>
                   acc2
@@ -111,11 +111,17 @@ final case class UserAnswers(
     case None =>
       this
   }
+
+  private def removeYesNoQuestions(userAnswers: UserAnswers, itemIndex: Index): Try[UserAnswers] =
+    userAnswers
+      .remove(AddDocumentsYesNoPage(itemIndex))
+      .flatMap(_.remove(InferredAddDocumentsYesNoPage(itemIndex)))
+      .flatMap(_.remove(AddAnotherDocumentPage(itemIndex)))
 }
 
 object UserAnswers {
 
-  import play.api.libs.functional.syntax._
+  import play.api.libs.functional.syntax.*
 
   implicit lazy val reads: Reads[UserAnswers] =
     (

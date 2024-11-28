@@ -21,16 +21,9 @@ import pages.RemovablePage
 import pages.sections.external.ItemSection
 import play.api.libs.json.JsPath
 
-case class AddDocumentsYesNoPage(itemIndex: Index) extends RemovablePage[Boolean] {
+case class AddAnotherDocumentPage(itemIndex: Index) extends RemovablePage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "addDocumentsYesNo"
-}
-
-case class InferredAddDocumentsYesNoPage(itemIndex: Index) extends RemovablePage[Boolean] {
-
-  override def path: JsPath = ItemSection(itemIndex).path \ toString
-
-  override def toString: String = "inferredAddDocumentsYesNo"
+  override def toString: String = "addAnotherDocument"
 }

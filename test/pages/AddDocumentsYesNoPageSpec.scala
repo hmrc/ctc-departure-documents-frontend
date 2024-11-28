@@ -39,23 +39,31 @@ class AddDocumentsYesNoPageSpec extends PageBehaviours {
           val preChange = emptyUserAnswers
             .setValue(DocumentsSection, Json.arr("foo" -> "bar"))
             .setValue(external.AddDocumentsYesNoPage(Index(0)), true)
+            .setValue(external.InferredAddDocumentsYesNoPage(Index(0)), true)
             .setValue(external.DocumentPage(Index(0), Index(0)), UUID.randomUUID())
             .setValue(external.DocumentPage(Index(0), Index(1)), UUID.randomUUID())
+            .setValue(external.AddAnotherDocumentPage(Index(0)), false)
             .setValue(external.AddDocumentsYesNoPage(Index(1)), true)
+            .setValue(external.InferredAddDocumentsYesNoPage(Index(1)), true)
             .setValue(external.DocumentPage(Index(1), Index(0)), UUID.randomUUID())
             .setValue(external.DocumentPage(Index(1), Index(1)), UUID.randomUUID())
+            .setValue(external.AddAnotherDocumentPage(Index(1)), false)
 
           val postChange = preChange.setValue(AddDocumentsYesNoPage, false)
 
           postChange.get(DocumentsSection) mustNot be(defined)
 
           postChange.get(external.AddDocumentsYesNoPage(Index(0))) mustNot be(defined)
+          postChange.get(external.InferredAddDocumentsYesNoPage(Index(0))) mustNot be(defined)
           postChange.get(external.DocumentPage(Index(0), Index(0))) mustNot be(defined)
           postChange.get(external.DocumentPage(Index(0), Index(1))) mustNot be(defined)
+          postChange.get(external.AddAnotherDocumentPage(Index(0))) mustNot be(defined)
 
           postChange.get(external.AddDocumentsYesNoPage(Index(1))) mustNot be(defined)
+          postChange.get(external.InferredAddDocumentsYesNoPage(Index(1))) mustNot be(defined)
           postChange.get(external.DocumentPage(Index(1), Index(0))) mustNot be(defined)
           postChange.get(external.DocumentPage(Index(1), Index(1))) mustNot be(defined)
+          postChange.get(external.AddAnotherDocumentPage(Index(1))) mustNot be(defined)
         }
       }
 
