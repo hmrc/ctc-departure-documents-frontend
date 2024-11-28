@@ -172,8 +172,12 @@ class UserAnswersSpec extends SpecBase {
              |    },
              |    {
              |      "addDocumentsYesNo" : false,
-             |      "inferredAddDocumentsYesNo" : false,
              |      "documents" : []
+             |    },
+             |    {
+             |      "inferredAddDocumentsYesNo" : true,
+             |      "documents" : [],
+             |      "addAnotherDocument" : false
              |    }
              |  ]
              |}
@@ -216,7 +220,9 @@ class UserAnswersSpec extends SpecBase {
              |    },
              |    {
              |      "addDocumentsYesNo" : false,
-             |      "inferredAddDocumentsYesNo" : false,
+             |      "documents" : []
+             |    },
+             |    {
              |      "documents" : []
              |    }
              |  ]

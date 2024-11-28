@@ -86,25 +86,21 @@ final case class UserAnswers(
       val numberOfItems = this.getArraySize(ItemsSection)
       (0 until numberOfItems).map(Index(_)).foldLeft(this) {
         (acc1, itemIndex) =>
-          val numberOfDocuments = acc1.getArraySize(DocumentsSection(itemIndex))
-
-          def removeYesNoQuestionsIfNoDocumentsLeft(userAnswers: UserAnswers): Try[UserAnswers] =
-            if (userAnswers.getArray(DocumentsSection(itemIndex)).isEmpty) {
-              removeYesNoQuestions(userAnswers, itemIndex)
-            } else {
-              Success(userAnswers)
-            }
-
-          (numberOfDocuments to 1 by -1).map(_ - 1).map(Index(_)).foldLeft(acc1) {
-            (acc2, documentIndex) =>
-              acc2.get(DocumentPage(itemIndex, documentIndex)) match {
-                case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid =>
-                  acc2
-                    .remove(DocumentSection(itemIndex, documentIndex))
-                    .flatMap(removeYesNoQuestionsIfNoDocumentsLeft)
-                    .getOrElse(acc2)
-                case _ =>
-                  acc2
+          acc1.getArraySize(DocumentsSection(itemIndex)) match {
+            case 0 =>
+              removeInferredQuestions(acc1, itemIndex).getOrElse(acc1)
+            case numberOfDocuments =>
+              (numberOfDocuments to 1 by -1).map(_ - 1).map(Index(_)).foldLeft(acc1) {
+                (acc2, documentIndex) =>
+                  acc2.get(DocumentPage(itemIndex, documentIndex)) match {
+                    case Some(itemDocumentUuid) if documentUuid == itemDocumentUuid =>
+                      acc2
+                        .remove(DocumentSection(itemIndex, documentIndex))
+                        .flatMap(removeYesNoQuestionsIfNoDocumentsLeft(_, itemIndex))
+                        .getOrElse(acc2)
+                    case _ =>
+                      acc2
+                  }
               }
           }
       }
@@ -112,10 +108,21 @@ final case class UserAnswers(
       this
   }
 
+  private def removeYesNoQuestionsIfNoDocumentsLeft(userAnswers: UserAnswers, itemIndex: Index): Try[UserAnswers] =
+    if (userAnswers.getArray(DocumentsSection(itemIndex)).isEmpty) {
+      removeYesNoQuestions(userAnswers, itemIndex)
+    } else {
+      Success(userAnswers)
+    }
+
   private def removeYesNoQuestions(userAnswers: UserAnswers, itemIndex: Index): Try[UserAnswers] =
     userAnswers
       .remove(AddDocumentsYesNoPage(itemIndex))
-      .flatMap(_.remove(InferredAddDocumentsYesNoPage(itemIndex)))
+      .flatMap(removeInferredQuestions(_, itemIndex))
+
+  private def removeInferredQuestions(userAnswers: UserAnswers, itemIndex: Index): Try[UserAnswers] =
+    userAnswers
+      .remove(InferredAddDocumentsYesNoPage(itemIndex))
       .flatMap(_.remove(AddAnotherDocumentPage(itemIndex)))
 }
 
