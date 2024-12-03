@@ -133,6 +133,7 @@ class UserAnswersSpec extends SpecBase {
              |  "items" : [
              |    {
              |      "addDocumentsYesNo" : true,
+             |      "inferredAddDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "$uuid"
@@ -143,18 +144,22 @@ class UserAnswersSpec extends SpecBase {
              |        {
              |          "document" : "3882459f-b7bc-478d-9d24-359533aa8fe3"
              |        }
-             |      ]
+             |      ],
+             |      "addAnotherDocument" : false
              |    },
              |    {
              |      "addDocumentsYesNo" : true,
+             |      "inferredAddDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "$uuid"
              |        }
-             |      ]
+             |      ],
+             |      "addAnotherDocument" : false
              |    },
              |    {
              |      "addDocumentsYesNo" : true,
+             |      "inferredAddDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "ac50154c-cad1-4320-8def-d282eea63b2e"
@@ -162,11 +167,17 @@ class UserAnswersSpec extends SpecBase {
              |        {
              |          "document" : "$uuid"
              |        }
-             |      ]
+             |      ],
+             |      "addAnotherDocument" : false
              |    },
              |    {
              |      "addDocumentsYesNo" : false,
              |      "documents" : []
+             |    },
+             |    {
+             |      "inferredAddDocumentsYesNo" : true,
+             |      "documents" : [],
+             |      "addAnotherDocument" : false
              |    }
              |  ]
              |}
@@ -183,6 +194,7 @@ class UserAnswersSpec extends SpecBase {
              |  "items" : [
              |    {
              |      "addDocumentsYesNo" : true,
+             |      "inferredAddDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
@@ -190,21 +202,27 @@ class UserAnswersSpec extends SpecBase {
              |        {
              |          "document" : "3882459f-b7bc-478d-9d24-359533aa8fe3"
              |        }
-             |      ]
+             |      ],
+             |      "addAnotherDocument" : false
              |    },
              |    {
              |      "documents" : []
              |    },
              |    {
              |      "addDocumentsYesNo" : true,
+             |      "inferredAddDocumentsYesNo" : true,
              |      "documents" : [
              |        {
              |          "document" : "ac50154c-cad1-4320-8def-d282eea63b2e"
              |        }
-             |      ]
+             |      ],
+             |      "addAnotherDocument" : false
              |    },
              |    {
              |      "addDocumentsYesNo" : false,
+             |      "documents" : []
+             |    },
+             |    {
              |      "documents" : []
              |    }
              |  ]
