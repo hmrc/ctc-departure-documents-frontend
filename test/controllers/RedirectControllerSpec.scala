@@ -96,7 +96,7 @@ class RedirectControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-            userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(nextIndex)).value mustEqual true
+            userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(nextIndex)).value mustEqual false
         }
       }
     }

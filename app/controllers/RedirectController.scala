@@ -49,7 +49,7 @@ class RedirectController @Inject() (
       val numberOfDocuments = request.userAnswers.getArraySize(DocumentsSection)
       val nextIndex         = Index(numberOfDocuments)
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(InferredAttachToAllItemsPage(nextIndex), true))
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(InferredAttachToAllItemsPage(nextIndex), false))
         _              <- sessionRepository.set(updatedAnswers)
       } yield Redirect(controllers.document.routes.PreviousDocumentTypeController.onPageLoad(lrn, NormalMode, nextIndex))
   }
