@@ -45,8 +45,12 @@ object DocumentDomain {
     }
 
   def isMandatoryPrevious(documentIndex: Index): Read[Boolean] =
-    DocumentsDomain.isMandatoryPrevious.to {
-      x => Read.apply(x && documentIndex.isFirst)
+    (
+      DocumentsDomain.isMandatoryPrevious,
+      PreviousDocumentTypePage(documentIndex).optionalReader.mapTo(_.isDefined)
+    ).to {
+      case (_, true)                => Read(true)
+      case (isMandatoryPrevious, _) => Read(isMandatoryPrevious && documentIndex.isFirst)
     }
 
   implicit def userAnswersReader(documentIndex: Index): Read[DocumentDomain] =
