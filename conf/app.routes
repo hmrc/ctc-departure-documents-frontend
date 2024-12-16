@@ -15,4 +15,3 @@ POST       /change-add/:lrn                             controllers.AddDocuments
 
 GET        /add-another/:lrn                            controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /add-another/:lrn                            controllers.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber)
-GET        /add-previous/:lrn                           controllers.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber)
