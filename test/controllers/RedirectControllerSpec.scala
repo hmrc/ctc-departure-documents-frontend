@@ -100,5 +100,23 @@ class RedirectControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
         }
       }
     }
+
+    "declarationSummary" - {
+
+      lazy val redirectRoute = routes.RedirectController.declarationSummary(lrn).url
+
+      "must redirect to the 'declaration summary' page" in {
+        val userAnswers = emptyUserAnswers
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, redirectRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
+      }
+    }
   }
 }

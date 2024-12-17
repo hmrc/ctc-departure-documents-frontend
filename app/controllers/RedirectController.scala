@@ -17,6 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.{Index, LocalReferenceNumber, NormalMode}
 import navigation.DocumentsNavigatorProvider
@@ -34,7 +35,8 @@ class RedirectController @Inject() (
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  sessionRepository: SessionRepository
+  sessionRepository: SessionRepository,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -52,5 +54,10 @@ class RedirectController @Inject() (
         updatedAnswers <- Future.fromTry(request.userAnswers.set(InferredAttachToAllItemsPage(nextIndex), false))
         _              <- sessionRepository.set(updatedAnswers)
       } yield Redirect(controllers.document.routes.PreviousDocumentTypeController.onPageLoad(lrn, NormalMode, nextIndex))
+  }
+
+  def declarationSummary(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      Redirect(config.taskListUrl(lrn))
   }
 }

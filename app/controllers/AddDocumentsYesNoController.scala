@@ -23,9 +23,8 @@ import models.{LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
 import pages.AddDocumentsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddDocumentsYesNoView
 
@@ -73,7 +72,7 @@ class AddDocumentsYesNoController @Inject() (
                   if (value) {
                     navigator.nextPage(userAnswers, Some(page))
                   } else {
-                    Call(GET, frontendAppConfig.taskListUrl(lrn))
+                    routes.RedirectController.declarationSummary(lrn)
                   }
               }
               .updateItems(lrn)

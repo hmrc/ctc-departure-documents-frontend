@@ -7,6 +7,7 @@ GET        /assets/*file                                controllers.Assets.versi
 
 GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 GET        /mandatory-previous/:lrn                     controllers.RedirectController.mandatoryPrevious(lrn: LocalReferenceNumber)
+GET        /declaration-summary/:lrn                    controllers.RedirectController.declarationSummary(lrn: LocalReferenceNumber)
 
 GET        /add/:lrn                                    controllers.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /add/:lrn                                    controllers.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)

@@ -113,7 +113,7 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       redirectLocation(result).value mustEqual
         s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
-        s"continue=http://localhost:10132${frontendAppConfig.taskListUrl(lrn)}"
+        s"continue=http://localhost:10132${controllers.routes.RedirectController.declarationSummary(lrn).url}"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
