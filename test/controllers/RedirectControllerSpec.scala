@@ -17,33 +17,88 @@
 package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generators.Generators
+import models.reference.Document
+import models.{Index, NormalMode, UserAnswers}
 import navigation.DocumentsNavigatorProvider
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.document.{InferredAttachToAllItemsPage, TypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
-class RedirectControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+import scala.concurrent.Future
 
-  private lazy val redirectRoute = routes.RedirectController.redirect(lrn).url
+class RedirectControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[DocumentsNavigatorProvider]).toInstance(fakeDocumentsNavigatorProvider))
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSessionRepository)
+  }
+
   "Redirect Controller" - {
 
-    "must redirect to the 'add another' page" in {
-      val userAnswers = emptyUserAnswers
-      setExistingUserAnswers(userAnswers)
+    "redirect" - {
 
-      val request = FakeRequest(GET, redirectRoute)
-      val result  = route(app, request).value
+      lazy val redirectRoute = routes.RedirectController.redirect(lrn).url
 
-      status(result) mustEqual SEE_OTHER
+      "must redirect to the 'add another' page" in {
+        val userAnswers = emptyUserAnswers
+        setExistingUserAnswers(userAnswers)
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        val request = FakeRequest(GET, redirectRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "mandatoryPrevious" - {
+
+      lazy val mandatoryPreviousRoute = routes.RedirectController.mandatoryPrevious(lrn).url
+
+      "must infer next index as consignment level and redirect" in {
+        forAll(arbitrary[Document]) {
+          document =>
+            beforeEach()
+
+            when(mockSessionRepository.set(any())(any()))
+              .thenReturn(Future.successful(true))
+
+            val userAnswers = emptyUserAnswers
+              .setValue(TypePage(Index(0)), document)
+
+            setExistingUserAnswers(userAnswers)
+
+            val request = FakeRequest(GET, mandatoryPreviousRoute)
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            val nextIndex = Index(1)
+
+            redirectLocation(result).value mustEqual
+              controllers.document.routes.PreviousDocumentTypeController.onPageLoad(lrn, NormalMode, nextIndex).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+            userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(nextIndex)).value mustEqual false
+        }
+      }
     }
   }
 }

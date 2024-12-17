@@ -17,16 +17,16 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants.DeclarationType._
+import config.Constants.DeclarationType.*
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
-import models.DocumentType._
+import models.DocumentType.*
 import models.Index
 import models.reference.{CustomsOffice, Document, Metric, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.document._
-import pages.external._
+import pages.document.*
+import pages.external.*
 import pages.sections.DocumentSection
 import play.api.libs.json.Json
 
@@ -62,6 +62,25 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           result.left.value.pages mustBe Seq(
             TypePage(nextIndex)
           )
+        }
+
+        "when we have redirected from items and added a mandatory previous item level document type" in {
+          forAll(arbitrary[CustomsOffice](arbitraryGbCustomsOffice), arbitrary[Document](arbitraryPreviousDocument)) {
+            (customsOffice, document) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationOfficeOfDeparturePage, customsOffice)
+                .setValue(TransitOperationDeclarationTypePage, T)
+                .setValue(InferredAttachToAllItemsPage(index), false)
+                .setValue(PreviousDocumentTypePage(index), document)
+
+              val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe DocumentReferenceNumberPage(index)
+              result.left.value.pages mustBe Seq(
+                PreviousDocumentTypePage(index),
+                DocumentReferenceNumberPage(index)
+              )
+          }
         }
 
         "when index is 0" - {
