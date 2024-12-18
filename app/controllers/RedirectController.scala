@@ -17,19 +17,28 @@
 package controllers
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import controllers.actions.Actions
-import models.{LocalReferenceNumber, NormalMode}
+import models.{Index, LocalReferenceNumber, NormalMode}
 import navigation.DocumentsNavigatorProvider
+import pages.document.InferredAttachToAllItemsPage
+import pages.sections.DocumentsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class RedirectController @Inject() (
   override val messagesApi: MessagesApi,
   navigatorProvider: DocumentsNavigatorProvider,
   actions: Actions,
-  val controllerComponents: MessagesControllerComponents
-) extends FrontendBaseController
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: SessionRepository,
+  config: FrontendAppConfig
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
   def redirect(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
@@ -37,4 +46,18 @@ class RedirectController @Inject() (
       Redirect(navigatorProvider.apply(NormalMode).nextPage(request.userAnswers, None))
   }
 
+  def mandatoryPrevious(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn).async {
+    implicit request =>
+      val numberOfDocuments = request.userAnswers.getArraySize(DocumentsSection)
+      val nextIndex         = Index(numberOfDocuments)
+      for {
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(InferredAttachToAllItemsPage(nextIndex), false))
+        _              <- sessionRepository.set(updatedAnswers)
+      } yield Redirect(controllers.document.routes.PreviousDocumentTypeController.onPageLoad(lrn, NormalMode, nextIndex))
+  }
+
+  def declarationSummary(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      Redirect(config.taskListUrl(lrn))
+  }
 }

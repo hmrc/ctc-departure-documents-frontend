@@ -24,6 +24,7 @@ object Constants {
   }
 
   object DeclarationType {
+    val T   = "T"
     val T2  = "T2"
     val T2F = "T2F"
   }

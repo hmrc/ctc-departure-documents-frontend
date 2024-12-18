@@ -79,7 +79,9 @@ class RemoveDocumentController @Inject() (
                   .removeDocumentFromItems(request.userAnswers.get(DocumentUuidPage(documentIndex)))
                   .updateTask()
                   .writeToSession(sessionRepository)
-                  .buildCall(addAnother(lrn))
+                  .getNextPage {
+                    _ => addAnother(lrn)
+                  }
                   .updateItems(lrn)
                   .navigate()
               case false =>

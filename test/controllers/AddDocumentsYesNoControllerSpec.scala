@@ -93,7 +93,9 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual
+        s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+        s"continue=http://localhost:10132${onwardRoute.url}"
     }
 
     "must redirect to the task list page when no is submitted" in {
@@ -109,7 +111,9 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
+      redirectLocation(result).value mustEqual
+        s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+        s"continue=http://localhost:10132${controllers.routes.RedirectController.declarationSummary(lrn).url}"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

@@ -130,10 +130,11 @@ package object controllers {
         _ => call
       }
 
-    def buildCall(call: Call)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+    def getNextPage(block: Write[A] => Call)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
       write.map {
-        _ =>
-          val url = frontendAppConfig.absoluteURL(call.url)
+        case (page, userAnswers) =>
+          val call = block(page, userAnswers)
+          val url  = frontendAppConfig.absoluteURL(call.url)
           call.copy(url = url)
       }
 

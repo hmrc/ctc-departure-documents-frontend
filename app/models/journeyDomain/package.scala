@@ -182,6 +182,9 @@ package object journeyDomain {
         reader <- fun(a.value)(a.pages)
       } yield reader
 
+    def mapTo[T](fun: A => T): Read[T] =
+      value.apply(_: Pages).map(_.to(fun))
+
     def toOption: Read[Option[A]] = value(_).map(_.toOption)
     def toSeq: Read[Seq[A]]       = value(_).map(_.toSeq)
   }

@@ -17,15 +17,14 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode, UserAnswers}
+import models.{LocalReferenceNumber, Mode}
 import navigation.{DocumentsNavigatorProvider, UserAnswersNavigator}
-import pages.{AddDocumentsYesNoPage, QuestionPage}
+import pages.AddDocumentsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddDocumentsYesNoView
 
@@ -39,9 +38,8 @@ class AddDocumentsYesNoController @Inject() (
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddDocumentsYesNoView,
-  frontendAppConfig: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+  view: AddDocumentsYesNoView
+)(implicit ec: ExecutionContext, frontendAppConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -65,13 +63,20 @@ class AddDocumentsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            val writes: Future[(QuestionPage[Boolean], UserAnswers)] =
-              AddDocumentsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository)
-            if (value) {
-              writes.navigateWith(navigator)
-            } else {
-              writes.navigateTo(Call(GET, frontendAppConfig.taskListUrl(lrn)))
-            }
+            AddDocumentsYesNoPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .getNextPage {
+                (page, userAnswers) =>
+                  if (value) {
+                    navigator.nextPage(userAnswers, Some(page))
+                  } else {
+                    routes.RedirectController.declarationSummary(lrn)
+                  }
+              }
+              .updateItems(lrn)
+              .navigate()
           }
         )
   }
