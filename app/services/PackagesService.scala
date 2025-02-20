@@ -29,5 +29,6 @@ class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)
   def getPackageTypes()(implicit hc: HeaderCarrier): Future[SelectableList[PackageType]] =
     referenceDataConnector
       .getPackageTypes()
+      .map(_.resolve())
       .map(SelectableList(_))
 }

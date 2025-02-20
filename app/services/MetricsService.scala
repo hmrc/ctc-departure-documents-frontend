@@ -29,5 +29,6 @@ class MetricsService @Inject() (referenceDataConnector: ReferenceDataConnector)(
   def getMetrics()(implicit hc: HeaderCarrier): Future[SelectableList[Metric]] =
     referenceDataConnector
       .getMetrics()
+      .map(_.resolve())
       .map(SelectableList(_))
 }

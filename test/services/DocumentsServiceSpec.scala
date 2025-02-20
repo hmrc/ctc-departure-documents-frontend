@@ -43,13 +43,13 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
     reset(mockRefDataConnector)
 
     when(mockRefDataConnector.getSupportingDocuments()(any(), any()))
-      .thenReturn(Future.successful(NonEmptySet.of(supportingDocument)))
+      .thenReturn(Future.successful(Right(NonEmptySet.of(supportingDocument))))
 
     when(mockRefDataConnector.getTransportDocuments()(any(), any()))
-      .thenReturn(Future.successful(NonEmptySet.of(transportDocument)))
+      .thenReturn(Future.successful(Right(NonEmptySet.of(transportDocument))))
 
     when(mockRefDataConnector.getPreviousDocuments()(any(), any()))
-      .thenReturn(Future.successful(NonEmptySet.of(previousDocument)))
+      .thenReturn(Future.successful(Right(NonEmptySet.of(previousDocument))))
 
     super.beforeEach()
   }

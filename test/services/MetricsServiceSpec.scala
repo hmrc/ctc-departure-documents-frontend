@@ -48,7 +48,7 @@ class MetricsServiceSpec extends SpecBase with BeforeAndAfterEach {
       "must return a list of sorted metrics" in {
 
         when(mockRefDataConnector.getMetrics()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(metric1, metric2, metric3)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(metric1, metric2, metric3))))
 
         service.getMetrics().futureValue mustBe
           SelectableList(Seq(metric3, metric2, metric1))

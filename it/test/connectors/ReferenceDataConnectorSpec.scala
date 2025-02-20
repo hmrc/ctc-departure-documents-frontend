@@ -23,7 +23,7 @@ import itbase.{ItSpecBase, WireMockServerHandler}
 import models.DocumentType.*
 import models.reference.{Document, Metric, PackageType}
 import org.scalacheck.Gen
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, EitherValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.JsResultException
@@ -31,7 +31,7 @@ import play.api.libs.json.JsResultException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with EitherValues {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -85,7 +85,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         Document(Previous, "4", "Blah")
       )
 
-      connector.getPreviousDocuments().futureValue mustEqual expectResult
+      connector.getPreviousDocuments().futureValue.value mustEqual expectResult
     }
 
     "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -115,7 +115,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         Document(Transport, "4", "Blah")
       )
 
-      connector.getTransportDocuments().futureValue mustEqual expectResult
+      connector.getTransportDocuments().futureValue.value mustEqual expectResult
     }
 
     "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -145,7 +145,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         Document(Support, "4", "Blah")
       )
 
-      connector.getSupportingDocuments().futureValue mustEqual expectResult
+      connector.getSupportingDocuments().futureValue.value mustEqual expectResult
     }
 
     "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -205,7 +205,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         Metric("DTN", "Hectokilogram")
       )
 
-      connector.getMetrics().futureValue mustEqual expectResult
+      connector.getMetrics().futureValue.value mustEqual expectResult
     }
 
     "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -261,7 +261,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         PackageType("1B", "Drum, aluminium")
       )
 
-      connector.getPackageTypes().futureValue mustEqual expectResult
+      connector.getPackageTypes().futureValue.value mustEqual expectResult
     }
 
     "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -277,7 +277,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
   }
 
-  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[?]): Assertion = {
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     val json: String =
       """
         |{
@@ -290,12 +290,10 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         .willReturn(okJson(json))
     )
 
-    whenReady[Throwable, Assertion](result.failed) {
-      _ mustBe a[NoReferenceDataFoundException]
-    }
+    result.futureValue.left.value mustBe an[NoReferenceDataFoundException]
   }
 
-  private def checkErrorResponse(url: String, result: => Future[?]): Assertion = {
+  private def checkErrorResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
@@ -308,13 +306,11 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             )
         )
 
-        whenReady[Throwable, Assertion](result.failed) {
-          _ mustBe an[Exception]
-        }
+        result.futureValue.left.value mustBe an[Exception]
     }
   }
 
-  private def checkJsErrorResponse(url: String, result: => Future[?]): Assertion = {
+  private def checkJsErrorResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     val json =
       """
         |{
@@ -327,8 +323,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         .willReturn(okJson(json))
     )
 
-    whenReady[Throwable, Assertion](result.failed) {
-      _ mustBe an[JsResultException]
-    }
+    result.futureValue.left.value mustBe a[JsResultException]
   }
 }

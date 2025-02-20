@@ -15,8 +15,18 @@
  */
 
 import cats.data.NonEmptySet
+import connectors.ReferenceDataConnector.*
 
 package object services {
+
+  implicit class RichResponses[T](value: Responses[T]) {
+
+    def resolve(): NonEmptySet[T] =
+      value match {
+        case Right(value) => value
+        case Left(ex)     => throw ex
+      }
+  }
 
   implicit class RichNonEmptySet[T](value: NonEmptySet[T]) {
     def toSeq: Seq[T] = value.toNonEmptyList.toList
