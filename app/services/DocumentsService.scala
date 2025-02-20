@@ -34,13 +34,14 @@ sealed trait DocumentsService {
   def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
     referenceDataConnector
       .getTransportDocuments()
+      .map(_.resolve())
       .map(Some(_))
 
   def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
-      supportingDocuments <- referenceDataConnector.getSupportingDocuments()
+      supportingDocuments <- referenceDataConnector.getSupportingDocuments().map(_.resolve())
       transportDocuments  <- getTransportDocuments(attachToAllItems)
-      previousDocuments   <- referenceDataConnector.getPreviousDocuments()
+      previousDocuments   <- referenceDataConnector.getPreviousDocuments().map(_.resolve())
       documents = transportDocuments match {
         case Some(value) => supportingDocuments ++ value ++ previousDocuments
         case None        => supportingDocuments ++ previousDocuments
@@ -50,6 +51,7 @@ sealed trait DocumentsService {
   def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     referenceDataConnector
       .getPreviousDocuments()
+      .map(_.resolve())
       .map(SelectableList(_))
 }
 
