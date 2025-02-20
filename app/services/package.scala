@@ -28,22 +28,6 @@ package object services {
       }
   }
 
-  implicit class RichResponse[T](value: Response[T]) {
-
-    def resolve(): T =
-      value match {
-        case Right(value) => value
-        case Left(ex)     => throw ex
-      }
-
-    def isDefined: Boolean =
-      value match {
-        case Right(value)                           => true
-        case Left(_: NoReferenceDataFoundException) => false
-        case Left(ex)                               => throw ex
-      }
-  }
-
   implicit class RichNonEmptySet[T](value: NonEmptySet[T]) {
     def toSeq: Seq[T] = value.toNonEmptyList.toList
   }

@@ -90,7 +90,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 object ReferenceDataConnector {
 
   type Responses[T] = Either[Exception, NonEmptySet[T]]
-  type Response[T]  = Either[Exception, T]
 
   class NoReferenceDataFoundException(url: String) extends Exception(s"The reference data call was successful but the response body is empty: $url")
 }
