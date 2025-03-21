@@ -98,7 +98,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> previousDocument1.toString))
+      val filledForm = form.bind(Map("document" -> previousDocument1.toString))
 
       val view = injector.instanceOf[PreviousDocumentTypeView]
 
@@ -118,7 +118,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, previousDocumentTypeRoute)
-        .withFormUrlEncodedBody(("value", previousDocument1.toString))
+        .withFormUrlEncodedBody(("document", previousDocument1.toString))
 
       val result = route(app, request).value
 
@@ -134,8 +134,8 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockDocumentService.getPreviousDocuments()(any())).thenReturn(Future.successful(previousDocumentList))
       setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, previousDocumentTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, previousDocumentTypeRoute).withFormUrlEncodedBody(("document", "invalid value"))
+      val boundForm = form.bind(Map("document" -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -164,7 +164,7 @@ class PreviousDocumentTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, previousDocumentTypeRoute)
-        .withFormUrlEncodedBody(("value", previousDocument1.code))
+        .withFormUrlEncodedBody(("document", previousDocument1.code))
 
       val result = route(app, request).value
 
