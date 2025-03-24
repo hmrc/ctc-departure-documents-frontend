@@ -90,7 +90,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> document1.toString))
+      val filledForm = form.bind(Map("document" -> document1.toString))
 
       val view = injector.instanceOf[TypeView]
 
@@ -108,7 +108,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       setExistingUserAnswers(baseAnswers)
 
       val request = FakeRequest(POST, typeRoute)
-        .withFormUrlEncodedBody(("value", document1.toString))
+        .withFormUrlEncodedBody(("document", document1.toString))
 
       val result = route(app, request).value
 
@@ -122,8 +122,8 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       when(mockDocumentTypesService.getDocuments(any())(any())).thenReturn(Future.successful(documentList))
       setExistingUserAnswers(baseAnswers)
 
-      val request   = FakeRequest(POST, typeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, typeRoute).withFormUrlEncodedBody(("document", "invalid value"))
+      val boundForm = form.bind(Map("document" -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -152,7 +152,7 @@ class TypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with G
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, typeRoute)
-        .withFormUrlEncodedBody(("value", document1.code))
+        .withFormUrlEncodedBody(("document", document1.code))
 
       val result = route(app, request).value
 

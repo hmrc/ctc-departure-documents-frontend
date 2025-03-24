@@ -28,6 +28,8 @@ import views.html.document.PreviousDocumentTypeView
 
 class PreviousDocumentTypeViewSpec extends InputSelectViewBehaviours[Document] {
 
+  override val field: String = "document"
+
   private val declarationType = arbitrary[String](arbitraryDeclarationType).sample.get
 
   override def form: Form[Document] = new SelectableFormProvider()(prefix, SelectableList(values))
