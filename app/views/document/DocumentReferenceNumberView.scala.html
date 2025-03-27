@@ -14,20 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.document.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputTextViewModel._
 @import views.html.components.{Button, ErrorSummary, InputText}
+@import forms.Constants.maxDocumentRefNumberLength
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
+
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
@@ -47,7 +47,7 @@
                 heading = messages("document.documentReferenceNumber.heading"),
                 caption = Some(messages("document.caption"))
             ),
-            hint = Some(messages("document.documentReferenceNumber.hint", phaseConfig.values.maxDocumentRefNumberLength)),
+            hint = Some(messages("document.documentReferenceNumber.hint", maxDocumentRefNumberLength)),
             inputClass = InputSize.Width20
         )
 

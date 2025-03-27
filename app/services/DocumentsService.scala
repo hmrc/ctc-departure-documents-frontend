@@ -25,17 +25,17 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait DocumentsService {
-
+class DocumentsService @Inject() (
   val referenceDataConnector: ReferenceDataConnector
-
-  implicit val ec: ExecutionContext
+)(implicit val ec: ExecutionContext) {
 
   def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
-    referenceDataConnector
-      .getTransportDocuments()
-      .map(_.resolve())
-      .map(Some(_))
+    if (attachToAllItems) {
+      referenceDataConnector
+        .getTransportDocuments()
+        .map(_.resolve())
+        .map(Some(_))
+    } else Future.successful(None)
 
   def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
@@ -53,22 +53,4 @@ sealed trait DocumentsService {
       .getPreviousDocuments()
       .map(_.resolve())
       .map(SelectableList(_))
-}
-
-class TransitionDocumentsService @Inject() (
-  override val referenceDataConnector: ReferenceDataConnector
-)(implicit override val ec: ExecutionContext)
-    extends DocumentsService {
-
-  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
-    super.getTransportDocuments(attachToAllItems)
-}
-
-class PostTransitionDocumentsService @Inject() (
-  override val referenceDataConnector: ReferenceDataConnector
-)(implicit override val ec: ExecutionContext)
-    extends DocumentsService {
-
-  override def getTransportDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
-    if (attachToAllItems) super.getTransportDocuments(attachToAllItems) else Future.successful(None)
 }

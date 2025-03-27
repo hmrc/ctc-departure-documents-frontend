@@ -17,7 +17,6 @@
 package controllers.document
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.{PhaseConfig, PostTransitionConfig}
 import forms.YesNoFormProvider
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
 import models.{Index, NormalMode, UserAnswers}
@@ -44,7 +43,6 @@ class AttachToAllItemsControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig]))
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
 
   "AttachToAllItems Controller" - {
