@@ -19,17 +19,19 @@ package controllers
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.AddAnotherDocumentPage
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewModels.AddAnotherDocumentViewModel
 import viewModels.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 import views.html.AddAnotherDocumentView
@@ -62,7 +64,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val maxedOutViewModel    = viewModel.copy(allowMore = false)
 
   "AddAnotherDocument Controller" - {
-    "redirect to the correct controller when 0 documents added" in {
+    "must redirect to the correct controller when 0 documents added" in {
       when(mockViewModelProvider.apply(any())(any(), any()))
         .thenReturn(emptyViewModel)
 
@@ -125,6 +127,50 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "when max limit not reached" in {
+
+        when(mockViewModelProvider.apply(any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherDocumentPage, true))
+
+        val request = FakeRequest(GET, addAnotherDocumentRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherDocumentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, notMaxedOutViewModel)(request, messages).toString
+      }
+
+      "when max limit reached" in {
+
+        when(mockViewModelProvider.apply(any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherDocumentPage, true))
+
+        val request = FakeRequest(GET, addAnotherDocumentRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherDocumentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, maxedOutViewModel)(request, messages).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to type page at next index" in {
@@ -142,6 +188,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           redirectLocation(result).value mustEqual
             controllers.document.routes.AttachToAllItemsController.onPageLoad(lrn, NormalMode, Index(viewModel.count)).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage).value mustEqual true
         }
       }
 
@@ -160,6 +210,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(lrn)
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage).value mustEqual false
         }
       }
     }
