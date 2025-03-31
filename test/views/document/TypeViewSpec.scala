@@ -27,6 +27,8 @@ import views.html.document.TypeView
 
 class TypeViewSpec extends InputSelectViewBehaviours[Document] {
 
+  override val field: String = "document"
+
   override def form: Form[Document] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Document]): HtmlFormat.Appendable =
