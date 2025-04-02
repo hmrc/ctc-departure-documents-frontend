@@ -23,10 +23,9 @@ import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{AddAnotherDocumentPage, AddDocumentsYesNoPage}
 import pages.document.AttachToAllItemsPage
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
-import pages.sections.DocumentsSection
+import pages.{AddAnotherDocumentPage, AddDocumentsYesNoPage}
 
 class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 

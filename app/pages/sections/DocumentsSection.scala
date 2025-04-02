@@ -16,20 +16,14 @@
 
 package pages.sections
 
-import controllers.routes
-import models.{Mode, UserAnswers}
 import pages.{AddAnotherDocumentPage, AddAnotherPage}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 case object DocumentsSection extends AddAnotherSection {
 
   override def path: JsPath = ParentSection.path \ toString
 
   override def toString: String = "documents"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn))
 
   override val addAnotherPage: AddAnotherPage = AddAnotherDocumentPage
 }
