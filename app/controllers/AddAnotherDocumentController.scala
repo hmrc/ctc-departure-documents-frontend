@@ -78,12 +78,13 @@ class AddAnotherDocumentController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
+              .and {
                 if (value) {
-                  controllers.document.routes.AttachToAllItemsController.onPageLoad(lrn, mode, viewModel.nextIndex)
+                  _.navigateTo(controllers.document.routes.AttachToAllItemsController.onPageLoad(lrn, mode, viewModel.nextIndex))
                 } else {
-                  Call(GET, config.taskListUrl(lrn))
+                  _.navigateTo(Call(GET, config.taskListUrl(lrn)))
                 }
+
               }
         )
   }

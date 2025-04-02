@@ -23,7 +23,7 @@ import models.reference.CustomsOffice
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.AddDocumentsYesNoPage
+import pages.{AddAnotherDocumentPage, AddDocumentsYesNoPage}
 import pages.document.AttachToAllItemsPage
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import pages.sections.DocumentsSection
@@ -48,7 +48,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
         result.value.value.documents.length mustBe numberOfItems
-        result.value.pages.last mustBe DocumentsSection
+        result.value.pages.last mustBe AddAnotherDocumentPage
       }
 
       "when there are no documents" - {
@@ -67,7 +67,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
               result.value.value.documents mustBe Nil
               result.value.pages mustBe Seq(
                 AddDocumentsYesNoPage,
-                DocumentsSection
+                AddAnotherDocumentPage
               )
           }
         }
@@ -87,7 +87,7 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
               result.value.value.documents mustBe Nil
               result.value.pages mustBe Seq(
                 AddDocumentsYesNoPage,
-                DocumentsSection
+                AddAnotherDocumentPage
               )
           }
         }

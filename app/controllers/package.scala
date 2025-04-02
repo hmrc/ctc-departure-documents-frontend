@@ -117,7 +117,8 @@ package object controllers {
   }
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
-    def and(block: Future[Write[A]] => Future[Result]) : Future[Result] =
+
+    def and(block: Future[Write[A]] => Future[Result]): Future[Result] =
       block(write)
 
     def navigateWith(
