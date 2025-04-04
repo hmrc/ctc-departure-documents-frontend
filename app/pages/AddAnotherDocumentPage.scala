@@ -22,7 +22,7 @@ import pages.sections.ParentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherDocumentPage extends QuestionPage[Boolean] {
+case object AddAnotherDocumentPage extends AddAnotherPage {
 
   override def path: JsPath = ParentSection.path \ toString
 
