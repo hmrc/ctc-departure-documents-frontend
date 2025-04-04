@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.document.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputCharacterCountViewModel._
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
+@import forms.Constants.maxAdditionalInformationLength
 
 @this(
     mainTemplate: MainTemplate,
@@ -26,8 +26,9 @@
     inputCharacterCount: InputCharacterCount,
     errorSummary: ErrorSummary,
     button: Button,
-    phaseConfig: PhaseConfig
 )
+
+
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
@@ -48,7 +49,7 @@
                 caption = Some(messages("document.caption"))
             ),
             label = messages("document.additionalInformation.heading"),
-            maxLength = phaseConfig.values.maxAdditionalInformationLength,
+            maxLength = maxAdditionalInformationLength,
             rows = 1
         )
 

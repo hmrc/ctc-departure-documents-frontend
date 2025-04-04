@@ -19,25 +19,23 @@ package services
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
-import models.DocumentType._
+import models.DocumentType.*
 import models.SelectableList
 import models.reference.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.inject.bind
-import play.api.test.Helpers._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-
-  private val transportDocument  = Document(Transport, "N741", "Master airwaybill")
-  private val supportingDocument = Document(Support, "C673", "Catch certificate")
-  private val previousDocument   = Document(Previous, "C605", "Information sheet INF3")
+  private val service                                      = new DocumentsService(mockRefDataConnector)
+  private val transportDocument                            = Document(Transport, "N741", "Master airwaybill")
+  private val supportingDocument                           = Document(Support, "C673", "Catch certificate")
+  private val previousDocument                             = Document(Previous, "C605", "Information sheet INF3")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -57,65 +55,25 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
   "DocumentTypesService" - {
 
     "getDocuments" - {
-      "when post-transition" - {
+      "and adding document at consignment level" - {
+        "must return a list of sorted document types" in {
+          service.getDocuments(attachToAllItems = true).futureValue mustBe
+            SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
 
-        val app = postTransitionApplicationBuilder()
-          .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-          .build()
-
-        "and adding document at consignment level" - {
-          "must return a list of sorted document types" in {
-            running(app) {
-              val service = app.injector.instanceOf[DocumentsService]
-
-              service.getDocuments(attachToAllItems = true).futureValue mustBe
-                SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
-
-              verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
-              verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
-              verify(mockRefDataConnector).getTransportDocuments()(any(), any())
-            }
-          }
-        }
-
-        "and adding document at item level" - {
-          "must return a list of sorted document types with transport documents removed" in {
-            running(app) {
-              val service = app.injector.instanceOf[DocumentsService]
-
-              service.getDocuments(attachToAllItems = false).futureValue mustBe
-                SelectableList(Seq(previousDocument, supportingDocument))
-
-              verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
-              verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
-              verify(mockRefDataConnector, never()).getTransportDocuments()(any(), any())
-            }
-          }
+          verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
+          verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+          verify(mockRefDataConnector).getTransportDocuments()(any(), any())
         }
       }
 
-      "when not post-transition" - {
+      "and adding document at item level" - {
+        "must return a list of sorted document types with transport documents removed" in {
+          service.getDocuments(attachToAllItems = false).futureValue mustBe
+            SelectableList(Seq(previousDocument, supportingDocument))
 
-        val app = transitionApplicationBuilder()
-          .overrides(bind[ReferenceDataConnector].toInstance(mockRefDataConnector))
-          .build()
-
-        "must return a list of sorted document types" in {
-          forAll(arbitrary[Boolean]) {
-            attachToAllItems =>
-              beforeEach()
-
-              running(app) {
-                val service = app.injector.instanceOf[DocumentsService]
-
-                service.getDocuments(attachToAllItems).futureValue mustBe
-                  SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
-
-                verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
-                verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
-                verify(mockRefDataConnector).getTransportDocuments()(any(), any())
-              }
-          }
+          verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
+          verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+          verify(mockRefDataConnector, never()).getTransportDocuments()(any(), any())
         }
       }
     }
