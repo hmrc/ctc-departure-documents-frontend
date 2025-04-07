@@ -133,5 +133,4 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
           }
       }
     }
-  // scalastyle:on method.length
 }
