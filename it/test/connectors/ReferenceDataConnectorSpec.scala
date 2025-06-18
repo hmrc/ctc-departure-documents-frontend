@@ -77,6 +77,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "must return list of previous documents when successful" in {
       server.stubFor(
         get(urlPathMatching(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
           .willReturn(okJson(documentsJson("PreviousDocumentType")))
       )
 
@@ -107,6 +108,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "must return list of documents when successful" in {
       server.stubFor(
         get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
           .willReturn(okJson(documentsJson("TransportDocumentType")))
       )
 
@@ -137,6 +139,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "must return list of documents when successful" in {
       server.stubFor(
         get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
           .willReturn(okJson(documentsJson("SupportingDocumentType")))
       )
 
@@ -197,6 +200,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "must return list of metrics when successful" in {
       server.stubFor(
         get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
           .willReturn(okJson(json))
       )
 
@@ -253,6 +257,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "must return list of package types when successful" in {
       server.stubFor(
         get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
           .willReturn(okJson(json))
       )
 
@@ -287,6 +292,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     server.stubFor(
       get(urlEqualTo(url))
+        .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
         .willReturn(okJson(json))
     )
 
@@ -300,6 +306,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       errorResponse =>
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(
               aResponse()
                 .withStatus(errorResponse)
@@ -320,6 +327,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     server.stubFor(
       get(urlEqualTo(url))
+        .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
         .willReturn(okJson(json))
     )
 
