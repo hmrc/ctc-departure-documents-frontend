@@ -17,11 +17,13 @@
 package models.reference
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -41,16 +43,58 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       }
     }
 
-    "must deserialise" in {
+    "must deserialise json from reference data service" - {
+      "when phase-5" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val packageType = PackageType(code, description)
+                val json = Json.parse(s"""
+                   |{
+                   |  "code": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+                json.as[PackageType](PackageType.reads(config)) mustEqual packageType
+            }
+        }
+
+      }
+      "when phase-6" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val packageType = PackageType(code, description)
+                val json = Json.parse(s"""
+                   |{
+                   |  "key": "$code",
+                   |  "value": "$description"
+                   |}
+                   |""".stripMargin)
+                json.as[PackageType](PackageType.reads(config)) mustEqual packageType
+            }
+        }
+
+      }
+
+    }
+    "when reading from mongo" in {
+      val config = app.injector.instanceOf[FrontendAppConfig]
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val json = Json.parse(s"""
-             |{
-             |  "code": "$code",
-             |  "description": "$description"
-             |}
-             |""".stripMargin)
-          json.as[PackageType] mustBe PackageType(code, description)
+          val packageType = PackageType(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[PackageType](PackageType.reads(config)) mustEqual packageType
       }
     }
 

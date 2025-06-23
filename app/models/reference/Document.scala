@@ -17,9 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.{DocumentType, Selectable}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 case class Document(`type`: DocumentType, code: String, description: String) extends Selectable {
 
@@ -30,13 +31,14 @@ case class Document(`type`: DocumentType, code: String, description: String) ext
 
 object Document {
 
-  def reads(`type`: DocumentType): Reads[Document] = (
-    (__ \ "code").read[String] and
-      (__ \ "description").read[String]
-  ).apply {
-    (code, description) =>
-      Document(`type`, code, description)
-  }
+  def reads(`type`: DocumentType, config: FrontendAppConfig): Reads[Document] =
+    val (codeField, descriptionField) = if (config.phase6Enabled) ("key", "value") else ("code", "description")
+    (
+      (__ \ codeField).read[String] and
+        (__ \ descriptionField).read[String]
+    )(
+      (code, description) => Document(`type`, code, description)
+    )
 
   implicit val format: Format[Document] = Json.format[Document]
 
