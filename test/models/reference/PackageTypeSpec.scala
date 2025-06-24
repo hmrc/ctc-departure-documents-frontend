@@ -83,7 +83,6 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
     }
     "when reading from mongo" in {
-      val config = app.injector.instanceOf[FrontendAppConfig]
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val packageType = PackageType(code, description)
@@ -94,7 +93,7 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[PackageType](PackageType.reads(config)) mustEqual packageType
+            .as[PackageType] mustEqual packageType
       }
     }
 

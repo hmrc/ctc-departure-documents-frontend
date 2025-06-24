@@ -40,8 +40,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
               val json = Json.parse("""
                   |{
                   |  "code" : "code",
-                  |  "description" : "description",
-                  |  "transportDocument" : true
+                  |  "description" : "description"
                   |}
                   |""".stripMargin)
 
@@ -56,8 +55,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
               val json = Json.parse("""
                   |{
                   |  "code" : "code",
-                  |  "description" : "description",
-                  |  "transportDocument" : false
+                  |  "description" : "description"
                   |}
                   |""".stripMargin)
 
@@ -90,8 +88,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
               val json = Json.parse("""
                   | {
                   |  "key" : "code",
-                  |  "value" : "description",
-                  |  "transportDocument" : true
+                  |  "value" : "description"
                   | }
                   |""".stripMargin)
 
@@ -106,8 +103,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
               val json = Json.parse("""
                   | {
                   |  "key" : "code",
-                  |  "value" : "description",
-                  |  "transportDocument" : false
+                  |  "value" : "description"
                   | }
                   |""".stripMargin)
 
@@ -133,48 +129,48 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
         }
       }
       "when reading PreviousDocument from mongo" in {
-        val config = app.injector.instanceOf[FrontendAppConfig]
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val previousDocument = Document(Previous, code, description)
             Json
               .parse(s"""
                    |{
+                   |"type": "Previous",
                    |"code" : "$code",
                    |"description": "$description"
                    |}
                    |""".stripMargin)
-              .as[Document](Document.reads(Previous, config)) mustEqual previousDocument
+              .as[Document] mustEqual previousDocument
         }
       }
       "when reading SupportDocument from mongo" in {
-        val config = app.injector.instanceOf[FrontendAppConfig]
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val previousDocument = Document(Support, code, description)
             Json
               .parse(s"""
                    |{
+                   |"type": "Support",
                    |"code": "$code",
                    |"description": "$description"
                    |}
                    |""".stripMargin)
-              .as[Document](Document.reads(Support, config)) mustEqual previousDocument
+              .as[Document] mustEqual previousDocument
         }
       }
       "when reading TransportDocument from mongo" in {
-        val config = app.injector.instanceOf[FrontendAppConfig]
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val previousDocument = Document(Transport, code, description)
             Json
               .parse(s"""
                    |{
+                   |"type": "Transport",
                    |"code" : "$code",
                    |"description": "$description"
                    |}
                    |""".stripMargin)
-              .as[Document](Document.reads(Transport, config)) mustEqual previousDocument
+              .as[Document] mustEqual previousDocument
         }
       }
     }

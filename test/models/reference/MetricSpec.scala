@@ -98,7 +98,6 @@ class MetricSpec extends SpecBase with ScalaCheckPropertyChecks with Generators 
     }
 
     "when reading from mongo" in {
-      val config = app.injector.instanceOf[FrontendAppConfig]
       forAll(nonEmptyString, nonEmptyString) {
         (code, description) =>
           val metric = Metric(code, description)
@@ -109,7 +108,7 @@ class MetricSpec extends SpecBase with ScalaCheckPropertyChecks with Generators 
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[Metric](Metric.reads(config)) mustEqual metric
+            .as[Metric] mustEqual metric
       }
     }
 
