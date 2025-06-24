@@ -71,7 +71,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   }
 
   def getMetrics()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Metric]] = {
-    val url = url"${config.referenceDataUrl}/lists/Unit"
+    val url                           = url"${config.referenceDataUrl}/lists/Unit"
+    implicit val reads: Reads[Metric] = Metric.reads(config)
     get[Metric](url)
   }
 

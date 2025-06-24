@@ -379,64 +379,121 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
   }
 
   "getMetrics" - {
-    val url = s"/$baseUrl/lists/Unit"
+    "when phase-6 " - {
+      val phase6Json: String =
+        """
+          |[
+          |    {
+          |      "activeFrom": "2023-01-23",
+          |      "state": "valid",
+          |      "key": "CTM",
+          |      "value": "Carats (one metric carat = 2 x 10-4kg)"
+          |    },
+          |    {
+          |      "activeFrom": "2023-01-23",
+          |      "state": "valid",
+          |      "key": "DTN",
+          |      "value": "Hectokilogram"
+          |    }
+          |]
+          |""".stripMargin
 
-    val json: String =
-      """
-        |{
-        |"_links": {
-        |    "self": {
-        |      "href": "/customs-reference-data/lists/Unit"
-        |    }
-        |  },
-        |  "meta": {
-        |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
-        |    "snapshotDate": "2023-01-01"
-        |  },
-        |  "id": "Unit",
-        |  "data": [
-        |    {
-        |      "activeFrom": "2023-01-23",
-        |      "state": "valid",
-        |      "code": "CTM",
-        |      "description": "Carats (one metric carat = 2 x 10-4kg)"
-        |    },
-        |    {
-        |      "activeFrom": "2023-01-23",
-        |      "state": "valid",
-        |      "code": "DTN",
-        |      "description": "Hectokilogram"
-        |    }
-        |]
-        |}
-        |""".stripMargin
+      val url = s"/$baseUrl/lists/Unit"
 
-    "must return list of metrics when successful" in {
-      server.stubFor(
-        get(urlEqualTo(url))
-          .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-          .willReturn(okJson(json))
-      )
+      "must return list of metrics when successful" in {
+        running(phase6App) {
+          app =>
+            val connector = app.injector.instanceOf[ReferenceDataConnector]
+            server.stubFor(
+              get(urlEqualTo(url))
+                .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+                .willReturn(okJson(phase6Json))
+            )
+            val expectResult = NonEmptySet.of(
+              Metric("CTM", "Carats (one metric carat = 2 x 10-4kg)"),
+              Metric("DTN", "Hectokilogram")
+            )
+            connector.getMetrics().futureValue.value mustEqual expectResult
+        }
 
-      val expectResult = NonEmptySet.of(
-        Metric("CTM", "Carats (one metric carat = 2 x 10-4kg)"),
-        Metric("DTN", "Hectokilogram")
-      )
+      }
 
-      connector.getMetrics().futureValue.value mustEqual expectResult
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getMetrics())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getMetrics())
+      }
+
+      "must return an exception when invalid JSON is returned" in {
+        checkJsErrorResponse(url, connector.getMetrics())
+      }
+    }
+    "when phase-5 " - {
+      val json: String =
+        """
+          |{
+          |"_links": {
+          |    "self": {
+          |      "href": "/customs-reference-data/lists/Unit"
+          |    }
+          |  },
+          |  "meta": {
+          |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
+          |    "snapshotDate": "2023-01-01"
+          |  },
+          |  "id": "Unit",
+          |  "data": [
+          |    {
+          |      "activeFrom": "2023-01-23",
+          |      "state": "valid",
+          |      "code": "CTM",
+          |      "description": "Carats (one metric carat = 2 x 10-4kg)"
+          |    },
+          |    {
+          |      "activeFrom": "2023-01-23",
+          |      "state": "valid",
+          |      "code": "DTN",
+          |      "description": "Hectokilogram"
+          |    }
+          |]
+          |}
+          |""".stripMargin
+
+      val url = s"/$baseUrl/lists/Unit"
+
+      "must return list of metrics when successful" in {
+        running(phase5App) {
+          app =>
+            val connector = app.injector.instanceOf[ReferenceDataConnector]
+            server.stubFor(
+              get(urlEqualTo(url))
+                .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+                .willReturn(okJson(json))
+            )
+            val expectResult = NonEmptySet.of(
+              Metric("CTM", "Carats (one metric carat = 2 x 10-4kg)"),
+              Metric("DTN", "Hectokilogram")
+            )
+            connector.getMetrics().futureValue.value mustEqual expectResult
+        }
+
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getMetrics())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getMetrics())
+      }
+
+      "must return an exception when invalid JSON is returned" in {
+        checkJsErrorResponse(url, connector.getMetrics())
+      }
     }
 
-    "must throw a NoReferenceDataFoundException for an empty response" in {
-      checkNoReferenceDataFoundResponse(url, connector.getMetrics())
-    }
-
-    "must return an exception when an error response is returned" in {
-      checkErrorResponse(url, connector.getMetrics())
-    }
-
-    "must return an exception when invalid JSON is returned" in {
-      checkJsErrorResponse(url, connector.getMetrics())
-    }
   }
 
   "getPackageTypes" - {
@@ -604,4 +661,5 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     result.futureValue.left.value mustBe a[JsResultException]
   }
+
 }

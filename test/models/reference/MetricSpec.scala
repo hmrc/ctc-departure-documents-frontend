@@ -17,9 +17,11 @@
 package models.reference
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, Json}
+import play.api.test.Helpers.running
 
 class MetricSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -33,7 +35,7 @@ class MetricSpec extends SpecBase with ScalaCheckPropertyChecks with Generators 
   }
 
   "format" - {
-    "must serialise" in {
+    "must serialise" - {
       forAll(nonEmptyString, nonEmptyString) {
         (code, description) =>
           val metric = Metric(code, description)
@@ -45,25 +47,69 @@ class MetricSpec extends SpecBase with ScalaCheckPropertyChecks with Generators 
                |""".stripMargin)
 
           val result = Json.toJson(metric)
-          result.mustBe(expectedResult)
+          result.mustEqual(expectedResult)
       }
     }
 
     "must deserialise" - {
-      "when json in expected shape" in {
-        forAll(nonEmptyString, nonEmptyString) {
-          (code, description) =>
-            val json = Json.parse(s"""
+      "when phase-6" - {
+        "when json in expected shape" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(nonEmptyString, nonEmptyString) {
+                (code, description) =>
+                  val metric = Metric(code, description)
+                  val json = Json.parse(s"""
+                       |{
+                       |  "key" : "$code",
+                       |  "value" : "$description"
+                       |}
+                       |""".stripMargin)
+
+                  json.as[Metric](Metric.reads(config)) mustEqual metric
+              }
+
+          }
+        }
+      }
+      "when phase-5" - {
+        "when json in expected shape" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config = app.injector.instanceOf[FrontendAppConfig]
+              forAll(nonEmptyString, nonEmptyString) {
+                (code, description) =>
+                  val metric = Metric(code, description)
+                  val json = Json.parse(s"""
+                       |{
+                       |  "code" : "$code",
+                       |  "description" : "$description"
+                       |}
+                       |""".stripMargin)
+
+                  json.as[Metric](Metric.reads(config)) mustEqual metric
+              }
+
+          }
+        }
+      }
+
+    }
+
+    "when reading from mongo" in {
+      val config = app.injector.instanceOf[FrontendAppConfig]
+      forAll(nonEmptyString, nonEmptyString) {
+        (code, description) =>
+          val metric = Metric(code, description)
+          Json
+            .parse(s"""
                  |{
-                 |  "code" : "$code",
-                 |  "description" : "$description"
+                 |  "code": "$code",
+                 |  "description": "$description"
                  |}
                  |""".stripMargin)
-
-            val expectedResult = Metric(code, description)
-            val result         = json.validate[Metric]
-            result.get.mustBe(expectedResult)
-        }
+            .as[Metric](Metric.reads(config)) mustEqual metric
       }
     }
 
