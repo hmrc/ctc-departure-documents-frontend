@@ -35,37 +35,44 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
+  private val versionHeader = config.phase6Enabled match {
+    case true  => "application/vnd.hmrc.2.0+json"
+    case false => "application/vnd.hmrc.1.0+json"
+  }
+
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> "application/vnd.hmrc.1.0+json")
+      .setHeader(HeaderNames.Accept -> versionHeader)
       .execute[Responses[T]]
 
   def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/PreviousDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Previous)
+    implicit val reads: Reads[Document] = Document.reads(Previous, config)
     get[Document](url)
   }
 
   def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/SupportingDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Support)
+    implicit val reads: Reads[Document] = Document.reads(Support, config)
     get[Document](url)
   }
 
   def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/TransportDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Transport)
+    implicit val reads: Reads[Document] = Document.reads(Transport, config)
     get[Document](url)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PackageType]] = {
-    val url = url"${config.referenceDataUrl}/lists/KindOfPackages"
+    val url                                = url"${config.referenceDataUrl}/lists/KindOfPackages"
+    implicit val reads: Reads[PackageType] = PackageType.reads(config)
     get[PackageType](url)
   }
 
   def getMetrics()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Metric]] = {
-    val url = url"${config.referenceDataUrl}/lists/Unit"
+    val url                           = url"${config.referenceDataUrl}/lists/Unit"
+    implicit val reads: Reads[Metric] = Metric.reads(config)
     get[Metric](url)
   }
 
@@ -73,7 +80,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          (response.json \ "data").validate[List[A]] match {
+          val json = if (config.phase6Enabled) response.json else response.json \ "data"
+          json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))
             case JsSuccess(head :: tail, _) =>

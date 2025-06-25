@@ -17,8 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class Metric(code: String, description: String) extends Selectable {
 
@@ -28,6 +30,16 @@ case class Metric(code: String, description: String) extends Selectable {
 }
 
 object Metric {
+
+  def reads(config: FrontendAppConfig): Reads[Metric] =
+    val (codeField, description) = if (config.phase6Enabled) ("key", "value") else ("code", "description")
+    (
+      (__ \ codeField).read[String] and
+        (__ \ description).read[String]
+    )(
+      (code, description) => Metric(code, description)
+    )
+
   implicit val format: OFormat[Metric] = Json.format[Metric]
 
   implicit val order: Order[Metric] = (x: Metric, y: Metric) => (x, y).compareBy(_.description, _.code)
