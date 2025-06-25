@@ -21,7 +21,7 @@ import config.Constants.DeclarationType.*
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
 import models.DocumentType.*
 import models.Index
-import models.reference.{CustomsOffice, Document, Metric, PackageType}
+import models.reference.{CustomsOffice, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -431,8 +431,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
     "can be read from user answers" in {
-      forAll(documentGen, nonEmptyString, arbitrary[PackageType], arbitrary[Metric], arbitrary[BigDecimal]) {
-        (document, referenceInformation, packageType, metric, quantity) =>
+      forAll(documentGen, nonEmptyString, arbitrary[BigDecimal]) {
+        (document, referenceInformation, quantity) =>
           val userAnswers = emptyUserAnswers
             .setValue(DocumentReferenceNumberPage(index), referenceInformation)
             .setValue(AddAdditionalInformationYesNoPage(index), true)
