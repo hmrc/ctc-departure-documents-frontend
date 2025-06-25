@@ -430,6 +430,32 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
   "PreviousDocumentItemLevelDomain userAnswersReader" - {
     val documentGen = arbitrary[Document](arbitraryPreviousDocument)
 
+    "can be read from user answers" in {
+      forAll(documentGen, nonEmptyString, arbitrary[BigDecimal]) {
+        (document, referenceInformation, quantity) =>
+          val userAnswers = emptyUserAnswers
+            .setValue(DocumentReferenceNumberPage(index), referenceInformation)
+            .setValue(AddAdditionalInformationYesNoPage(index), true)
+            .setValue(AdditionalInformationPage(index), referenceInformation)
+
+          val expectedResult = PreviousDocumentItemLevelDomain(
+            document = document,
+            referenceNumber = referenceInformation,
+            additionalInformation = Some(referenceInformation)
+          )(index)
+
+          val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
+
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            DocumentReferenceNumberPage(index),
+            AddAdditionalInformationYesNoPage(index),
+            AdditionalInformationPage(index),
+            DocumentSection(index)
+          )
+      }
+    }
+
     "can not be read from user answers" - {
       "when reference number is unanswered" in {
         forAll(documentGen) {
