@@ -87,14 +87,6 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
-  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- nonEmptyString
-      } yield PackageType(code, desc)
-    }
-
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {
@@ -197,14 +189,6 @@ trait ModelGenerators {
       values <- listWithMaxLength[T]()
     } yield SelectableList(values.distinctBy(_.value))
   }
-
-  implicit lazy val arbitraryMetric: Arbitrary[Metric] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- nonEmptyString
-      } yield Metric(code, desc)
-    }
 
   implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
     Arbitrary {

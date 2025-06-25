@@ -64,18 +64,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     get[Document](url)
   }
 
-  def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PackageType]] = {
-    val url                                = url"${config.referenceDataUrl}/lists/KindOfPackages"
-    implicit val reads: Reads[PackageType] = PackageType.reads(config)
-    get[PackageType](url)
-  }
-
-  def getMetrics()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Metric]] = {
-    val url                           = url"${config.referenceDataUrl}/lists/Unit"
-    implicit val reads: Reads[Metric] = Metric.reads(config)
-    get[Metric](url)
-  }
-
   implicit def responseHandlerGeneric[A](implicit reads: Reads[List[A]], order: Order[A]): HttpReads[Responses[A]] =
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
