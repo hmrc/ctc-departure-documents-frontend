@@ -49,7 +49,7 @@ document.type.error.maxLimitReached = You cannot add any more documents of this 
 
 document.documentReferenceNumber.title = What is the document’s reference number?
 document.documentReferenceNumber.heading = What is the document’s reference number?
-document.documentReferenceNumber.hint = This can be up to {0} characters long and include both letters and numbers.
+document.documentReferenceNumber.hint = This can be up to {0} characters long and include letters, numbers and full stops.
 document.documentReferenceNumber.checkYourAnswersLabel = Reference number
 document.documentReferenceNumber.change.hidden = reference number
 document.documentReferenceNumber.error.required = Enter the document’s reference number
