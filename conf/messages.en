@@ -54,7 +54,7 @@ document.documentReferenceNumber.checkYourAnswersLabel = Reference number
 document.documentReferenceNumber.change.hidden = reference number
 document.documentReferenceNumber.error.required = Enter the document’s reference number
 document.documentReferenceNumber.error.length = The reference number must be {0} characters or less
-document.documentReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z, numbers 0 to 9 and full stops.
+document.documentReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z, numbers 0 to 9 and full stops
 document.documentReferenceNumber.error.unique = The reference number must be unique
 
 document.addLineItemNumberYesNo.title = Do you want to add a line item number?
