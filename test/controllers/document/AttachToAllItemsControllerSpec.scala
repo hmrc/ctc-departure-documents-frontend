@@ -63,7 +63,7 @@ class AttachToAllItemsControllerSpec extends SpecBase with AppWithDefaultMockFix
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(documentIndex)).value mustBe false
+        userAnswersCaptor.getValue.get(InferredAttachToAllItemsPage(documentIndex)).value mustEqual false
       }
 
       "must return OK and the correct view for a GET" in {

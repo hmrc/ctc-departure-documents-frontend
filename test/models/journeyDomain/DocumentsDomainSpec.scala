@@ -46,8 +46,8 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-        result.value.value.documents.length mustBe numberOfItems
-        result.value.pages.last mustBe AddAnotherDocumentPage
+        result.value.value.documents.length mustEqual numberOfItems
+        result.value.pages.last mustEqual AddAnotherDocumentPage
       }
 
       "when there are no documents" - {
@@ -63,8 +63,8 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.value.value.documents mustBe Nil
-              result.value.pages mustBe Seq(
+              result.value.value.documents mustEqual Nil
+              result.value.pages mustEqual Seq(
                 AddDocumentsYesNoPage,
                 AddAnotherDocumentPage
               )
@@ -83,8 +83,8 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.value.value.documents mustBe Nil
-              result.value.pages mustBe Seq(
+              result.value.value.documents mustEqual Nil
+              result.value.pages mustEqual Seq(
                 AddDocumentsYesNoPage,
                 AddAnotherDocumentPage
               )
@@ -108,8 +108,8 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.left.value.page mustBe AddDocumentsYesNoPage
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AddDocumentsYesNoPage
+              result.left.value.pages mustEqual Seq(
                 AddDocumentsYesNoPage
               )
           }
@@ -126,8 +126,8 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.left.value.page mustBe AddDocumentsYesNoPage
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AddDocumentsYesNoPage
+              result.left.value.pages mustEqual Seq(
                 AddDocumentsYesNoPage
               )
           }
@@ -146,8 +146,8 @@ class DocumentsDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               val result = DocumentsDomain.userAnswersReader.run(userAnswers)
 
-              result.left.value.page mustBe AttachToAllItemsPage(Index(0))
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AttachToAllItemsPage(Index(0))
+              result.left.value.pages mustEqual Seq(
                 AttachToAllItemsPage(Index(0))
               )
           }

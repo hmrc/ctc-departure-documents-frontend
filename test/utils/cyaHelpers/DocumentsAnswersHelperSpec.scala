@@ -38,7 +38,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
           val userAnswers = emptyUserAnswers
 
           val helper = new DocumentsAnswersHelper(userAnswers)
-          helper.listItems mustBe Nil
+          helper.listItems mustEqual Nil
         }
       }
 
@@ -62,7 +62,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
                 val helper = new DocumentsAnswersHelper(userAnswers)
 
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Right(
                     ListItem(
                       name = s"$document - $referenceNumber",
@@ -94,7 +94,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"$previousDocument - $referenceNumber",
@@ -124,7 +124,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Left(
                       ListItem(
                         name = "Document 1",
@@ -152,7 +152,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Left(
                       ListItem(
                         name = "Document 1",
@@ -182,7 +182,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Left(
                       ListItem(
                         name = document.toString,
@@ -212,7 +212,7 @@ class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
                   val helper = new DocumentsAnswersHelper(userAnswers)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Left(
                       ListItem(
                         name = previousDocument.toString,

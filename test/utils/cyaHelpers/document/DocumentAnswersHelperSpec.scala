@@ -36,7 +36,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when AttachToAllItems page is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.attachToAllItems
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -47,11 +47,11 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           val helper = new DocumentAnswersHelper(answers, documentIndex)
           val result = helper.attachToAllItems.get
 
-          result.key.value mustBe "Do you want to use this document for all items?"
+          result.key.value mustEqual "Do you want to use this document for all items?"
           result.value.value mustBe "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
           action.content.value mustBe "Change"
           action.href mustBe AttachToAllItemsController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -66,7 +66,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when Type page is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.documentType
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -83,7 +83,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               result.value.value mustBe document.toString
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe TypeController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -99,7 +99,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when previousDocumentType page is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.previousDocumentType
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -116,7 +116,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               result.value.value mustBe document.toString
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe PreviousDocumentTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -132,7 +132,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when documentReferenceNumber page is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.documentReferenceNumber
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -149,7 +149,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               result.value.value mustBe reference
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe DocumentReferenceNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -165,7 +165,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when AddLineItemNumberYesNo page is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.lineItemNumberYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -180,7 +180,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           result.value.value mustBe "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
           action.content.value mustBe "Change"
           action.href mustBe AddLineItemNumberYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -195,7 +195,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when LineItemNumberPage is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.lineItemNumber
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -212,7 +212,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               result.value.value mustBe number.toString
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe LineItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -228,7 +228,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when AddAdditionalInformationYesNoPage page is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.additionalInformationYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -243,7 +243,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           result.value.value mustBe "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
           action.content.value mustBe "Change"
           action.href mustBe AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
@@ -258,7 +258,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
         "when AdditionalInformationPage is undefined" in {
           val helper = new DocumentAnswersHelper(emptyUserAnswers, documentIndex)
           val result = helper.additionalInformation
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -275,7 +275,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               result.value.value mustBe additionalInformation
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe AdditionalInformationController.onPageLoad(answers.lrn, mode, documentIndex).url

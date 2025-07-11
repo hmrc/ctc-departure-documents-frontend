@@ -37,7 +37,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.document.routes.DocumentAnswersController.onPageLoad(lrn, index))
+                .mustEqual(controllers.document.routes.DocumentAnswersController.onPageLoad(lrn, index))
           }
         }
       }
@@ -55,7 +55,7 @@ class DocumentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.document.routes.DocumentAnswersController.onPageLoad(lrn, index))
+                .mustEqual(controllers.document.routes.DocumentAnswersController.onPageLoad(lrn, index))
           }
         }
       }

@@ -57,7 +57,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
     "getDocuments" - {
       "and adding document at consignment level" - {
         "must return a list of sorted document types" in {
-          service.getDocuments(attachToAllItems = true).futureValue mustBe
+          service.getDocuments(attachToAllItems = true).futureValue mustEqual
             SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
 
           verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
@@ -68,7 +68,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
 
       "and adding document at item level" - {
         "must return a list of sorted document types with transport documents removed" in {
-          service.getDocuments(attachToAllItems = false).futureValue mustBe
+          service.getDocuments(attachToAllItems = false).futureValue mustEqual
             SelectableList(Seq(previousDocument, supportingDocument))
 
           verify(mockRefDataConnector).getSupportingDocuments()(any(), any())

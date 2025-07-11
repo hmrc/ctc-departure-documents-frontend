@@ -81,7 +81,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
-        descriptionLists.size mustBe 1
+        descriptionLists.size mustEqual 1
       }
 
       val renderedItems = doc.getElementsByClass("govuk-summary-list__row").asScala
@@ -100,14 +100,14 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
               case Some(removeUrl) =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions-list-item")
                 "must contain 2 actions" in {
-                  actions.size() mustBe 2
+                  actions.size() mustEqual 2
                 }
                 withActionLink(actions, "Change", 0, listItem.changeUrl)
                 withActionLink(actions, "Remove", 1, removeUrl)
               case None =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions")
                 "must contain 1 action" in {
-                  actions.size() mustBe 1
+                  actions.size() mustEqual 1
                 }
                 withActionLink(actions, "Change", 0, listItem.changeUrl)
             }
@@ -122,7 +122,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 assertElementContainsHref(link, url)
 
                 val spans = link.getElementsByTag("span")
-                spans.size() mustBe 2
+                spans.size() mustEqual 2
 
                 spans.first().text() mustBe linkType
                 assert(spans.first().hasAttr("aria-hidden"))
