@@ -37,7 +37,7 @@ class DocumentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.AddAnotherDocumentController.onPageLoad(lrn))
+                .mustEqual(controllers.routes.AddAnotherDocumentController.onPageLoad(lrn))
           }
         }
       }
@@ -55,7 +55,7 @@ class DocumentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.AddAnotherDocumentController.onPageLoad(lrn))
+                .mustEqual(controllers.routes.AddAnotherDocumentController.onPageLoad(lrn))
           }
         }
       }

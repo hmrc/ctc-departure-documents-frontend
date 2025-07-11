@@ -34,7 +34,7 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
         forAll(arbitrary[SubmissionState]) {
           state =>
             val result = JsString(state.asString).validate[SubmissionState]
-            result.get.mustBe(state)
+            result.get.mustEqual(state)
         }
       }
     }
@@ -63,7 +63,7 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
           arbitrary[SubmissionState](arbitraryNonAmendmentSubmissionState)
         ) {
           state =>
-            state.taskStatus mustBe TaskStatus.Completed
+            state.taskStatus mustEqual TaskStatus.Completed
         }
       }
 
@@ -72,7 +72,7 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
           arbitrary[SubmissionState](arbitraryAmendmentSubmissionState)
         ) {
           state =>
-            state.taskStatus mustBe TaskStatus.Amended
+            state.taskStatus mustEqual TaskStatus.Amended
         }
       }
     }

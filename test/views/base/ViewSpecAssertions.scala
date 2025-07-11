@@ -70,7 +70,7 @@ trait ViewSpecAssertions extends ViewSpecGetters {
   }
 
   def assertPageHasNoSignOutLink(doc: Document): Assertion =
-    doc.getElementsByClass("hmrc-sign-out-nav__link").isEmpty mustBe true
+    doc.getElementsByClass("hmrc-sign-out-nav__link").isEmpty mustEqual true
 
   def assertRenderedByClass(doc: Document, className: String): Assertion =
     assert(!doc.getElementsByClass(className).isEmpty, "\n\nElement with class " + className + " was not rendered on the page.\n")

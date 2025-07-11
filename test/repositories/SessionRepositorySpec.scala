@@ -21,7 +21,6 @@ import connectors.CacheConnector
 import models.UserAnswersResponse.Answers
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
 
 import scala.concurrent.Future
 
@@ -44,7 +43,7 @@ class SessionRepositorySpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val result = repository.get(lrn).futureValue
 
-      result.mustBe(Answers(userAnswers))
+      result.mustEqual(Answers(userAnswers))
 
       verify(mockCacheConnector).get(eqTo(lrn))(any())
     }
@@ -58,7 +57,7 @@ class SessionRepositorySpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val result = repository.set(userAnswers).futureValue
 
-      result.mustBe(true)
+      result.mustEqual(true)
 
       verify(mockCacheConnector).post(eqTo(userAnswers))(any())
     }

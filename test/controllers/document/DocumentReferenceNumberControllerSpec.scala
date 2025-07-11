@@ -140,7 +140,7 @@ class DocumentReferenceNumberControllerSpec extends SpecBase with AppWithDefault
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
-        userAnswersCaptor.getValue.get(DocumentUuidPage(documentIndex)).value mustBe uuid
+        userAnswersCaptor.getValue.get(DocumentUuidPage(documentIndex)).value mustEqual uuid
       }
     }
 

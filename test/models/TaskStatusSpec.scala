@@ -29,7 +29,7 @@ class TaskStatusSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       "must return true" in {
         val status = TaskStatus.Completed
         val result = status.isCompleted
-        result.mustBe(true)
+        result.mustEqual(true)
       }
     }
 
@@ -38,7 +38,7 @@ class TaskStatusSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         forAll(arbitrary[TaskStatus].retryUntil(_ != TaskStatus.Completed)) {
           status =>
             val result = status.isCompleted
-            result.mustBe(false)
+            result.mustEqual(false)
         }
       }
     }
@@ -49,7 +49,7 @@ class TaskStatusSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       "must return true" in {
         val status = TaskStatus.Unavailable
         val result = status.isUnavailable
-        result.mustBe(true)
+        result.mustEqual(true)
       }
     }
 
@@ -58,7 +58,7 @@ class TaskStatusSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         forAll(arbitrary[TaskStatus].retryUntil(_ != TaskStatus.Unavailable)) {
           status =>
             val result = status.isUnavailable
-            result.mustBe(false)
+            result.mustEqual(false)
         }
       }
     }
@@ -67,74 +67,74 @@ class TaskStatusSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
   "must serialise to json" - {
     "when completed" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Completed)
-      result mustBe JsString("completed")
+      result mustEqual JsString("completed")
     }
 
     "when in progress" in {
       val result = Json.toJson[TaskStatus](TaskStatus.InProgress)
-      result mustBe JsString("in-progress")
+      result mustEqual JsString("in-progress")
     }
 
     "when not started" in {
       val result = Json.toJson[TaskStatus](TaskStatus.NotStarted)
-      result mustBe JsString("not-started")
+      result mustEqual JsString("not-started")
     }
 
     "when cannot start yet" in {
       val result = Json.toJson[TaskStatus](TaskStatus.CannotStartYet)
-      result mustBe JsString("cannot-start-yet")
+      result mustEqual JsString("cannot-start-yet")
     }
 
     "when unavailable" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Unavailable)
-      result mustBe JsString("unavailable")
+      result mustEqual JsString("unavailable")
     }
 
     "when error" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Error)
-      result mustBe JsString("error")
+      result mustEqual JsString("error")
     }
 
     "when amended" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Amended)
-      result mustBe JsString("amended")
+      result mustEqual JsString("amended")
     }
   }
 
   "must deserialise from json" - {
     "when completed" in {
       val result = JsString("completed").as[TaskStatus]
-      result mustBe TaskStatus.Completed
+      result mustEqual TaskStatus.Completed
     }
 
     "when in progress" in {
       val result = JsString("in-progress").as[TaskStatus]
-      result mustBe TaskStatus.InProgress
+      result mustEqual TaskStatus.InProgress
     }
 
     "when not started" in {
       val result = JsString("not-started").as[TaskStatus]
-      result mustBe TaskStatus.NotStarted
+      result mustEqual TaskStatus.NotStarted
     }
 
     "when cannot start yet" in {
       val result = JsString("cannot-start-yet").as[TaskStatus]
-      result mustBe TaskStatus.CannotStartYet
+      result mustEqual TaskStatus.CannotStartYet
     }
 
     "when unavailable" in {
       val result = JsString("unavailable").as[TaskStatus]
-      result mustBe TaskStatus.Unavailable
+      result mustEqual TaskStatus.Unavailable
     }
 
     "when error" in {
       val result = JsString("error").as[TaskStatus]
-      result mustBe TaskStatus.Error
+      result mustEqual TaskStatus.Error
     }
 
     "when amended" in {
       val result = JsString("amended").as[TaskStatus]
-      result mustBe TaskStatus.Amended
+      result mustEqual TaskStatus.Amended
     }
 
     "when something else" in {

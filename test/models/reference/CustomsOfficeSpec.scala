@@ -32,7 +32,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
           (id, name, phoneNumber, countryId) =>
             val customsOffice = CustomsOffice(id, name, Some(phoneNumber), countryId)
-            Json.toJson(customsOffice) mustBe Json.parse(s"""
+            Json.toJson(customsOffice) mustEqual Json.parse(s"""
                 |{
                 |  "id": "$id",
                 |  "name": "$name",
@@ -47,7 +47,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
           (id, name, countryId) =>
             val customsOffice = CustomsOffice(id, name, None, countryId)
-            Json.toJson(customsOffice) mustBe Json.parse(s"""
+            Json.toJson(customsOffice) mustEqual Json.parse(s"""
                 |{
                 |  "id": "$id",
                 |  "name": "$name",
@@ -72,7 +72,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
                 |  "countryId": "$countryId"
                 |}
                 |""".stripMargin)
-              .as[CustomsOffice] mustBe customsOffice
+              .as[CustomsOffice] mustEqual customsOffice
         }
       }
 
@@ -88,7 +88,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
                 |  "countryId": "$countryId"
                 |}
                 |""".stripMargin)
-              .as[CustomsOffice] mustBe customsOffice
+              .as[CustomsOffice] mustEqual customsOffice
         }
       }
     }
@@ -97,7 +97,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
         (id, name, countryId, selected) =>
           val customsOffice = CustomsOffice(id, name, None, countryId)
-          customsOffice.toSelectItem(selected) mustBe SelectItem(Some(id), s"$name ($id)", selected)
+          customsOffice.toSelectItem(selected) mustEqual SelectItem(Some(id), s"$name ($id)", selected)
       }
     }
 
@@ -105,7 +105,7 @@ class CustomsOfficeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, Gen.alphaNumStr) {
         (id, name, countryId) =>
           val customsOffice = CustomsOffice(id, name, None, countryId)
-          customsOffice.toString mustBe s"$name ($id)"
+          customsOffice.toString mustEqual s"$name ($id)"
       }
     }
   }

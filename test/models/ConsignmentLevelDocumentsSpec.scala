@@ -42,9 +42,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(typePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.previous mustBe 0
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.previous mustEqual 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
 
@@ -57,9 +57,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                   .setValue(typePage(index), document)
 
                 val result = ConsignmentLevelDocuments.apply(userAnswers)
-                result.previous mustBe 1
-                result.supporting mustBe 0
-                result.transport mustBe 0
+                result.previous mustEqual 1
+                result.supporting mustEqual 0
+                result.transport mustEqual 0
             }
           }
 
@@ -71,9 +71,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                   .setValue(typePage(index), document)
 
                 val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
-                result.previous mustBe 0
-                result.supporting mustBe 0
-                result.transport mustBe 0
+                result.previous mustEqual 0
+                result.supporting mustEqual 0
+                result.transport mustEqual 0
             }
           }
         }
@@ -89,9 +89,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(TypePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.previous mustBe 0
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.previous mustEqual 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
 
@@ -104,9 +104,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                   .setValue(TypePage(index), document)
 
                 val result = ConsignmentLevelDocuments.apply(userAnswers)
-                result.previous mustBe 0
-                result.supporting mustBe 1
-                result.transport mustBe 0
+                result.previous mustEqual 0
+                result.supporting mustEqual 1
+                result.transport mustEqual 0
             }
           }
 
@@ -118,9 +118,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                   .setValue(TypePage(index), document)
 
                 val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
-                result.previous mustBe 0
-                result.supporting mustBe 0
-                result.transport mustBe 0
+                result.previous mustEqual 0
+                result.supporting mustEqual 0
+                result.transport mustEqual 0
             }
           }
         }
@@ -136,9 +136,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(TypePage(index), document)
 
               val result = ConsignmentLevelDocuments.apply(userAnswers)
-              result.previous mustBe 0
-              result.supporting mustBe 0
-              result.transport mustBe 0
+              result.previous mustEqual 0
+              result.supporting mustEqual 0
+              result.transport mustEqual 0
           }
         }
 
@@ -151,9 +151,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                   .setValue(TypePage(index), document)
 
                 val result = ConsignmentLevelDocuments.apply(userAnswers)
-                result.previous mustBe 0
-                result.supporting mustBe 0
-                result.transport mustBe 1
+                result.previous mustEqual 0
+                result.supporting mustEqual 0
+                result.transport mustEqual 1
             }
           }
 
@@ -165,9 +165,9 @@ class ConsignmentLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChec
                   .setValue(TypePage(index), document)
 
                 val result = ConsignmentLevelDocuments.apply(userAnswers, Some(index))
-                result.previous mustBe 0
-                result.supporting mustBe 0
-                result.transport mustBe 0
+                result.previous mustEqual 0
+                result.supporting mustEqual 0
+                result.transport mustEqual 0
             }
           }
         }
