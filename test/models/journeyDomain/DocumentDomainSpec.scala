@@ -44,8 +44,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe AttachToAllItemsPage(index)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AttachToAllItemsPage(index)
+          result.left.value.pages mustEqual Seq(
             AttachToAllItemsPage(index)
           )
         }
@@ -58,8 +58,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val result = DocumentDomain.userAnswersReader(nextIndex).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe TypePage(nextIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual TypePage(nextIndex)
+          result.left.value.pages mustEqual Seq(
             TypePage(nextIndex)
           )
         }
@@ -75,8 +75,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
               val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe DocumentReferenceNumberPage(index)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual DocumentReferenceNumberPage(index)
+              result.left.value.pages mustEqual Seq(
                 PreviousDocumentTypePage(index),
                 DocumentReferenceNumberPage(index)
               )
@@ -97,8 +97,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
                 val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe PreviousDocumentTypePage(index)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual PreviousDocumentTypePage(index)
+                result.left.value.pages mustEqual Seq(
                   AttachToAllItemsPage(index),
                   PreviousDocumentTypePage(index)
                 )
@@ -117,8 +117,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
                 val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe TypePage(index)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual TypePage(index)
+                result.left.value.pages mustEqual Seq(
                   AttachToAllItemsPage(index),
                   TypePage(index)
                 )
@@ -137,8 +137,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
                 val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe TypePage(index)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual TypePage(index)
+                result.left.value.pages mustEqual Seq(
                   AttachToAllItemsPage(index),
                   TypePage(index)
                 )
@@ -161,8 +161,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
                 val result = DocumentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe TypePage(index)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual TypePage(index)
+                result.left.value.pages mustEqual Seq(
                   AttachToAllItemsPage(index),
                   TypePage(index)
                 )
@@ -223,8 +223,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index),
               LineItemNumberPage(index),
@@ -254,8 +254,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index),
               AddAdditionalInformationYesNoPage(index),
@@ -283,8 +283,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index),
               AddAdditionalInformationYesNoPage(index),
@@ -302,8 +302,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe DocumentReferenceNumberPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual DocumentReferenceNumberPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index)
             )
         }
@@ -317,8 +317,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddLineItemNumberYesNoPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AddLineItemNumberYesNoPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index)
             )
@@ -334,8 +334,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe LineItemNumberPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual LineItemNumberPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index),
               LineItemNumberPage(index)
@@ -352,8 +352,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddAdditionalInformationYesNoPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AddAdditionalInformationYesNoPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index),
               AddAdditionalInformationYesNoPage(index)
@@ -371,8 +371,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = SupportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AdditionalInformationPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AdditionalInformationPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddLineItemNumberYesNoPage(index),
               AddAdditionalInformationYesNoPage(index),
@@ -401,8 +401,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = TransportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               DocumentSection(index)
             )
@@ -418,8 +418,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = TransportDocumentDomain.userAnswersReader(index, attachToAllItems, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe DocumentReferenceNumberPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual DocumentReferenceNumberPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index)
             )
         }
@@ -446,8 +446,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             DocumentReferenceNumberPage(index),
             AddAdditionalInformationYesNoPage(index),
             AdditionalInformationPage(index),
@@ -464,8 +464,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe DocumentReferenceNumberPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual DocumentReferenceNumberPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index)
             )
         }
@@ -479,8 +479,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddAdditionalInformationYesNoPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AddAdditionalInformationYesNoPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddAdditionalInformationYesNoPage(index)
             )
@@ -496,8 +496,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = PreviousDocumentItemLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AdditionalInformationPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AdditionalInformationPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddAdditionalInformationYesNoPage(index),
               AdditionalInformationPage(index)
@@ -526,8 +526,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val result = PreviousDocumentConsignmentLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             DocumentReferenceNumberPage(index),
             AddAdditionalInformationYesNoPage(index),
             AdditionalInformationPage(index),
@@ -544,8 +544,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = PreviousDocumentConsignmentLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe DocumentReferenceNumberPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual DocumentReferenceNumberPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index)
             )
         }
@@ -559,8 +559,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = PreviousDocumentConsignmentLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddAdditionalInformationYesNoPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AddAdditionalInformationYesNoPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddAdditionalInformationYesNoPage(index)
             )
@@ -576,8 +576,8 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
             val result = PreviousDocumentConsignmentLevelDomain.userAnswersReader(index, document).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AdditionalInformationPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AdditionalInformationPage(index)
+            result.left.value.pages mustEqual Seq(
               DocumentReferenceNumberPage(index),
               AddAdditionalInformationYesNoPage(index),
               AdditionalInformationPage(index)

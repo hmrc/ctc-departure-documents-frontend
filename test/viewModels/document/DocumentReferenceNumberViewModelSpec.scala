@@ -31,7 +31,7 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
     "must return empty list" - {
       "when user answers unpopulated" in {
         val viewModel = DocumentReferenceNumberViewModel.apply(emptyUserAnswers, index)
-        viewModel.otherReferenceNumbers mustBe Nil
+        viewModel.otherReferenceNumbers mustEqual Nil
       }
     }
 
@@ -47,7 +47,7 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
                   .setValue(TypePage(Index(1)), document)
 
                 val viewModel = DocumentReferenceNumberViewModel.apply(userAnswers, Index(1))
-                viewModel.otherReferenceNumbers mustBe Seq(referenceNumber)
+                viewModel.otherReferenceNumbers mustEqual Seq(referenceNumber)
             }
           }
 
@@ -60,7 +60,7 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
                   .setValue(PreviousDocumentTypePage(Index(1)), document)
 
                 val viewModel = DocumentReferenceNumberViewModel.apply(userAnswers, Index(1))
-                viewModel.otherReferenceNumbers mustBe Seq(referenceNumber)
+                viewModel.otherReferenceNumbers mustEqual Seq(referenceNumber)
             }
           }
         }
@@ -75,7 +75,7 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
                 .setValue(DocumentReferenceNumberPage(Index(1)), referenceNumber2)
 
               val viewModel = DocumentReferenceNumberViewModel.apply(userAnswers, Index(1))
-              viewModel.otherReferenceNumbers mustBe Seq(referenceNumber1)
+              viewModel.otherReferenceNumbers mustEqual Seq(referenceNumber1)
           }
         }
       }
@@ -91,7 +91,7 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
                   .setValue(TypePage(Index(1)), document2)
 
                 val viewModel = DocumentReferenceNumberViewModel.apply(userAnswers, Index(1))
-                viewModel.otherReferenceNumbers mustBe Nil
+                viewModel.otherReferenceNumbers mustEqual Nil
             }
         }
       }
@@ -105,7 +105,7 @@ class DocumentReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPrope
               .setValue(TypePage(Index(1)), document)
 
             val viewModel = DocumentReferenceNumberViewModel.apply(userAnswers, Index(1))
-            viewModel.otherReferenceNumbers mustBe Seq(referenceNumber)
+            viewModel.otherReferenceNumbers mustEqual Seq(referenceNumber)
         }
       }
     }

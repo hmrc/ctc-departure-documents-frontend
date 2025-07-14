@@ -31,7 +31,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
       val userAnswers = arbitraryDocumentAnswers(emptyUserAnswers, index).sample.value
 
       val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
-      result.count mustBe 1
+      result.count mustEqual 1
       result.title mustBe "You have added 1 document"
       result.heading mustBe "You have added 1 document"
       result.legend mustBe "Do you want to add another document?"
@@ -49,7 +49,7 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
           }
 
           val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
-          result.count mustBe numberOfDocuments
+          result.count mustEqual numberOfDocuments
           result.title mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.heading mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
           result.legend mustBe "Do you want to add another document?"
