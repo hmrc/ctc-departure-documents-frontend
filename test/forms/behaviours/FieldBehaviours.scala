@@ -55,7 +55,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
 
       val result = form.bind(emptyForm).apply(fieldName)
       result.errors must be(empty)
-      result.value mustEqual None
+      result.value must not be defined
     }
 
     "must not bind blank values" in {
