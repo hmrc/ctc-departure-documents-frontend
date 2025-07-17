@@ -48,15 +48,15 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           val result = helper.attachToAllItems.get
 
           result.key.value mustEqual "Do you want to use this document for all items?"
-          result.value.value mustBe "Yes"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
           actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AttachToAllItemsController.onPageLoad(answers.lrn, mode, documentIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to use this document for all items"
-          action.id mustBe "change-attach-to-all-items"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AttachToAllItemsController.onPageLoad(answers.lrn, mode, documentIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to use this document for all items"
+          action.id mustEqual "change-attach-to-all-items"
         }
       }
     }
@@ -79,16 +79,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.documentType.get
 
-              result.key.value mustBe "Document type"
-              result.value.value mustBe document.toString
+              result.key.value mustEqual "Document type"
+              result.value.value mustEqual document.toString
 
               val actions = result.actions.get.items
               actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe TypeController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "document type"
-              action.id mustBe "change-type"
+              action.content.value mustEqual "Change"
+              action.href mustEqual TypeController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustEqual "document type"
+              action.id mustEqual "change-type"
           }
         }
       }
@@ -112,16 +112,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.previousDocumentType.get
 
-              result.key.value mustBe "Document type"
-              result.value.value mustBe document.toString
+              result.key.value mustEqual "Document type"
+              result.value.value mustEqual document.toString
 
               val actions = result.actions.get.items
               actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe PreviousDocumentTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "document type"
-              action.id mustBe "change-previous-document-type"
+              action.content.value mustEqual "Change"
+              action.href mustEqual PreviousDocumentTypeController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustEqual "document type"
+              action.id mustEqual "change-previous-document-type"
           }
         }
       }
@@ -145,16 +145,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.documentReferenceNumber.get
 
-              result.key.value mustBe "Reference number"
-              result.value.value mustBe reference
+              result.key.value mustEqual "Reference number"
+              result.value.value mustEqual reference
 
               val actions = result.actions.get.items
               actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe DocumentReferenceNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "reference number"
-              action.id mustBe "change-reference-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual DocumentReferenceNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustEqual "reference number"
+              action.id mustEqual "change-reference-number"
           }
         }
       }
@@ -176,16 +176,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           val helper = new DocumentAnswersHelper(answers, documentIndex)
           val result = helper.lineItemNumberYesNo.get
 
-          result.key.value mustBe "Do you want to add a line item number to the document?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a line item number to the document?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
           actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddLineItemNumberYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add a line item number to the document"
-          action.id mustBe "change-add-line-item-number"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddLineItemNumberYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add a line item number to the document"
+          action.id mustEqual "change-add-line-item-number"
         }
       }
     }
@@ -208,16 +208,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.lineItemNumber.get
 
-              result.key.value mustBe "Line item number"
-              result.value.value mustBe number.toString
+              result.key.value mustEqual "Line item number"
+              result.value.value mustEqual number.toString
 
               val actions = result.actions.get.items
               actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe LineItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "line item number"
-              action.id mustBe "change-line-item-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual LineItemNumberController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustEqual "line item number"
+              action.id mustEqual "change-line-item-number"
           }
         }
       }
@@ -239,16 +239,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           val helper = new DocumentAnswersHelper(answers, documentIndex)
           val result = helper.additionalInformationYesNo.get
 
-          result.key.value mustBe "Do you want to add any additional information for this document?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add any additional information for this document?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
           actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add any additional information for this document"
-          action.id mustBe "change-add-additional-information"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, documentIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add any additional information for this document"
+          action.id mustEqual "change-add-additional-information"
         }
       }
     }
@@ -271,16 +271,16 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val helper = new DocumentAnswersHelper(answers, documentIndex)
               val result = helper.additionalInformation.get
 
-              result.key.value mustBe "Additional information"
-              result.value.value mustBe additionalInformation
+              result.key.value mustEqual "Additional information"
+              result.value.value mustEqual additionalInformation
 
               val actions = result.actions.get.items
               actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AdditionalInformationController.onPageLoad(answers.lrn, mode, documentIndex).url
-              action.visuallyHiddenText.get mustBe "additional information"
-              action.id mustBe "change-additional-information"
+              action.content.value mustEqual "Change"
+              action.href mustEqual AdditionalInformationController.onPageLoad(answers.lrn, mode, documentIndex).url
+              action.visuallyHiddenText.get mustEqual "additional information"
+              action.id mustEqual "change-additional-information"
           }
         }
       }

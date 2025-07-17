@@ -32,10 +32,10 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
       val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
       result.count mustEqual 1
-      result.title mustBe "You have added 1 document"
-      result.heading mustBe "You have added 1 document"
-      result.legend mustBe "Do you want to add another document?"
-      result.maxLimitLabel mustBe "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
+      result.title mustEqual "You have added 1 document"
+      result.heading mustEqual "You have added 1 document"
+      result.legend mustEqual "Do you want to add another document?"
+      result.maxLimitLabel mustEqual "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
     }
 
     "when there are multiple documents" in {
@@ -50,10 +50,10 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
           val result = new AddAnotherDocumentViewModelProvider()(userAnswers)
           result.count mustEqual numberOfDocuments
-          result.title mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
-          result.heading mustBe s"You have added ${formatter.format(numberOfDocuments)} documents"
-          result.legend mustBe "Do you want to add another document?"
-          result.maxLimitLabel mustBe "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
+          result.title mustEqual s"You have added ${formatter.format(numberOfDocuments)} documents"
+          result.heading mustEqual s"You have added ${formatter.format(numberOfDocuments)} documents"
+          result.legend mustEqual "Do you want to add another document?"
+          result.maxLimitLabel mustEqual "You cannot attach any more documents to all items. You can still add documents and attach them to individual items."
       }
     }
   }

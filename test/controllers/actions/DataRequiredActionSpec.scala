@@ -47,7 +47,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
         val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, NoAnswers)).map(_.left.value)
 
         status(result) mustEqual 303
-        redirectLocation(result).value mustBe frontendAppConfig.sessionExpiredUrl(lrn)
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
     }
 
@@ -62,7 +62,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
           val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Answers(userAnswers))).map(_.left.value)
 
           status(result) mustEqual 303
-          redirectLocation(result).value mustBe frontendAppConfig.sessionExpiredUrl(lrn)
+          redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
         }
       }
 

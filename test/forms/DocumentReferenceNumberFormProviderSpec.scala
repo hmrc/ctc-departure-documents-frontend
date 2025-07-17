@@ -66,7 +66,7 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     "must accept a value with a full stop in it" in {
       val dataItem = "foo."
       val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-      result.value.value mustBe dataItem
+      result.value.value mustEqual dataItem
     }
 
     "must return error when duplicate reference number submitted" in {

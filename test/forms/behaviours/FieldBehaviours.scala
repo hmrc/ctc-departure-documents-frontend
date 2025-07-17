@@ -30,7 +30,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       forAll(validDataGenerator -> "validDataItem") {
         (dataItem: String) =>
           val result = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
-          result.value.value mustBe dataItem
+          result.value.value mustEqual dataItem
       }
     }
 
@@ -62,7 +62,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
 
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.errors must be(empty)
-      result.value.value mustBe ""
+      result.value.value mustEqual ""
     }
   }
 }
