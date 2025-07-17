@@ -137,7 +137,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedUrl
       }
     }
 
@@ -161,7 +161,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedUrl
       }
     }
 
@@ -185,7 +185,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedUrl
       }
     }
 
@@ -209,7 +209,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedUrl
       }
     }
 
@@ -233,7 +233,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedUrl
       }
     }
 
@@ -259,7 +259,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedUrl
       }
     }
 
@@ -278,7 +278,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedWithGroupAccessUrl
       }
     }
 
@@ -297,7 +297,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe frontendAppConfig.unauthorisedWithGroupAccessUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.unauthorisedWithGroupAccessUrl
       }
     }
 
@@ -315,7 +315,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val result     = controller.onPageLoad()(fakeRequest)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.eccEnrolmentSplashPage
+        redirectLocation(result).value mustEqual frontendAppConfig.eccEnrolmentSplashPage
       }
     }
 
@@ -334,7 +334,7 @@ class IdentifierActionSpec extends SpecBase with AppWithDefaultMockFixtures {
         val result     = controller.onPageLoad()(fakeRequest)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe frontendAppConfig.eccEnrolmentSplashPage
+        redirectLocation(result).value mustEqual frontendAppConfig.eccEnrolmentSplashPage
       }
     }
 

@@ -39,7 +39,7 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
           val placeholder = getElementsByTag(doc, "option").first()
           val messageKey  = s"$prefix.placeholder"
           assert(messages.isDefinedAt(messageKey))
-          placeholder.text() mustBe messages(messageKey)
+          placeholder.text() mustEqual messages(messageKey)
         }
 
         val options = getElementsByTag(doc, "option")
@@ -58,7 +58,7 @@ trait InputSelectViewBehaviours[T <: Selectable] extends QuestionViewBehaviours[
               s"when $value selected" in {
                 val filledForm = form.fill(value)
                 val doc        = parseView(applyView(filledForm))
-                doc.getElementsByAttribute("selected").attr("value") mustBe value.toSelectItem().value.get
+                doc.getElementsByAttribute("selected").attr("value") mustEqual value.toSelectItem().value.get
               }
           }
         }

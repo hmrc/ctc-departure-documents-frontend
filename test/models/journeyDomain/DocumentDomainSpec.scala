@@ -180,19 +180,19 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       "must format document as string" - {
         "when document type and ref. number defined" in {
           val result = DocumentDomain.asString(index, Some(document), Some(referenceNumber))
-          result mustBe "Previous - (N270) Delivery note - 123"
+          result mustEqual "Previous - (N270) Delivery note - 123"
         }
 
         "when only document type defined" in {
           val result = DocumentDomain.asString(index, Some(document), None)
-          result mustBe "Previous - (N270) Delivery note"
+          result mustEqual "Previous - (N270) Delivery note"
         }
 
         "when neither document type nor ref. number defined" in {
           forAll(arbitrary[Index]) {
             index =>
               val result = DocumentDomain.asString(index, None, None)
-              result mustBe s"${index.display}"
+              result mustEqual s"${index.display}"
           }
         }
       }

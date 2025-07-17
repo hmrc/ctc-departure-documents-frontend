@@ -93,7 +93,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
           s"item ${index + 1}" - {
             "must contain a name" in {
               val name = renderedItem.getElementsByClass("govuk-summary-list__key").text()
-              name mustBe listItem.name
+              name mustEqual listItem.name
             }
 
             listItem.removeUrl match {
@@ -124,10 +124,10 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
                 val spans = link.getElementsByTag("span")
                 spans.size() mustEqual 2
 
-                spans.first().text() mustBe linkType
+                spans.first().text() mustEqual linkType
                 assert(spans.first().hasAttr("aria-hidden"))
 
-                spans.last().text() mustBe s"$linkType ${listItem.name}"
+                spans.last().text() mustEqual s"$linkType ${listItem.name}"
                 assert(spans.last().hasClass("govuk-visually-hidden"))
               }
           }

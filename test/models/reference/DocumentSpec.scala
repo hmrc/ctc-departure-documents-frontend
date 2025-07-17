@@ -266,7 +266,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     forAll(arbitrary[DocumentType], Gen.alphaNumStr, nonEmptyString) {
       (`type`, code, description) =>
         val document = Document(`type`, code, description)
-        document.toString mustBe s"${`type`.display} - ($code) $description"
+        document.toString mustEqual s"${`type`.display} - ($code) $description"
     }
   }
 }
