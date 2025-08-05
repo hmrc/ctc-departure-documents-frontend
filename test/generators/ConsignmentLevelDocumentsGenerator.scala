@@ -16,7 +16,7 @@
 
 package generators
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.reference.{CustomsOffice, Document}
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,7 +24,7 @@ import pages.document.{AttachToAllItemsPage, PreviousDocumentTypePage, TypePage}
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 
 trait ConsignmentLevelDocumentsGenerator {
-  self: SpecBase & Generators =>
+  self: SpecBase & AppWithDefaultMockFixtures & Generators =>
 
   private val numberOfPreviousAndSupportingDocuments: Int = frontendAppConfig.maxPreviousDocuments + frontendAppConfig.maxSupportingDocuments
 

@@ -21,111 +21,92 @@ import config.FrontendAppConfig
 import generators.Generators
 import models.DocumentType
 import models.DocumentType.*
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   "referenceDataReads" - {
     "must deserialise json from reference data service" - {
       "when phase-5 " - {
         "when transport" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              val json = Json.parse("""
-                  |{
-                  |  "code" : "code",
-                  |  "description" : "description"
-                  |}
-                  |""".stripMargin)
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+          val json = Json.parse("""
+              |{
+              |  "code" : "code",
+              |  "description" : "description"
+              |}
+              |""".stripMargin)
 
-              json.as[Document](Document.reads(Transport, config)) mustEqual Document(Transport, "code", "description")
-          }
+          json.as[Document](Document.reads(Transport, mockFrontendAppConfig)) mustEqual Document(Transport, "code", "description")
         }
 
         "when support" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              val json = Json.parse("""
-                  |{
-                  |  "code" : "code",
-                  |  "description" : "description"
-                  |}
-                  |""".stripMargin)
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+          val json = Json.parse("""
+              |{
+              |  "code" : "code",
+              |  "description" : "description"
+              |}
+              |""".stripMargin)
 
-              json.as[Document](Document.reads(Support, config)) mustEqual Document(Support, "code", "description")
-          }
-
+          json.as[Document](Document.reads(Support, mockFrontendAppConfig)) mustEqual Document(Support, "code", "description")
         }
 
         "when previous" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              val json = Json.parse("""
-                  |{
-                  |  "code" : "code",
-                  |  "description" : "description"
-                  |}
-                  |""".stripMargin)
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+          val json = Json.parse("""
+              |{
+              |  "code" : "code",
+              |  "description" : "description"
+              |}
+              |""".stripMargin)
 
-              json.as[Document](Document.reads(Previous, config)) mustEqual Document(Previous, "code", "description")
-          }
+          json.as[Document](Document.reads(Previous, mockFrontendAppConfig)) mustEqual Document(Previous, "code", "description")
 
         }
       }
       "when phase-6 " - {
         "when transport" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              val json = Json.parse("""
-                  | {
-                  |  "key" : "code",
-                  |  "value" : "description"
-                  | }
-                  |""".stripMargin)
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+          val json = Json.parse("""
+              | {
+              |  "key" : "code",
+              |  "value" : "description"
+              | }
+              |""".stripMargin)
 
-              json.as[Document](Document.reads(Transport, config)) mustEqual Document(Transport, "code", "description")
-          }
+          json.as[Document](Document.reads(Transport, mockFrontendAppConfig)) mustEqual Document(Transport, "code", "description")
         }
 
         "when support" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              val json = Json.parse("""
-                  | {
-                  |  "key" : "code",
-                  |  "value" : "description"
-                  | }
-                  |""".stripMargin)
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+          val json = Json.parse("""
+              | {
+              |  "key" : "code",
+              |  "value" : "description"
+              | }
+              |""".stripMargin)
 
-              json.as[Document](Document.reads(Support, config)) mustEqual Document(Support, "code", "description")
-          }
-
+          json.as[Document](Document.reads(Support, mockFrontendAppConfig)) mustEqual Document(Support, "code", "description")
         }
 
         "when previous" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config = app.injector.instanceOf[FrontendAppConfig]
-              val json = Json.parse("""
-                  | {
-                  |  "key" : "code",
-                  |  "value" : "description"
-                  | }
-                  |""".stripMargin)
+          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+          val json = Json.parse("""
+              | {
+              |  "key" : "code",
+              |  "value" : "description"
+              | }
+              |""".stripMargin)
 
-              json.as[Document](Document.reads(Previous, config)) mustEqual Document(Previous, "code", "description")
-          }
-
+          json.as[Document](Document.reads(Previous, mockFrontendAppConfig)) mustEqual Document(Previous, "code", "description")
         }
       }
       "when reading PreviousDocument from mongo" in {

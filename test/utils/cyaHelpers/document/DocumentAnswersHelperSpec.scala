@@ -16,16 +16,16 @@
 
 package utils.cyaHelpers.document
 
-import base.SpecBase
-import controllers.document.routes._
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.document.routes.*
 import generators.Generators
 import models.reference.Document
 import models.{CheckMode, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.document._
+import pages.document.*
 
-class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val mode: Mode = CheckMode
 
