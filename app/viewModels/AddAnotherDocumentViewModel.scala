@@ -34,7 +34,7 @@ case class AddAnotherDocumentViewModel(
 
 object AddAnotherDocumentViewModel {
 
-  class AddAnotherDocumentViewModelProvider @Inject() () {
+  class AddAnotherDocumentViewModelProvider @Inject() {
 
     def apply(userAnswers: UserAnswers)(implicit messages: Messages, config: FrontendAppConfig): AddAnotherDocumentViewModel = {
       val helper = new DocumentsAnswersHelper(userAnswers)

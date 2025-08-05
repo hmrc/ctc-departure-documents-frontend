@@ -16,18 +16,18 @@
 
 package utils.cyaHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.document.routes
 import generators.Generators
 import models.reference.{CustomsOffice, Document}
 import models.{Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.document._
+import pages.document.*
 import pages.external.{TransitOperationDeclarationTypePage, TransitOperationOfficeOfDeparturePage}
 import viewModels.ListItem
 
-class DocumentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "DocumentsAnswersHelper" - {
 

@@ -17,18 +17,21 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class DocumentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
+
   "Documents Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new DocumentsNavigatorProviderImpl()
+      val navigatorProvider = new DocumentsNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
@@ -46,7 +49,7 @@ class DocumentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new DocumentsNavigatorProviderImpl()
+      val navigatorProvider = new DocumentsNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
