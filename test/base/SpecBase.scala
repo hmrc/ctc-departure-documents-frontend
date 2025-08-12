@@ -17,6 +17,7 @@
 package base
 
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
+import org.apache.pekko.stream.testkit.NoMaterializer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -24,6 +25,9 @@ import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QuestionPage
 import play.api.libs.json.{Format, JsResultException, Json, Reads}
+import play.api.mvc.{AnyContent, BodyParsers}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.stubPlayBodyParsers
 import queries.Gettable
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -39,6 +43,8 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience
     with MockitoSugar {
+
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   val eoriNumber: EoriNumber        = EoriNumber("GB1234567891234")
   val lrn: LocalReferenceNumber     = LocalReferenceNumber("ABCD1234567890123").get
@@ -92,6 +98,8 @@ trait SpecBase
   implicit class RichAction(ai: ActionItem) {
     def id: String = ai.attributes.get("id").value
   }
+
+  implicit val bodyParser: BodyParsers.Default = new BodyParsers.Default(stubPlayBodyParsers(NoMaterializer))
 
   def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
 }
