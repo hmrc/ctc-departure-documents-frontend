@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.DeclarationType.*
 import generators.{ConsignmentLevelDocumentsGenerator, Generators}
 import models.DocumentType.*
@@ -30,7 +30,12 @@ import pages.external.*
 import pages.sections.DocumentSection
 import play.api.libs.json.Json
 
-class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with ConsignmentLevelDocumentsGenerator {
+class DocumentDomainSpec
+    extends SpecBase
+    with AppWithDefaultMockFixtures
+    with ScalaCheckPropertyChecks
+    with Generators
+    with ConsignmentLevelDocumentsGenerator {
 
   "Document Domain" - {
 

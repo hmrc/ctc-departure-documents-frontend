@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.ConsignmentLevelDocuments
 import models.reference.Document
@@ -27,7 +27,7 @@ import play.api.data.validation.{Invalid, Valid}
 
 import java.time.LocalDate
 
-class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with Constraints {
+class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators with Constraints {
 
   "firstError" - {
 

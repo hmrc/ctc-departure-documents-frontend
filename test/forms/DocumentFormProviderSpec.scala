@@ -16,7 +16,7 @@
 
 package forms
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
 import models.reference.Document
@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with Generators {
+class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures with StringFieldBehaviours with Generators {
 
   private val prefix             = Gen.alphaNumStr.sample.value
   private val requiredKey        = s"$prefix.error.required"
