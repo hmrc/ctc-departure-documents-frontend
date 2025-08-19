@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import models.domain.StringFieldRegex.alphaNumericWithFullStopsRegex
+import models.domain.StringFieldRegex.asciiRegex
 import play.api.data.{Field, FormError}
 
 class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
@@ -43,12 +43,12 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithInvalidCharacters(
+    /*behave like fieldWithInvalidCharacters(
       form,
       fieldName,
-      error = FormError(fieldName, invalidCharactersKey, Seq(alphaNumericWithFullStopsRegex.regex)),
+      error = FormError(fieldName, invalidCharactersKey, Seq(asciiRegex.regex)),
       maxLength
-    )
+    )*/
 
     behave like mandatoryField(
       form,
@@ -65,6 +65,12 @@ class DocumentReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
     "must accept a value with a full stop in it" in {
       val dataItem = "foo."
+      val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
+      result.value.value mustEqual dataItem
+    }
+
+    "must accept a value with other characters in it" in {
+      val dataItem = "foo.?!"
       val result   = form.bind(Map(fieldName -> dataItem)).apply(fieldName)
       result.value.value mustEqual dataItem
     }

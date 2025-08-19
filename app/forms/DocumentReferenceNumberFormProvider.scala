@@ -18,7 +18,7 @@ package forms
 
 import forms.Constants.maxDocumentRefNumberLength
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericWithFullStopsRegex
+import models.domain.StringFieldRegex.asciiRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DocumentReferenceNumberFormProvider @Inject() extends Mappings {
         .verifying(
           StopOnFirstFail[String](
             maxLength(maxDocumentRefNumberLength, s"$prefix.error.length"),
-            regexp(alphaNumericWithFullStopsRegex, s"$prefix.error.invalidCharacters"),
+            regexp(asciiRegex, s"$prefix.error.invalidCharacters"),
             notInList(otherReferenceNumbers, s"$prefix.error.unique")
           )
         )

@@ -17,6 +17,7 @@
 package forms.mappings
 
 import models.{Enumerable, Radioable, RichString, Selectable, SelectableList}
+import org.apache.commons.text.StringEscapeUtils
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -31,12 +32,12 @@ trait Formatters {
       data.get(key) match {
         case None                    => Left(Seq(FormError(key, errorKey, args)))
         case Some(s) if g(s).isEmpty => Left(Seq(FormError(key, errorKey, args)))
-        case Some(s)                 => Right(g(s))
+        case Some(s)                 => Right(StringEscapeUtils.escapeHtml4(g(s)))
       }
     }
 
     override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
+      Map(key -> StringEscapeUtils.unescapeHtml4(value))
   }
 
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty): Formatter[Boolean] =

@@ -16,11 +16,11 @@
 
 package forms.mappings
 
+import models.{Enumerable, Radioable}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.data.{Form, FormError}
-import models.{Enumerable, Radioable}
 
 object MappingsSpec {
 
@@ -52,7 +52,7 @@ object MappingsSpec {
 
 class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mappings {
 
-  import MappingsSpec._
+  import MappingsSpec.*
 
   "text" - {
 
@@ -95,6 +95,16 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must unbind a valid value" in {
       val result = testForm.fill("foobar")
       result.apply("value").value.value mustEqual "foobar"
+    }
+
+    "must escape a bound value" in {
+      val result = testForm.bind(Map("value" -> "<p>Hello</p>"))
+      result.get mustEqual "&lt;p&gt;Hello&lt;/p&gt;"
+    }
+
+    "must unescape an unbound value" in {
+      val result = testForm.fill("&lt;p&gt;Hello&lt;/p&gt;")
+      result.apply("value").value.value mustEqual "<p>Hello</p>"
     }
   }
 
