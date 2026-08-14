@@ -34,47 +34,8 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
   "referenceDataReads" - {
     "must deserialise json from reference data service" - {
-      "when phase-5 " - {
-        "when transport" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          val json = Json.parse("""
-              |{
-              |  "code" : "code",
-              |  "description" : "description"
-              |}
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Transport, mockFrontendAppConfig)) mustEqual Document(Transport, "code", "description")
-        }
-
-        "when support" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          val json = Json.parse("""
-              |{
-              |  "code" : "code",
-              |  "description" : "description"
-              |}
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Support, mockFrontendAppConfig)) mustEqual Document(Support, "code", "description")
-        }
-
-        "when previous" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          val json = Json.parse("""
-              |{
-              |  "code" : "code",
-              |  "description" : "description"
-              |}
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Previous, mockFrontendAppConfig)) mustEqual Document(Previous, "code", "description")
-
-        }
-      }
       "when phase-6 " - {
         "when transport" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
           val json = Json.parse("""
               | {
               |  "key" : "code",
@@ -86,7 +47,6 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
         }
 
         "when support" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
           val json = Json.parse("""
               | {
               |  "key" : "code",
@@ -98,7 +58,6 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
         }
 
         "when previous" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
           val json = Json.parse("""
               | {
               |  "key" : "code",

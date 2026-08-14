@@ -38,10 +38,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> {
-        val version = if (config.phase6Enabled) "2.0" else "1.0"
-        s"application/vnd.hmrc.$version+json"
-      })
+      .setHeader(HeaderNames.Accept -> s"application/vnd.hmrc.2.0+json")
       .execute[Responses[T]]
 
   def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
@@ -66,7 +63,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          val json = if (config.phase6Enabled) response.json else response.json \ "data"
+          val json = response.json
           json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))
