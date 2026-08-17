@@ -43,19 +43,19 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/PreviousDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Previous, config)
+    implicit val reads: Reads[Document] = Document.reads(Previous)
     get[Document](url)
   }
 
   def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/SupportingDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Support, config)
+    implicit val reads: Reads[Document] = Document.reads(Support)
     get[Document](url)
   }
 
   def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/TransportDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Transport, config)
+    implicit val reads: Reads[Document] = Document.reads(Transport)
     get[Document](url)
   }
 

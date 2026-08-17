@@ -30,8 +30,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-
   "referenceDataReads" - {
     "must deserialise json from reference data service" - {
       "when transport" in {
@@ -42,7 +40,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             | }
             |""".stripMargin)
 
-        json.as[Document](Document.reads(Transport, mockFrontendAppConfig)) mustEqual Document(Transport, "code", "description")
+        json.as[Document](Document.reads(Transport)) mustEqual Document(Transport, "code", "description")
       }
 
       "when support" in {
@@ -53,7 +51,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             | }
             |""".stripMargin)
 
-        json.as[Document](Document.reads(Support, mockFrontendAppConfig)) mustEqual Document(Support, "code", "description")
+        json.as[Document](Document.reads(Support)) mustEqual Document(Support, "code", "description")
       }
 
       "when previous" in {
@@ -64,7 +62,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             | }
             |""".stripMargin)
 
-        json.as[Document](Document.reads(Previous, mockFrontendAppConfig)) mustEqual Document(Previous, "code", "description")
+        json.as[Document](Document.reads(Previous)) mustEqual Document(Previous, "code", "description")
       }
     }
     "when reading PreviousDocument from mongo" in {
