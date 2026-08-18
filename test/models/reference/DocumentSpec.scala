@@ -30,129 +30,84 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val mockFrontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-
   "referenceDataReads" - {
     "must deserialise json from reference data service" - {
-      "when phase-5 " - {
-        "when transport" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          val json = Json.parse("""
-              |{
-              |  "code" : "code",
-              |  "description" : "description"
-              |}
-              |""".stripMargin)
+      "when transport" in {
+        val json = Json.parse("""
+            | {
+            |  "key" : "code",
+            |  "value" : "description"
+            | }
+            |""".stripMargin)
 
-          json.as[Document](Document.reads(Transport, mockFrontendAppConfig)) mustEqual Document(Transport, "code", "description")
-        }
-
-        "when support" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          val json = Json.parse("""
-              |{
-              |  "code" : "code",
-              |  "description" : "description"
-              |}
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Support, mockFrontendAppConfig)) mustEqual Document(Support, "code", "description")
-        }
-
-        "when previous" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-          val json = Json.parse("""
-              |{
-              |  "code" : "code",
-              |  "description" : "description"
-              |}
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Previous, mockFrontendAppConfig)) mustEqual Document(Previous, "code", "description")
-
-        }
+        json.as[Document](Document.reads(Transport)) mustEqual Document(Transport, "code", "description")
       }
-      "when phase-6 " - {
-        "when transport" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          val json = Json.parse("""
-              | {
-              |  "key" : "code",
-              |  "value" : "description"
-              | }
-              |""".stripMargin)
 
-          json.as[Document](Document.reads(Transport, mockFrontendAppConfig)) mustEqual Document(Transport, "code", "description")
-        }
+      "when support" in {
+        val json = Json.parse("""
+            | {
+            |  "key" : "code",
+            |  "value" : "description"
+            | }
+            |""".stripMargin)
 
-        "when support" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          val json = Json.parse("""
-              | {
-              |  "key" : "code",
-              |  "value" : "description"
-              | }
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Support, mockFrontendAppConfig)) mustEqual Document(Support, "code", "description")
-        }
-
-        "when previous" in {
-          when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-          val json = Json.parse("""
-              | {
-              |  "key" : "code",
-              |  "value" : "description"
-              | }
-              |""".stripMargin)
-
-          json.as[Document](Document.reads(Previous, mockFrontendAppConfig)) mustEqual Document(Previous, "code", "description")
-        }
+        json.as[Document](Document.reads(Support)) mustEqual Document(Support, "code", "description")
       }
-      "when reading PreviousDocument from mongo" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val previousDocument = Document(Previous, code, description)
-            Json
-              .parse(s"""
-                   |{
-                   |"type": "Previous",
-                   |"code" : "$code",
-                   |"description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Document] mustEqual previousDocument
-        }
+
+      "when previous" in {
+        val json = Json.parse("""
+            | {
+            |  "key" : "code",
+            |  "value" : "description"
+            | }
+            |""".stripMargin)
+
+        json.as[Document](Document.reads(Previous)) mustEqual Document(Previous, "code", "description")
       }
-      "when reading SupportDocument from mongo" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val previousDocument = Document(Support, code, description)
-            Json
-              .parse(s"""
-                   |{
-                   |"type": "Support",
-                   |"code": "$code",
-                   |"description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Document] mustEqual previousDocument
-        }
+    }
+    "when reading PreviousDocument from mongo" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val previousDocument = Document(Previous, code, description)
+          Json
+            .parse(s"""
+                  |{
+                  |"type": "Previous",
+                  |"code" : "$code",
+                  |"description": "$description"
+                  |}
+                  |""".stripMargin)
+            .as[Document] mustEqual previousDocument
       }
-      "when reading TransportDocument from mongo" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val previousDocument = Document(Transport, code, description)
-            Json
-              .parse(s"""
-                   |{
-                   |"type": "Transport",
-                   |"code" : "$code",
-                   |"description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Document] mustEqual previousDocument
-        }
+    }
+    "when reading SupportDocument from mongo" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val previousDocument = Document(Support, code, description)
+          Json
+            .parse(s"""
+                  |{
+                  |"type": "Support",
+                  |"code": "$code",
+                  |"description": "$description"
+                  |}
+                  |""".stripMargin)
+            .as[Document] mustEqual previousDocument
+      }
+    }
+    "when reading TransportDocument from mongo" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val previousDocument = Document(Transport, code, description)
+          Json
+            .parse(s"""
+                  |{
+                  |"type": "Transport",
+                  |"code" : "$code",
+                  |"description": "$description"
+                  |}
+                  |""".stripMargin)
+            .as[Document] mustEqual previousDocument
       }
     }
   }

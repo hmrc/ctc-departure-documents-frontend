@@ -38,27 +38,24 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> {
-        val version = if (config.phase6Enabled) "2.0" else "1.0"
-        s"application/vnd.hmrc.$version+json"
-      })
+      .setHeader(HeaderNames.Accept -> s"application/vnd.hmrc.2.0+json")
       .execute[Responses[T]]
 
   def getPreviousDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/PreviousDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Previous, config)
+    implicit val reads: Reads[Document] = Document.reads(Previous)
     get[Document](url)
   }
 
   def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/SupportingDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Support, config)
+    implicit val reads: Reads[Document] = Document.reads(Support)
     get[Document](url)
   }
 
   def getTransportDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/TransportDocumentType"
-    implicit val reads: Reads[Document] = Document.reads(Transport, config)
+    implicit val reads: Reads[Document] = Document.reads(Transport)
     get[Document](url)
   }
 
@@ -66,7 +63,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          val json = if (config.phase6Enabled) response.json else response.json \ "data"
+          val json = response.json
           json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))

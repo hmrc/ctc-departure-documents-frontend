@@ -31,8 +31,8 @@ case class Document(`type`: DocumentType, code: String, description: String) ext
 
 object Document {
 
-  def reads(`type`: DocumentType, config: FrontendAppConfig): Reads[Document] =
-    val (codeField, descriptionField) = if (config.phase6Enabled) ("key", "value") else ("code", "description")
+  def reads(`type`: DocumentType): Reads[Document] =
+    val (codeField, descriptionField) = ("key", "value")
     (
       (__ \ codeField).read[String] and
         (__ \ descriptionField).read[String]

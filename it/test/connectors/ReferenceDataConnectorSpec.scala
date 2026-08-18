@@ -38,12 +38,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   private val baseUrl = "customs-reference-data/test-only"
 
-  private lazy val phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder = _ =>
-    guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false)
-
-  private lazy val phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder = _ =>
-    guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> true)
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super
     .guiceApplicationBuilder()
     .configure(
@@ -52,343 +46,143 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   "getPreviousDocuments" - {
     val url = s"/$baseUrl/lists/PreviousDocumentType"
-    "when phase-6 " - {
 
-      val previousDocumentResponseJson: String =
-        s"""
-           |[
-           |  {
-           |    "key": "1",
-           |     "value": "Certificate of quality"
-           |    },
-           |  {
-           |      "key": "4",
-           |      "value": "Blah"
-           |    }
-           |]
-           |""".stripMargin
+    val previousDocumentResponseJson: String =
+      s"""
+          |[
+          |  {
+          |    "key": "1",
+          |     "value": "Certificate of quality"
+          |    },
+          |  {
+          |      "key": "4",
+          |      "value": "Blah"
+          |    }
+          |]
+          |""".stripMargin
 
-      "must return list of previous documents when successful" in {
-        running(phase6App) {
-          app =>
-            val connector = app.injector.instanceOf[ReferenceDataConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                .willReturn(okJson(previousDocumentResponseJson))
-            )
-            val expectResult = NonEmptySet.of(Document(Previous, "1", "Certificate of quality"), Document(Previous, "4", "Blah"))
+    "must return list of previous documents when successful" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+          .willReturn(okJson(previousDocumentResponseJson))
+      )
+      val expectResult = NonEmptySet.of(Document(Previous, "1", "Certificate of quality"), Document(Previous, "4", "Blah"))
 
-            connector.getPreviousDocuments().futureValue.value mustEqual expectResult
-
-        }
-      }
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getPreviousDocuments())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getPreviousDocuments())
-      }
-
-      "must return an exception when invalid JSON is returned" in {
-        checkJsErrorResponse(url, connector.getPreviousDocuments())
-      }
-
+      connector.getPreviousDocuments().futureValue.value mustEqual expectResult
     }
-    "when phase-5 " - {
-      def documentsJson(docType: String): String =
-        s"""
-           |{
-           |"_links": {
-           |    "self": {
-           |      "href": "/customs-reference-data/lists/$docType"
-           |    }
-           |  },
-           |  "meta": {
-           |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
-           |    "snapshotDate": "2023-01-01"
-           |  },
-           |  "id": "$docType",
-           |  "data": [
-           |    {
-           |      "activeFrom": "2023-01-23",
-           |      "state": "valid",
-           |      "code": "1",
-           |      "description": "Certificate of quality"
-           |    },
-           |    {
-           |      "code": "4",
-           |      "description": "Blah"
-           |    }
-           |  ]
-           |}
-           |""".stripMargin
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getPreviousDocuments())
+    }
 
-      "must return list of previous documents when successful" in {
-        running(phase5App) {
-          app =>
-            val connector = app.injector.instanceOf[ReferenceDataConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                .willReturn(okJson(documentsJson("Previous")))
-            )
-            val expectResult = NonEmptySet.of(Document(Previous, "1", "Certificate of quality"), Document(Previous, "4", "Blah"))
+    "must return an exception when an error response is returned" in {
+      checkErrorResponse(url, connector.getPreviousDocuments())
+    }
 
-            connector.getPreviousDocuments().futureValue.value mustEqual expectResult
-
-        }
-      }
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getPreviousDocuments())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getPreviousDocuments())
-      }
-
-      "must return an exception when invalid JSON is returned" in {
-        checkJsErrorResponse(url, connector.getPreviousDocuments())
-      }
-
+    "must return an exception when invalid JSON is returned" in {
+      checkJsErrorResponse(url, connector.getPreviousDocuments())
     }
 
   }
 
   "getTransportDocuments" - {
     val url = s"/$baseUrl/lists/TransportDocumentType"
-    "when phase-6 " - {
-      val transportDocumentResponseJson: String =
-        s"""
-           |[
-           |  {
-           |    "key": "1",
-           |     "value": "Certificate of quality"
-           |    },
-           |  {
-           |      "key": "4",
-           |      "value": "Blah"
-           |    }
-           |]
-           |""".stripMargin
 
-      "must return list of documents when successful" in {
-        running(phase6App) {
-          app =>
-            val connector = app.injector.instanceOf[ReferenceDataConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                .willReturn(okJson(transportDocumentResponseJson))
-            )
+    val transportDocumentResponseJson: String =
+      s"""
+          |[
+          |  {
+          |    "key": "1",
+          |     "value": "Certificate of quality"
+          |    },
+          |  {
+          |      "key": "4",
+          |      "value": "Blah"
+          |    }
+          |]
+          |""".stripMargin
 
-            val expectResult = NonEmptySet.of(
-              Document(Transport, "1", "Certificate of quality"),
-              Document(Transport, "4", "Blah")
-            )
+    "must return list of documents when successful" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+          .willReturn(okJson(transportDocumentResponseJson))
+      )
 
-            connector.getTransportDocuments().futureValue.value mustEqual expectResult
-        }
+      val expectResult = NonEmptySet.of(
+        Document(Transport, "1", "Certificate of quality"),
+        Document(Transport, "4", "Blah")
+      )
 
-      }
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportDocuments())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportDocuments())
-      }
-
-      "must return an exception when invalid JSON is returned" in {
-        checkJsErrorResponse(url, connector.getTransportDocuments())
-      }
+      connector.getTransportDocuments().futureValue.value mustEqual expectResult
     }
-    "when phase-5 " - {
-      def documentsJson(docType: String): String =
-        s"""
-           |{
-           |"_links": {
-           |    "self": {
-           |      "href": "/customs-reference-data/lists/$docType"
-           |    }
-           |  },
-           |  "meta": {
-           |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
-           |    "snapshotDate": "2023-01-01"
-           |  },
-           |  "id": "$docType",
-           |  "data": [
-           |    {
-           |      "activeFrom": "2023-01-23",
-           |      "state": "valid",
-           |      "code": "1",
-           |      "description": "Certificate of quality"
-           |    },
-           |    {
-           |      "code": "4",
-           |      "description": "Blah"
-           |    }
-           |  ]
-           |}
-           |""".stripMargin
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getTransportDocuments())
+    }
 
-      "must return list of documents when successful" in {
-        running(phase5App) {
-          app =>
-            val connector = app.injector.instanceOf[ReferenceDataConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                .willReturn(okJson(documentsJson("Transport")))
-            )
+    "must return an exception when an error response is returned" in {
+      checkErrorResponse(url, connector.getTransportDocuments())
+    }
 
-            val expectResult = NonEmptySet.of(
-              Document(Transport, "1", "Certificate of quality"),
-              Document(Transport, "4", "Blah")
-            )
-
-            connector.getTransportDocuments().futureValue.value mustEqual expectResult
-        }
-
-      }
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getTransportDocuments())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportDocuments())
-      }
-
-      "must return an exception when invalid JSON is returned" in {
-        checkJsErrorResponse(url, connector.getTransportDocuments())
-      }
+    "must return an exception when invalid JSON is returned" in {
+      checkJsErrorResponse(url, connector.getTransportDocuments())
     }
 
   }
 
   "getSupportingDocuments" - {
     val url = s"/$baseUrl/lists/SupportingDocumentType"
-    "when phase-6" - {
-      val supportingDocumentResponseJson: String =
-        s"""
-           |[
-           |  {
-           |    "key": "1",
-           |     "value": "Certificate of quality"
-           |    },
-           |  {
-           |      "key": "4",
-           |      "value": "Blah"
-           |    }
-           |]
-           |""".stripMargin
-      "must return list of documents when successful" in {
-        running(phase6App) {
-          app =>
-            val connector = app.injector.instanceOf[ReferenceDataConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                .willReturn(okJson(supportingDocumentResponseJson))
-            )
+    
+    val supportingDocumentResponseJson: String =
+      s"""
+          |[
+          |  {
+          |    "key": "1",
+          |     "value": "Certificate of quality"
+          |    },
+          |  {
+          |      "key": "4",
+          |      "value": "Blah"
+          |    }
+          |]
+          |""".stripMargin
+    "must return list of documents when successful" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+          .willReturn(okJson(supportingDocumentResponseJson))
+      )
 
-            val expectResult = NonEmptySet.of(
-              Document(Support, "1", "Certificate of quality"),
-              Document(Support, "4", "Blah")
-            )
+      val expectResult = NonEmptySet.of(
+        Document(Support, "1", "Certificate of quality"),
+        Document(Support, "4", "Blah")
+      )
 
-            connector.getSupportingDocuments().futureValue.value mustEqual expectResult
-        }
-
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getSupportingDocuments())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getSupportingDocuments())
-      }
-
-      "must return an exception when invalid JSON is returned" in {
-        checkJsErrorResponse(url, connector.getSupportingDocuments())
-      }
-    }
-    "when phase-5" - {
-      def documentsJson(docType: String): String =
-        s"""
-           |{
-           |"_links": {
-           |    "self": {
-           |      "href": "/customs-reference-data/lists/$docType"
-           |    }
-           |  },
-           |  "meta": {
-           |    "version": "410157ad-bc37-4e71-af2a-404d1ddad94c",
-           |    "snapshotDate": "2023-01-01"
-           |  },
-           |  "id": "$docType",
-           |  "data": [
-           |    {
-           |      "activeFrom": "2023-01-23",
-           |      "state": "valid",
-           |      "code": "1",
-           |      "description": "Certificate of quality"
-           |    },
-           |    {
-           |      "code": "4",
-           |      "description": "Blah"
-           |    }
-           |  ]
-           |}
-           |""".stripMargin
-      "must return list of documents when successful" in {
-        running(phase5App) {
-          app =>
-            val connector = app.injector.instanceOf[ReferenceDataConnector]
-            server.stubFor(
-              get(urlEqualTo(url))
-                .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                .willReturn(okJson(documentsJson("Supporting")))
-            )
-
-            val expectResult = NonEmptySet.of(
-              Document(Support, "1", "Certificate of quality"),
-              Document(Support, "4", "Blah")
-            )
-
-            connector.getSupportingDocuments().futureValue.value mustEqual expectResult
-        }
-
-      }
-
-      "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getSupportingDocuments())
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getSupportingDocuments())
-      }
-
-      "must return an exception when invalid JSON is returned" in {
-        checkJsErrorResponse(url, connector.getSupportingDocuments())
-      }
+      connector.getSupportingDocuments().futureValue.value mustEqual expectResult
     }
 
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getSupportingDocuments())
+    }
+
+    "must return an exception when an error response is returned" in {
+      checkErrorResponse(url, connector.getSupportingDocuments())
+    }
+
+    "must return an exception when invalid JSON is returned" in {
+      checkJsErrorResponse(url, connector.getSupportingDocuments())
+    }
   }
 
   private def checkNoReferenceDataFoundResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     val json: String =
       """
-        |{
-        |  "data": []
-        |}
+        |[]
         |""".stripMargin
 
     server.stubFor(
       get(urlEqualTo(url))
-        .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+        .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
         .willReturn(okJson(json))
     )
 
@@ -402,7 +196,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       errorResponse =>
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
             .willReturn(
               aResponse()
                 .withStatus(errorResponse)
@@ -423,7 +217,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     server.stubFor(
       get(urlEqualTo(url))
-        .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+        .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
         .willReturn(okJson(json))
     )
 
