@@ -17,7 +17,6 @@
 package models.reference
 
 import cats.Order
-import config.FrontendAppConfig
 import models.{DocumentType, Selectable}
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
