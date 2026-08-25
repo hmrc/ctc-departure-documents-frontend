@@ -27,7 +27,6 @@ import org.scalatest.{Assertion, EitherValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.JsResultException
-import play.api.test.Helpers.running
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -132,7 +131,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   "getSupportingDocuments" - {
     val url = s"/$baseUrl/lists/SupportingDocumentType"
-    
+
     val supportingDocumentResponseJson: String =
       s"""
           |[

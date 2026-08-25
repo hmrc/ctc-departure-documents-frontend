@@ -17,11 +17,9 @@
 package models.reference
 
 import base.SpecBase
-import config.FrontendAppConfig
 import generators.Generators
 import models.DocumentType
 import models.DocumentType.*
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
