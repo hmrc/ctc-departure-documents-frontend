@@ -84,6 +84,42 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   }
 
+  "getPreviousDocumentExport" - {
+    val url = s"/$baseUrl/lists/PreviousDocumentExportType"
+
+    val previousDocumentExportResponseJson: String =
+      s"""
+         |[
+         |  {
+         |      "key": "4",
+         |      "value": "Export"
+         |    }
+         |]
+         |""".stripMargin
+
+    "must return list of previous document export when successful" in {
+      server.stubFor(
+        get(urlEqualTo(url))
+          .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+          .willReturn(okJson(previousDocumentExportResponseJson))
+      )
+      val expectResult = NonEmptySet.of(Document(Previous, "4", "Export"))
+
+      connector.getPreviousDocumentExport().futureValue.value mustEqual expectResult
+    }
+    "must throw a NoReferenceDataFoundException for an empty response" in {
+      checkNoReferenceDataFoundResponse(url, connector.getPreviousDocumentExport())
+    }
+
+    "must return an exception when an error response is returned" in {
+      checkErrorResponse(url, connector.getPreviousDocumentExport())
+    }
+
+    "must return an exception when invalid JSON is returned" in {
+      checkJsErrorResponse(url, connector.getPreviousDocumentExport())
+    }
+  }
+
   "getTransportDocuments" - {
     val url = s"/$baseUrl/lists/TransportDocumentType"
 

@@ -39,12 +39,13 @@ class DocumentsService @Inject() (
 
   def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
-      supportingDocuments <- referenceDataConnector.getSupportingDocuments().map(_.resolve())
-      transportDocuments  <- getTransportDocuments(attachToAllItems)
-      previousDocuments   <- referenceDataConnector.getPreviousDocuments().map(_.resolve())
+      supportingDocuments    <- referenceDataConnector.getSupportingDocuments().map(_.resolve())
+      transportDocuments     <- getTransportDocuments(attachToAllItems)
+      previousDocuments      <- referenceDataConnector.getPreviousDocuments().map(_.resolve())
+      previousDocumentExport <- referenceDataConnector.getPreviousDocumentExport().map(_.resolve())
       documents = transportDocuments match {
-        case Some(value) => supportingDocuments ++ value ++ previousDocuments
-        case None        => supportingDocuments ++ previousDocuments
+        case Some(value) => supportingDocuments ++ value ++ previousDocuments ++ previousDocumentExport
+        case None        => supportingDocuments ++ previousDocuments ++ previousDocumentExport
       }
     } yield SelectableList(documents)
 

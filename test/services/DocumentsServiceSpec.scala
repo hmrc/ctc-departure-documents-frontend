@@ -36,6 +36,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
   private val transportDocument                            = Document(Transport, "N741", "Master airwaybill")
   private val supportingDocument                           = Document(Support, "C673", "Catch certificate")
   private val previousDocument                             = Document(Previous, "C605", "Information sheet INF3")
+  private val previousDocumentExport                       = Document(Previous, "N830", "Goods declaration for exportation")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -49,6 +50,9 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
     when(mockRefDataConnector.getPreviousDocuments()(any(), any()))
       .thenReturn(Future.successful(Right(NonEmptySet.of(previousDocument))))
 
+    when(mockRefDataConnector.getPreviousDocumentExport()(any(), any()))
+      .thenReturn(Future.successful(Right(NonEmptySet.of(previousDocumentExport))))
+
     super.beforeEach()
   }
 
@@ -58,10 +62,11 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
       "and adding document at consignment level" - {
         "must return a list of sorted document types" in {
           service.getDocuments(attachToAllItems = true).futureValue mustEqual
-            SelectableList(Seq(previousDocument, supportingDocument, transportDocument))
+            SelectableList(Seq(previousDocument, previousDocumentExport, supportingDocument, transportDocument))
 
           verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
           verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+          verify(mockRefDataConnector).getPreviousDocumentExport()(any(), any())
           verify(mockRefDataConnector).getTransportDocuments()(any(), any())
         }
       }
@@ -69,10 +74,11 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
       "and adding document at item level" - {
         "must return a list of sorted document types with transport documents removed" in {
           service.getDocuments(attachToAllItems = false).futureValue mustEqual
-            SelectableList(Seq(previousDocument, supportingDocument))
+            SelectableList(Seq(previousDocument, previousDocumentExport, supportingDocument))
 
           verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
           verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
+          verify(mockRefDataConnector).getPreviousDocumentExport()(any(), any())
           verify(mockRefDataConnector, never()).getTransportDocuments()(any(), any())
         }
       }
