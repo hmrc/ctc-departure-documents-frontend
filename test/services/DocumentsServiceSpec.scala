@@ -36,7 +36,7 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
   private val transportDocument                            = Document(Transport, "N741", "Master airwaybill")
   private val supportingDocument                           = Document(Support, "C673", "Catch certificate")
   private val previousDocument                             = Document(Previous, "C605", "Information sheet INF3")
-  private val previousDocumentExport                       = Document(Previous, "N830", "Goods declaration for exportation")
+  private val previousDocumentExport                       = Document(PreviousExport, "N830", "Goods declaration for exportation")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -74,11 +74,11 @@ class DocumentsServiceSpec extends SpecBase with AppWithDefaultMockFixtures with
       "and adding document at item level" - {
         "must return a list of sorted document types with transport documents removed" in {
           service.getDocuments(attachToAllItems = false).futureValue mustEqual
-            SelectableList(Seq(previousDocument, previousDocumentExport, supportingDocument))
+            SelectableList(Seq(previousDocument, supportingDocument))
 
           verify(mockRefDataConnector).getSupportingDocuments()(any(), any())
           verify(mockRefDataConnector).getPreviousDocuments()(any(), any())
-          verify(mockRefDataConnector).getPreviousDocumentExport()(any(), any())
+          verify(mockRefDataConnector, never()).getPreviousDocumentExport()(any(), any())
           verify(mockRefDataConnector, never()).getTransportDocuments()(any(), any())
         }
       }

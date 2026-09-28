@@ -49,7 +49,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   def getPreviousDocumentExport()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/PreviousDocumentExportType"
-    implicit val reads: Reads[Document] = Document.reads(Previous)
+    implicit val reads: Reads[Document] = Document.reads(PreviousExport)
     get[Document](url)
   }
 

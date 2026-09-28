@@ -120,6 +120,14 @@ trait ModelGenerators {
       } yield Document(DocumentType.Previous, code, desc)
     }
 
+  lazy val arbitraryPreviousExportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Document(DocumentType.PreviousExport, code, desc)
+    }
+
   implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       for {

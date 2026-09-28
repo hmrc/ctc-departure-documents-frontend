@@ -103,7 +103,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
           .willReturn(okJson(previousDocumentExportResponseJson))
       )
-      val expectResult = NonEmptySet.of(Document(Previous, "4", "Export"))
+      val expectResult = NonEmptySet.of(Document(PreviousExport, "4", "Export"))
 
       connector.getPreviousDocumentExport().futureValue.value mustEqual expectResult
     }
