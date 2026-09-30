@@ -75,7 +75,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val document2                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0, 0)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, true, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)
@@ -86,7 +86,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1                 = arbitrary[Document](arbitrarySupportDocument).sample.value
         val document2                 = arbitrary[Document](arbitrarySupportDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0, 0)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, true, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)
@@ -97,7 +97,18 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1                 = arbitrary[Document](arbitraryTransportDocument).sample.value
         val document2                 = arbitrary[Document](arbitraryTransportDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments, 0)
+        val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, true, arg)
+        val boundForm                 = form.bind(Map(fieldName -> document2.toString))
+        val field                     = boundForm(fieldName)
+        field.errors must contain(FormError(fieldName, maxLimitReachedKey))
+      }
+
+      "when previousExport" in {
+        val document1                 = arbitrary[Document](arbitraryPreviousExportDocument).sample.value
+        val document2                 = arbitrary[Document](arbitraryPreviousExportDocument).sample.value
+        val documents                 = SelectableList(Seq(document1, document2))
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, 0, frontendAppConfig.maxPreviousExportDocuments)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, true, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)
@@ -110,7 +121,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val document2                 = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0, 0)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, false, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)
@@ -121,7 +132,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1                 = arbitrary[Document](arbitrarySupportDocument).sample.value
         val document2                 = arbitrary[Document](arbitrarySupportDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0, 0)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, false, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)
@@ -132,7 +143,18 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1                 = arbitrary[Document](arbitraryTransportDocument).sample.value
         val document2                 = arbitrary[Document](arbitraryTransportDocument).sample.value
         val documents                 = SelectableList(Seq(document1, document2))
-        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments)
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments, 0)
+        val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, false, arg)
+        val boundForm                 = form.bind(Map(fieldName -> document2.toString))
+        val field                     = boundForm(fieldName)
+        field.errors must be(empty)
+      }
+
+      "when previousExport" in {
+        val document1                 = arbitrary[Document](arbitraryPreviousExportDocument).sample.value
+        val document2                 = arbitrary[Document](arbitraryPreviousExportDocument).sample.value
+        val documents                 = SelectableList(Seq(document1, document2))
+        val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, 0, frontendAppConfig.maxPreviousExportDocuments)
         val form                      = new DocumentFormProvider()(prefix, documents, consignmentLevelDocuments, false, arg)
         val boundForm                 = form.bind(Map(fieldName -> document2.toString))
         val field                     = boundForm(fieldName)

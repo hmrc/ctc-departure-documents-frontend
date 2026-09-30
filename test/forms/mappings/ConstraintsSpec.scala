@@ -200,7 +200,7 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
           arbitrary[Document](arbitraryPreviousDocument)
         ) {
           (numberOfPreviousDocuments, document) =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(numberOfPreviousDocuments, 0, 0)
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(numberOfPreviousDocuments, 0, 0, 0)
             val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Valid
         }
@@ -212,7 +212,7 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
           arbitrary[Document](arbitrarySupportDocument)
         ) {
           (numberOfSupportingDocuments, document) =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, numberOfSupportingDocuments, 0)
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, numberOfSupportingDocuments, 0, 0)
             val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Valid
         }
@@ -224,7 +224,19 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
           arbitrary[Document](arbitraryTransportDocument)
         ) {
           (numberOfTransportDocuments, document) =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, numberOfTransportDocuments)
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, numberOfTransportDocuments, 0)
+            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Valid
+        }
+      }
+
+      "when adding a consignment-level previousExport document won't take me over the limit" in {
+        forAll(
+          Gen.choose(0, frontendAppConfig.maxPreviousExportDocuments - 1),
+          arbitrary[Document](arbitraryPreviousExportDocument)
+        ) {
+          (numberOfPreviousExportDocuments, document) =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, 0, numberOfPreviousExportDocuments)
             val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Valid
         }
@@ -233,9 +245,11 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
       "when adding a non-consignment-level document" in {
         forAll(arbitrary[Document]) {
           document =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments,
-                                                                      frontendAppConfig.maxSupportingDocuments,
-                                                                      frontendAppConfig.maxTransportDocuments
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(
+              frontendAppConfig.maxPreviousDocuments,
+              frontendAppConfig.maxSupportingDocuments,
+              frontendAppConfig.maxTransportDocuments,
+              frontendAppConfig.maxPreviousExportDocuments
             )
             val result = maxLimit(consignmentLevelDocuments, attachedToAllItems = false, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Valid
@@ -249,7 +263,7 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
           arbitrary[Document](arbitraryPreviousDocument)
         ) {
           document =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0, 0)
             val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Invalid("error.maxLimitReached")
         }
@@ -260,7 +274,7 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
           arbitrary[Document](arbitrarySupportDocument)
         ) {
           document =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0)
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0, 0)
             val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Invalid("error.maxLimitReached")
         }
@@ -271,7 +285,18 @@ class ConstraintsSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
           arbitrary[Document](arbitraryTransportDocument)
         ) {
           document =>
-            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments)
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments, 0)
+            val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
+            result mustEqual Invalid("error.maxLimitReached")
+        }
+      }
+
+      "when adding a consignment-level previousExport document will take me over the limit" in {
+        forAll(
+          arbitrary[Document](arbitraryPreviousExportDocument)
+        ) {
+          document =>
+            val consignmentLevelDocuments = ConsignmentLevelDocuments(0, 0, 0, frontendAppConfig.maxPreviousExportDocuments)
             val result                    = maxLimit(consignmentLevelDocuments, attachedToAllItems = true, "error.maxLimitReached")(frontendAppConfig)(document)
             result mustEqual Invalid("error.maxLimitReached")
         }
