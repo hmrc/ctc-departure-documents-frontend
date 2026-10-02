@@ -47,6 +47,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     get[Document](url)
   }
 
+  def getPreviousDocumentExport()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
+    val url                             = url"${config.referenceDataUrl}/lists/PreviousDocumentExportType"
+    implicit val reads: Reads[Document] = Document.reads(PreviousExport)
+    get[Document](url)
+  }
+
   def getSupportingDocuments()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Document]] = {
     val url                             = url"${config.referenceDataUrl}/lists/SupportingDocumentType"
     implicit val reads: Reads[Document] = Document.reads(Support)

@@ -34,5 +34,9 @@ object DocumentType extends EnumerableType[DocumentType] {
     override val display = "Previous"
   }
 
-  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
+  case object PreviousExport extends DocumentType {
+    override val display = "PreviousExport"
+  }
+
+  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous, PreviousExport)
 }

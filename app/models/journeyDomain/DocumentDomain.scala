@@ -64,9 +64,9 @@ object DocumentDomain {
         TypePage(documentIndex).reader.to {
           document =>
             document.`type` match {
-              case Support   => SupportDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document)
-              case Transport => TransportDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document)
-              case Previous  => PreviousDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document)
+              case Support                   => SupportDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document)
+              case Transport                 => TransportDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document)
+              case Previous | PreviousExport => PreviousDocumentDomain.userAnswersReader(documentIndex, attachToAllItems, document)
             }
         }
     }

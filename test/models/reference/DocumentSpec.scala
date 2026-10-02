@@ -62,7 +62,19 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
         json.as[Document](Document.reads(Previous)) mustEqual Document(Previous, "code", "description")
       }
+
+      "when previous export" in {
+        val json = Json.parse("""
+            | {
+            |  "key" : "code",
+            |  "value" : "description"
+            | }
+            |""".stripMargin)
+
+        json.as[Document](Document.reads(PreviousExport)) mustEqual Document(PreviousExport, "code", "description")
+      }
     }
+
     "when reading PreviousDocument from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
@@ -78,6 +90,23 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             .as[Document] mustEqual previousDocument
       }
     }
+
+    "when reading PreviousExport Document from mongo" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val previousExportDocument = Document(PreviousExport, code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |"type": "PreviousExport",
+                 |"code" : "$code",
+                 |"description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[Document] mustEqual previousExportDocument
+      }
+    }
+
     "when reading SupportDocument from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>

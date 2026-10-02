@@ -37,15 +37,25 @@ class DocumentsService @Inject() (
         .map(Some(_))
     } else Future.successful(None)
 
+  private def getPreviousDocumentExport(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[Option[NonEmptySet[Document]]] =
+    if (attachToAllItems) {
+      referenceDataConnector
+        .getPreviousDocumentExport()
+        .map(_.resolve())
+        .map(Some(_))
+    } else Future.successful(None)
+
   def getDocuments(attachToAllItems: Boolean)(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
     for {
-      supportingDocuments <- referenceDataConnector.getSupportingDocuments().map(_.resolve())
-      transportDocuments  <- getTransportDocuments(attachToAllItems)
-      previousDocuments   <- referenceDataConnector.getPreviousDocuments().map(_.resolve())
-      documents = transportDocuments match {
-        case Some(value) => supportingDocuments ++ value ++ previousDocuments
-        case None        => supportingDocuments ++ previousDocuments
-      }
+      supportingDocuments    <- referenceDataConnector.getSupportingDocuments().map(_.resolve())
+      transportDocuments     <- getTransportDocuments(attachToAllItems)
+      previousDocuments      <- referenceDataConnector.getPreviousDocuments().map(_.resolve())
+      previousDocumentExport <- getPreviousDocumentExport(attachToAllItems)
+
+      documents =
+        List(transportDocuments, previousDocumentExport).flatten
+          .foldLeft(supportingDocuments ++ previousDocuments)(_ ++ _)
+
     } yield SelectableList(documents)
 
   def getPreviousDocuments()(implicit hc: HeaderCarrier): Future[SelectableList[Document]] =
